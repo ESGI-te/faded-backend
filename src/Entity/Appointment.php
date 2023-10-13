@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Entity\Auth\User;
 use App\Repository\AppointmentRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
-use Doctrine\ORM\Mapping as ORM;
 
 
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]

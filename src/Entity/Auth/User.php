@@ -1,27 +1,41 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Auth;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Entity\Appointment;
+use App\Entity\Feedback;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Patch(),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource]
-class User
+#[UniqueEntity('email')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\Column(type: "uuid", unique: true)]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    protected UuidInterface|string $id;
 
+    use Auth;
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
@@ -30,12 +44,6 @@ class User
 
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $role = [];
 
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Feedback::class)]
     private Collection $feedback;
@@ -47,11 +55,6 @@ class User
     {
         $this->feedback = new ArrayCollection();
         $this->appointments = new ArrayCollection();
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
     }
 
     public function getEmail(): ?string
@@ -86,30 +89,6 @@ class User
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getRole(): array
-    {
-        return $this->role;
-    }
-
-    public function setRole(array $role): static
-    {
-        $this->role = $role;
 
         return $this;
     }
@@ -173,4 +152,5 @@ class User
 
         return $this;
     }
+
 }
