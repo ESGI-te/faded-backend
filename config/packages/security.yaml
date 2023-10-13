@@ -1,27 +1,34 @@
 security:
-
+    # https://symfony.com/doc/current/security.html#c-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-
+        App\Entity\Auth\User: 'auto'
+    # https://symfony.com/doc/current/security/authenticator_manager.html
+    enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        user_provider:
+            entity:
+                class: App\Entity\Auth\User
+                property: email
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/_(profiler|wdt)
             security: false
 
         main:
-            security: false
-
-    role_hierarchy:
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
-
+            lazy: true
+            stateless: true
+            security: true
+            provider: user_provider
+            json_login:
+                check_path: api_login_route
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
     access_control:
-    # - { path: ^/admin, roles: ROLE_ADMIN }
-    # - { path: ^/profile, roles: ROLE_USER }
-
-when@test:
-    security:
-        password_hashers:
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: md5
-                encode_as_base64: false
-                iterations: 0
+#        - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
+#        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI docs
+#        - { path: ^/auth, roles: PUBLIC_ACCESS }
+#        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
