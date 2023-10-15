@@ -16,20 +16,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait Auth
 {
+    #[Groups(['user-read'])]
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     protected UuidInterface|string $id;
 
-    #[Groups(['user:read:full'])]
+    #[Groups(['user-read'])]
     #[ORM\Column]
     private array $roles = [RolesEnum::USER->value];
 
+    #[Groups(['user-hidden'])]
     #[ORM\Column]
     private string $password = '';
 
-    #[Groups(['user:write', 'user:write:update'])]
+    #[Groups(['user-write'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string

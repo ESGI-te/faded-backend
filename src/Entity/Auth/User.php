@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\UserInfoController;
 use App\Entity\Appointment;
 use App\Entity\Feedback;
 use App\Repository\UserRepository;
@@ -18,15 +19,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Patch(),
+        new GetCollection(normalizationContext: ['groups' => 'user-read']),
+        new Post(
+            normalizationContext: ['groups' => 'user-read'],
+            denormalizationContext: ['groups' => 'user-write']
+        ),
+        new Get(
+            name: 'user-info',
+            uriTemplate: '/users/me',
+            controller: UserInfoController::class,
+            security: "is_granted('ROLE_USER')",
+            read: false,
+            normalizationContext: ['groups' => 'user-read']
+        ),
+        new Get(normalizationContext: ['groups' => 'user-read']),
+        new Patch(
+            normalizationContext: ['groups' => 'user-read'],
+            denormalizationContext: ['groups' => 'user-write']
+        ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
 )]
@@ -36,18 +52,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use Auth;
+    #[Groups(['user-read', 'user-write'])]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[Groups(['user-read', 'user-write'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['user-read', 'user-write'])]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
+    #[Groups(['user-hidden'])]
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Feedback::class)]
     private Collection $feedback;
 
+    #[Groups(['user-hidden'])]
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Appointment::class, orphanRemoval: true)]
     private Collection $appointments;
 
