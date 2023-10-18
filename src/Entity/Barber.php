@@ -2,48 +2,84 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Auth\User;
 use App\Repository\BarberRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: BarberRepository::class)]
-#[ApiResource]
 class Barber
 {
     #[ORM\Id]
-    #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    protected UuidInterface|string $id;
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $first_name = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $last_name = null;
+
+    #[ORM\ManyToOne(inversedBy: 'barbers')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Establishment $establishment = null;
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Provider $provider = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    #[ORM\OneToMany(mappedBy: 'barber', targetEntity: Appointment::class, orphanRemoval: true)]
+    private Collection $appointments;
 
     #[ORM\OneToMany(mappedBy: 'barber', targetEntity: Feedback::class)]
     private Collection $feedback;
 
-    #[ORM\OneToMany(mappedBy: 'barber', targetEntity: Appointment::class, orphanRemoval: true)]
-    private Collection $appointments;
-
     public function __construct()
     {
-        $this->feedback = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->feedback = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->first_name;
+    }
+
+    public function setFirstName(string $first_name): static
+    {
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    public function setLastName(string $last_name): static
+    {
+        $this->last_name = $last_name;
+
+        return $this;
+    }
+
+    public function getEstablishment(): ?Establishment
+    {
+        return $this->establishment;
+    }
+
+    public function setEstablishment(?Establishment $establishment): static
+    {
+        $this->establishment = $establishment;
+
+        return $this;
     }
 
     public function getProvider(): ?Provider
@@ -54,48 +90,6 @@ class Barber
     public function setProvider(?Provider $provider): static
     {
         $this->provider = $provider;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user_id;
-    }
-
-    public function setUser(User $user_id): static
-    {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Feedback>
-     */
-    public function getFeedback(): Collection
-    {
-        return $this->feedback;
-    }
-
-    public function addFeedback(Feedback $feedback): static
-    {
-        if (!$this->feedback->contains($feedback)) {
-            $this->feedback->add($feedback);
-            $feedback->setBarber($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFeedback(Feedback $feedback): static
-    {
-        if ($this->feedback->removeElement($feedback)) {
-            // set the owning side to null (unless already changed)
-            if ($feedback->getBarber() === $this) {
-                $feedback->setBarber(null);
-            }
-        }
 
         return $this;
     }
@@ -130,4 +124,33 @@ class Barber
         return $this;
     }
 
+    /**
+     * @return Collection<int, Feedback>
+     */
+    public function getFeedback(): Collection
+    {
+        return $this->feedback;
+    }
+
+    public function addFeedback(Feedback $feedback): static
+    {
+        if (!$this->feedback->contains($feedback)) {
+            $this->feedback->add($feedback);
+            $feedback->setBarber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeedback(Feedback $feedback): static
+    {
+        if ($this->feedback->removeElement($feedback)) {
+            // set the owning side to null (unless already changed)
+            if ($feedback->getBarber() === $this) {
+                $feedback->setBarber(null);
+            }
+        }
+
+        return $this;
+    }
 }

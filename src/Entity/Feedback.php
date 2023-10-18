@@ -2,91 +2,54 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Auth\User;
 use App\Repository\FeedbackRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
-#[ApiResource]
 class Feedback
 {
     #[ORM\Id]
-    #[ORM\Column(type: "uuid", unique: true)]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    protected UuidInterface|string $id;
-
+    #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $barber_note = null;
-
-    #[ORM\Column]
-    private ?int $provider_note = null;
-
-    #[ORM\ManyToOne(inversedBy: 'feedback')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Barber $barber = null;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Provider $provider = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\ManyToOne(inversedBy: 'feedback')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Establishment $establishment = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date_time = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Service $service = null;
+
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $comment = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user_id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_time = null;
+    #[ORM\Column]
+    private ?int $barber_note = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Service $service = null;
+    private ?Barber $barber = null;
 
-    public function getId(): ?string
+    #[ORM\Column]
+    private ?int $service_note = null;
+
+    public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getBarberNote(): ?int
-    {
-        return $this->barber_note;
-    }
-
-    public function setBarberNote(int $barber_note): static
-    {
-        $this->barber_note = $barber_note;
-
-        return $this;
-    }
-
-    public function getProviderNote(): ?int
-    {
-        return $this->provider_note;
-    }
-
-    public function setProviderNote(int $provider_note): static
-    {
-        $this->provider_note = $provider_note;
-
-        return $this;
-    }
-
-    public function getBarber(): ?Barber
-    {
-        return $this->barber;
-    }
-
-    public function setBarber(?Barber $barber): static
-    {
-        $this->barber = $barber;
-
-        return $this;
     }
 
     public function getProvider(): ?Provider
@@ -101,26 +64,14 @@ class Feedback
         return $this;
     }
 
-    public function getComment(): ?string
+    public function getEstablishment(): ?Establishment
     {
-        return $this->comment;
+        return $this->establishment;
     }
 
-    public function setComment(string $comment): static
+    public function setEstablishment(?Establishment $establishment): static
     {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user_id;
-    }
-
-    public function setUser(?User $user_id): static
-    {
-        $this->user_id = $user_id;
+        $this->establishment = $establishment;
 
         return $this;
     }
@@ -145,6 +96,66 @@ class Feedback
     public function setService(?Service $service): static
     {
         $this->service = $service;
+
+        return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(string $comment): static
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): static
+    {
+        $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    public function getBarberNote(): ?int
+    {
+        return $this->barber_note;
+    }
+
+    public function setBarberNote(int $barber_note): static
+    {
+        $this->barber_note = $barber_note;
+
+        return $this;
+    }
+
+    public function getBarber(): ?Barber
+    {
+        return $this->barber;
+    }
+
+    public function setBarber(?Barber $barber): static
+    {
+        $this->barber = $barber;
+
+        return $this;
+    }
+
+    public function getServiceNote(): ?int
+    {
+        return $this->service_note;
+    }
+
+    public function setServiceNote(int $service_note): static
+    {
+        $this->service_note = $service_note;
 
         return $this;
     }
