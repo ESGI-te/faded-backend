@@ -2,46 +2,42 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ServiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
-#[ApiResource]
 class Service
 {
     #[ORM\Id]
-    #[ORM\Column(type: "uuid", unique: true)]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    protected UuidInterface|string $id;
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $price = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    private ?string $price = null;
 
     #[ORM\Column]
     private ?int $duration = null;
 
-    #[ORM\ManyToMany(targetEntity: Provider::class, inversedBy: 'services')]
-    private Collection $providers;
+    #[ORM\ManyToMany(targetEntity: Establishment::class, inversedBy: 'services')]
+    private Collection $establishment;
 
-    #[ORM\OneToMany(mappedBy: 'service', targetEntity: Feedback::class)]
-    private Collection $feedback;
+    #[ORM\ManyToOne(inversedBy: 'services')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ServiceCategory $category = null;
 
     public function __construct()
     {
-        $this->providers = new ArrayCollection();
-        $this->feedback = new ArrayCollection();
+        $this->establishment = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -58,12 +54,12 @@ class Service
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
 
@@ -83,55 +79,37 @@ class Service
     }
 
     /**
-     * @return Collection<int, Provider>
+     * @return Collection<int, Establishment>
      */
-    public function getProviders(): Collection
+    public function getEstablishment(): Collection
     {
-        return $this->providers;
+        return $this->establishment;
     }
 
-    public function addProvider(Provider $provider): static
+    public function addEstablishment(Establishment $establishment): static
     {
-        if (!$this->providers->contains($provider)) {
-            $this->providers->add($provider);
+        if (!$this->establishment->contains($establishment)) {
+            $this->establishment->add($establishment);
         }
 
         return $this;
     }
 
-    public function removeProvider(Provider $provider): static
+    public function removeEstablishment(Establishment $establishment): static
     {
-        $this->providers->removeElement($provider);
+        $this->establishment->removeElement($establishment);
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Feedback>
-     */
-    public function getFeedback(): Collection
+    public function getCategory(): ?ServiceCategory
     {
-        return $this->feedback;
+        return $this->category;
     }
 
-    public function addFeedback(Feedback $feedback): static
+    public function setCategory(?ServiceCategory $category): static
     {
-        if (!$this->feedback->contains($feedback)) {
-            $this->feedback->add($feedback);
-            $feedback->setService($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFeedback(Feedback $feedback): static
-    {
-        if ($this->feedback->removeElement($feedback)) {
-            // set the owning side to null (unless already changed)
-            if ($feedback->getService() === $this) {
-                $feedback->setService(null);
-            }
-        }
+        $this->category = $category;
 
         return $this;
     }
