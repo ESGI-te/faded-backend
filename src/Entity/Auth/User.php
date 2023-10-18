@@ -8,10 +8,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Controller\UserInfoController;
 use App\Entity\Appointment;
 use App\Entity\Feedback;
+use App\Enum\LocalesEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -58,24 +58,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['user-read', 'user-write'])]
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $last_name = null;
 
     #[Groups(['user-read', 'user-write'])]
     #[ORM\Column(length: 255)]
-    private ?string $firstname = null;
+    private ?string $first_name = null;
 
-    #[Groups(['user-hidden'])]
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Feedback::class)]
-    private Collection $feedback;
-
-    #[Groups(['user-hidden'])]
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Appointment::class, orphanRemoval: true)]
     private Collection $appointments;
 
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Feedback::class, orphanRemoval: true)]
+    private Collection $feedback;
+
+    #[ORM\Column(length: 255)]
+    private ?LocalesEnum $locale = LocalesEnum::FR;
+
     public function __construct()
     {
-        $this->feedback = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->feedback = new ArrayCollection();
     }
 
     public function getEmail(): ?string
@@ -92,54 +93,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->last_name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $last_name): static
     {
-        $this->name = $name;
+        $this->last_name = $last_name;
 
         return $this;
     }
 
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return $this->first_name;
     }
 
-    public function setFirstname(string $firstname): static
+    public function setFirstname(string $first_name): static
     {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Feedback>
-     */
-    public function getFeedback(): Collection
-    {
-        return $this->feedback;
-    }
-
-    public function addFeedback(Feedback $feedback): static
-    {
-        if (!$this->feedback->contains($feedback)) {
-            $this->feedback->add($feedback);
-            $feedback->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFeedback(Feedback $feedback): static
-    {
-        if ($this->feedback->removeElement($feedback)) {
-            // set the owning side to null (unless already changed)
-            if ($feedback->getUser() === $this) {
-                $feedback->setUser(null);
-            }
-        }
+        $this->first_name = $first_name;
 
         return $this;
     }
@@ -156,7 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->appointments->contains($appointment)) {
             $this->appointments->add($appointment);
-            $appointment->setUser($this);
+            $appointment->setUserId($this);
         }
 
         return $this;
@@ -166,12 +137,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->appointments->removeElement($appointment)) {
             // set the owning side to null (unless already changed)
-            if ($appointment->getUser() === $this) {
-                $appointment->setUser(null);
+            if ($appointment->getUserId() === $this) {
+                $appointment->setUserId(null);
             }
         }
 
         return $this;
     }
 
+    /**
+     * @return Collection<int, Feedback>
+     */
+    public function getFeedback(): Collection
+    {
+        return $this->feedback;
+    }
+
+    public function addFeedback(Feedback $feedback): static
+    {
+        if (!$this->feedback->contains($feedback)) {
+            $this->feedback->add($feedback);
+            $feedback->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeedback(Feedback $feedback): static
+    {
+        if ($this->feedback->removeElement($feedback)) {
+            // set the owning side to null (unless already changed)
+            if ($feedback->getUserId() === $this) {
+                $feedback->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
 }

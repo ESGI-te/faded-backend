@@ -2,30 +2,27 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Auth\User;
 use App\Repository\ProviderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
-#[ApiResource]
 class Provider
 {
     #[ORM\Id]
-    #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    protected UuidInterface|string $id;
+    #[ORM\Column]
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $localisation = null;
+    private ?string $first_name = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $last_name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
@@ -33,15 +30,11 @@ class Provider
     #[ORM\Column(length: 255)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $address = null;
+    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
+    private Collection $establishments;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $manager = null;
-
-    #[ORM\ManyToMany(targetEntity: Service::class, mappedBy: 'providers')]
-    private Collection $services;
+    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: ServiceCategory::class, orphanRemoval: true)]
+    private Collection $serviceCategories;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Barber::class, orphanRemoval: true)]
     private Collection $barbers;
@@ -49,18 +42,15 @@ class Provider
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
-    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Appointment::class, orphanRemoval: true)]
-    private Collection $appointments;
-
     public function __construct()
     {
-        $this->services = new ArrayCollection();
+        $this->establishments = new ArrayCollection();
+        $this->serviceCategories = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
-        $this->appointments = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -77,14 +67,26 @@ class Provider
         return $this;
     }
 
-    public function getLocalisation(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->localisation;
+        return $this->first_name;
     }
 
-    public function setLocalisation(string $localisation): static
+    public function setFirstName(string $first_name): static
     {
-        $this->localisation = $localisation;
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    public function setLastName(string $last_name): static
+    {
+        $this->last_name = $last_name;
 
         return $this;
     }
@@ -113,52 +115,61 @@ class Provider
         return $this;
     }
 
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address): static
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    public function getManager(): ?User
-    {
-        return $this->manager;
-    }
-
-    public function setManager(User $manager): static
-    {
-        $this->manager = $manager;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Service>
+     * @return Collection<int, Establishment>
      */
-    public function getServices(): Collection
+    public function getEstablishments(): Collection
     {
-        return $this->services;
+        return $this->establishments;
     }
 
-    public function addService(Service $service): static
+    public function addEstablishment(Establishment $establishment): static
     {
-        if (!$this->services->contains($service)) {
-            $this->services->add($service);
-            $service->addProvider($this);
+        if (!$this->establishments->contains($establishment)) {
+            $this->establishments->add($establishment);
+            $establishment->setProvider($this);
         }
 
         return $this;
     }
 
-    public function removeService(Service $service): static
+    public function removeEstablishment(Establishment $establishment): static
     {
-        if ($this->services->removeElement($service)) {
-            $service->removeProvider($this);
+        if ($this->establishments->removeElement($establishment)) {
+            // set the owning side to null (unless already changed)
+            if ($establishment->getProvider() === $this) {
+                $establishment->setProvider(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceCategory>
+     */
+    public function getServiceCategories(): Collection
+    {
+        return $this->serviceCategories;
+    }
+
+    public function addServiceCategory(ServiceCategory $serviceCategory): static
+    {
+        if (!$this->serviceCategories->contains($serviceCategory)) {
+            $this->serviceCategories->add($serviceCategory);
+            $serviceCategory->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceCategory(ServiceCategory $serviceCategory): static
+    {
+        if ($this->serviceCategories->removeElement($serviceCategory)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceCategory->getProvider() === $this) {
+                $serviceCategory->setProvider(null);
+            }
         }
 
         return $this;
@@ -218,36 +229,6 @@ class Provider
             // set the owning side to null (unless already changed)
             if ($feedback->getProvider() === $this) {
                 $feedback->setProvider(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Appointment>
-     */
-    public function getAppointments(): Collection
-    {
-        return $this->appointments;
-    }
-
-    public function addAppointment(Appointment $appointment): static
-    {
-        if (!$this->appointments->contains($appointment)) {
-            $this->appointments->add($appointment);
-            $appointment->setProvider($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAppointment(Appointment $appointment): static
-    {
-        if ($this->appointments->removeElement($appointment)) {
-            // set the owning side to null (unless already changed)
-            if ($appointment->getProvider() === $this) {
-                $appointment->setProvider(null);
             }
         }
 
