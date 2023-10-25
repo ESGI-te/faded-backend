@@ -6,14 +6,17 @@ use App\Entity\Auth\User;
 use App\Repository\FeedbackRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 class Feedback
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: "uuid", unique: true)]
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    protected UuidInterface|string $id;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
@@ -35,19 +38,16 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
-
-    #[ORM\Column]
-    private ?int $barber_note = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Barber $barber = null;
 
     #[ORM\Column]
-    private ?int $service_note = null;
+    private ?int $note = null;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -112,26 +112,14 @@ class Feedback
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUser(?User $user): static
     {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-
-    public function getBarberNote(): ?int
-    {
-        return $this->barber_note;
-    }
-
-    public function setBarberNote(int $barber_note): static
-    {
-        $this->barber_note = $barber_note;
+        $this->user = $user;
 
         return $this;
     }
@@ -148,14 +136,14 @@ class Feedback
         return $this;
     }
 
-    public function getServiceNote(): ?int
+    public function getNote(): ?int
     {
-        return $this->service_note;
+        return $this->note;
     }
 
-    public function setServiceNote(int $service_note): static
+    public function setNote(int $note): static
     {
-        $this->service_note = $service_note;
+        $this->note = $note;
 
         return $this;
     }

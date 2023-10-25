@@ -6,14 +6,17 @@ use App\Repository\EstablishmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 class Establishment
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: "uuid", unique: true)]
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -43,6 +46,10 @@ class Establishment
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?WeeklyOpeningHours $opening_hours = null;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -50,7 +57,7 @@ class Establishment
         $this->feedback = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -210,6 +217,18 @@ class Establishment
                 $feedback->setEstablishment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOpeningHours(): ?WeeklyOpeningHours
+    {
+        return $this->opening_hours;
+    }
+
+    public function setOpeningHours(WeeklyOpeningHours $opening_hours): static
+    {
+        $this->opening_hours = $opening_hours;
 
         return $this;
     }

@@ -6,14 +6,17 @@ use App\Repository\BarberRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: BarberRepository::class)]
 class Barber
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: "uuid", unique: true)]
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
     private ?string $first_name = null;
@@ -35,13 +38,17 @@ class Barber
     #[ORM\OneToMany(mappedBy: 'barber', targetEntity: Feedback::class)]
     private Collection $feedback;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?WeeklyOpeningHours $working_hours = null;
+
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
         $this->feedback = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -150,6 +157,18 @@ class Barber
                 $feedback->setBarber(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getWorkingHours(): ?WeeklyOpeningHours
+    {
+        return $this->working_hours;
+    }
+
+    public function setWorkingHours(WeeklyOpeningHours $working_hours): static
+    {
+        $this->working_hours = $working_hours;
 
         return $this;
     }
