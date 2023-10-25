@@ -64,10 +64,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $first_name = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Appointment::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class, orphanRemoval: true)]
     private Collection $appointments;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Feedback::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
     #[ORM\Column(length: 255)]
@@ -127,7 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->appointments->contains($appointment)) {
             $this->appointments->add($appointment);
-            $appointment->setUserId($this);
+            $appointment->setUser($this);
         }
 
         return $this;
@@ -137,8 +137,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->appointments->removeElement($appointment)) {
             // set the owning side to null (unless already changed)
-            if ($appointment->getUserId() === $this) {
-                $appointment->setUserId(null);
+            if ($appointment->getUser() === $this) {
+                $appointment->setUser(null);
             }
         }
 
@@ -157,7 +157,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->feedback->contains($feedback)) {
             $this->feedback->add($feedback);
-            $feedback->setUserId($this);
+            $feedback->setUser($this);
         }
 
         return $this;
@@ -167,8 +167,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->feedback->removeElement($feedback)) {
             // set the owning side to null (unless already changed)
-            if ($feedback->getUserId() === $this) {
-                $feedback->setUserId(null);
+            if ($feedback->getUser() === $this) {
+                $feedback->setUser(null);
             }
         }
 

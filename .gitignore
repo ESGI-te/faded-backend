@@ -11,6 +11,8 @@ Makefile.local.mk
 /public/bundles/
 /var/
 /vendor/
+
+/migrations
 ###< symfony/framework-bundle ###
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,symfony,vuejs,composer,git
