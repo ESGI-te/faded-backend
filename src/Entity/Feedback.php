@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Auth\User;
 use App\Repository\FeedbackRepository;
 use Doctrine\DBAL\Types\Types;
@@ -10,6 +11,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
+#[ApiResource]
 class Feedback
 {
     #[ORM\Id]
