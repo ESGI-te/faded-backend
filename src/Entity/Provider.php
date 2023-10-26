@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProviderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
+#[ApiResource]
 class Provider
 {
     #[ORM\Id]
