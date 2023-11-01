@@ -27,12 +27,12 @@ class ServiceCategory
     private Collection $services;
 
     #[ORM\ManyToMany(targetEntity: Establishment::class, inversedBy: 'serviceCategories')]
-    private Collection $establishement;
+    private Collection $establishment;
 
     public function __construct()
     {
         $this->services = new ArrayCollection();
-        $this->establishement = new ArrayCollection();
+        $this->establishment = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -85,25 +85,24 @@ class ServiceCategory
     /**
      * @return Collection<int, Establishment>
      */
-    public function getEstablishement(): Collection
+    public function getEstablishment(): Collection
     {
-        return $this->establishement;
+        return $this->establishment;
     }
 
-    public function addEstablishement(Establishment $establishement): static
+    public function addEstablishment(Establishment $establishment): static
     {
-        if (!$this->establishement->contains($establishement)) {
-            $this->establishement->add($establishement);
+        if (!$this->establishment->contains($establishment)) {
+            $this->establishment->add($establishment);
         }
 
         return $this;
     }
 
-    public function removeEstablishement(Establishment $establishement): static
+    public function removeEstablishment(Establishment $establishment): static
     {
-        $this->establishement->removeElement($establishement);
+        $this->establishment->removeElement($establishment);
 
         return $this;
     }
-
 }
