@@ -20,5 +20,11 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Service\GeocodingService:
+        arguments:
+            $apiKey: 'd422b73bb1fd4f268d7b8d3699586dd9'
+
+    App\Controller\GeoLocalisationController:
+        tags: ['controller.service_arguments']
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
