@@ -9,5 +9,5 @@ enum UserAccountTypeEnum: string
     case USER = 'user';
     case BARBER = 'barber';
     case MANAGER = 'manager';
-    case ADMIN = 'admin';
+    case ADMIN = 'Admin';
 }

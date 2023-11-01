@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\UserInfoController;
 use App\Entity\Appointment;
 use App\Entity\Feedback;
+use App\Entity\Provider;
 use App\Enum\LocalesEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -73,6 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?LocalesEnum $locale = LocalesEnum::FR;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Provider $provider = null;
+
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
@@ -91,12 +95,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getName(): ?string
+    public function getLastName(): ?string
     {
         return $this->last_name;
     }
 
-    public function setName(string $last_name): static
+    public function setLastName(string $last_name): static
     {
         $this->last_name = $last_name;
 
@@ -183,6 +187,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLocale(string $locale): static
     {
         $this->locale = $locale;
+
+        return $this;
+    }
+
+    public function getProvider(): ?Provider
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(Provider $provider): static
+    {
+        // set the owning side of the relation if necessary
+        if ($provider->getUser() !== $this) {
+            $provider->setUser($this);
+        }
+
+        $this->provider = $provider;
 
         return $this;
     }

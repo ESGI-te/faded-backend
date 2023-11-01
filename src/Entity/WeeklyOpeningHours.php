@@ -18,113 +18,191 @@ class WeeklyOpeningHours
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     protected UuidInterface|string $id;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $monday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $mondayOpen = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $tuesday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $mondayClose = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $wednesday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $tuesdayOpen = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $thursday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $tuesdayClose = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $friday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $wednesdayOpen = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $saturday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $wednesdayClose = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?OpeningHours $sunday = null;
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $thursdayOpen = null;
 
-    public function getId(): ?string
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $thursdayClose = null;
+
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $fridayOpen = null;
+
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $fridayClose = null;
+
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $saturdayOpen = null;
+
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $saturdayClose = null;
+
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $sundayOpen = null;
+
+    #[ORM\Column(type: "time", nullable: true)]
+    private ?\DateTimeInterface $sundayClose = null;
+
+    public function getId(): UuidInterface|string
     {
         return $this->id;
     }
 
-    public function getMonday(): ?OpeningHours
+    public function getMondayOpen(): ?\DateTimeInterface
     {
-        return $this->monday;
+        return $this->mondayOpen;
     }
 
-    public function setMonday(?OpeningHours $monday): static
+    public function setMondayOpen(?\DateTimeInterface $mondayOpen): void
     {
-        $this->monday = $monday;
-
-        return $this;
+        $this->mondayOpen = $mondayOpen;
     }
 
-    public function getTuesday(): ?OpeningHours
+    public function getMondayClose(): ?\DateTimeInterface
     {
-        return $this->tuesday;
+        return $this->mondayClose;
     }
 
-    public function setTuesday(?OpeningHours $tuesday): static
+    public function setMondayClose(?\DateTimeInterface $mondayClose): void
     {
-        $this->tuesday = $tuesday;
-
-        return $this;
+        $this->mondayClose = $mondayClose;
     }
 
-    public function getWednesday(): ?OpeningHours
+    public function getTuesdayOpen(): ?\DateTimeInterface
     {
-        return $this->wednesday;
+        return $this->tuesdayOpen;
     }
 
-    public function setWednesday(?OpeningHours $wednesday): static
+    public function setTuesdayOpen(?\DateTimeInterface $tuesdayOpen): void
     {
-        $this->wednesday = $wednesday;
-
-        return $this;
+        $this->tuesdayOpen = $tuesdayOpen;
     }
 
-    public function getThursday(): ?OpeningHours
+    public function getTuesdayClose(): ?\DateTimeInterface
     {
-        return $this->thursday;
+        return $this->tuesdayClose;
     }
 
-    public function setThursday(?OpeningHours $thursday): static
+    public function setTuesdayClose(?\DateTimeInterface $tuesdayClose): void
     {
-        $this->thursday = $thursday;
-
-        return $this;
+        $this->tuesdayClose = $tuesdayClose;
     }
 
-    public function getFriday(): ?OpeningHours
+    public function getWednesdayOpen(): ?\DateTimeInterface
     {
-        return $this->friday;
+        return $this->wednesdayOpen;
     }
 
-    public function setFriday(?OpeningHours $friday): static
+    public function setWednesdayOpen(?\DateTimeInterface $wednesdayOpen): void
     {
-        $this->friday = $friday;
-
-        return $this;
+        $this->wednesdayOpen = $wednesdayOpen;
     }
 
-    public function getSaturday(): ?OpeningHours
+    public function getWednesdayClose(): ?\DateTimeInterface
     {
-        return $this->saturday;
+        return $this->wednesdayClose;
     }
 
-    public function setSaturday(?OpeningHours $saturday): static
+    public function setWednesdayClose(?\DateTimeInterface $wednesdayClose): void
     {
-        $this->saturday = $saturday;
-
-        return $this;
+        $this->wednesdayClose = $wednesdayClose;
     }
 
-    public function getSunday(): ?OpeningHours
+    public function getThursdayOpen(): ?\DateTimeInterface
     {
-        return $this->sunday;
+        return $this->thursdayOpen;
     }
 
-    public function setSunday(?OpeningHours $sunday): static
+    public function setThursdayOpen(?\DateTimeInterface $thursdayOpen): void
     {
-        $this->sunday = $sunday;
-
-        return $this;
+        $this->thursdayOpen = $thursdayOpen;
     }
+
+    public function getThursdayClose(): ?\DateTimeInterface
+    {
+        return $this->thursdayClose;
+    }
+
+    public function setThursdayClose(?\DateTimeInterface $thursdayClose): void
+    {
+        $this->thursdayClose = $thursdayClose;
+    }
+
+    public function getFridayOpen(): ?\DateTimeInterface
+    {
+        return $this->fridayOpen;
+    }
+
+    public function setFridayOpen(?\DateTimeInterface $fridayOpen): void
+    {
+        $this->fridayOpen = $fridayOpen;
+    }
+
+    public function getFridayClose(): ?\DateTimeInterface
+    {
+        return $this->fridayClose;
+    }
+
+    public function setFridayClose(?\DateTimeInterface $fridayClose): void
+    {
+        $this->fridayClose = $fridayClose;
+    }
+
+    public function getSaturdayOpen(): ?\DateTimeInterface
+    {
+        return $this->saturdayOpen;
+    }
+
+    public function setSaturdayOpen(?\DateTimeInterface $saturdayOpen): void
+    {
+        $this->saturdayOpen = $saturdayOpen;
+    }
+
+    public function getSaturdayClose(): ?\DateTimeInterface
+    {
+        return $this->saturdayClose;
+    }
+
+    public function setSaturdayClose(?\DateTimeInterface $saturdayClose): void
+    {
+        $this->saturdayClose = $saturdayClose;
+    }
+
+    public function getSundayOpen(): ?\DateTimeInterface
+    {
+        return $this->sundayOpen;
+    }
+
+    public function setSundayOpen(?\DateTimeInterface $sundayOpen): void
+    {
+        $this->sundayOpen = $sundayOpen;
+    }
+
+    public function getSundayClose(): ?\DateTimeInterface
+    {
+        return $this->sundayClose;
+    }
+
+    public function setSundayClose(?\DateTimeInterface $sundayClose): void
+    {
+        $this->sundayClose = $sundayClose;
+    }
+
 }
