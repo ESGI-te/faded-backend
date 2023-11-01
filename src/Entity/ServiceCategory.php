@@ -26,13 +26,13 @@ class ServiceCategory
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Service::class, orphanRemoval: true)]
     private Collection $services;
 
-    #[ORM\ManyToOne(inversedBy: 'serviceCategories')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Provider $provider = null;
+    #[ORM\ManyToMany(targetEntity: Establishment::class, inversedBy: 'serviceCategories')]
+    private Collection $establishement;
 
     public function __construct()
     {
         $this->services = new ArrayCollection();
+        $this->establishement = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -82,15 +82,28 @@ class ServiceCategory
         return $this;
     }
 
-    public function getProvider(): ?Provider
+    /**
+     * @return Collection<int, Establishment>
+     */
+    public function getEstablishement(): Collection
     {
-        return $this->provider;
+        return $this->establishement;
     }
 
-    public function setProvider(?Provider $provider): static
+    public function addEstablishement(Establishment $establishement): static
     {
-        $this->provider = $provider;
+        if (!$this->establishement->contains($establishement)) {
+            $this->establishement->add($establishement);
+        }
 
         return $this;
     }
+
+    public function removeEstablishement(Establishment $establishement): static
+    {
+        $this->establishement->removeElement($establishement);
+
+        return $this;
+    }
+
 }

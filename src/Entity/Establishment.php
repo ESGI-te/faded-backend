@@ -2,29 +2,52 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\GeoLocalisationController;
+use App\Controller\UserInfoController;
 use App\Repository\EstablishmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
-#[ApiResource]
+#[ApiResource(operations: [
+    new GetCollection(normalizationContext: ['groups' => 'search-info']),
+    new Post(),
+    new Get(),
+    new GetCollection(
+        name: 'search-info',
+        uriTemplate: '/establishements/search',
+        controller: GeoLocalisationController::class,
+        security: "is_granted('ROLE_USER')",
+
+    ),
+    new Patch( ),
+    new Delete(security: "is_granted('ROLE_ADMIN')"),])]
+#[ApiFilter(SearchFilter::class,properties: ['name'=>'partial'])]
 class Establishment
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['search-info'])]
     protected UuidInterface|string $id;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
 
-    #[ORM\Column]
-    private array $localisation = [];
+    #[ORM\Column(length: 255)]
+    #[Groups(['search-info'])]
+    private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -52,11 +75,21 @@ class Establishment
     #[ORM\JoinColumn(nullable: false)]
     private ?WeeklyOpeningHours $opening_hours = null;
 
+    #[ORM\Column]
+    private ?float $latitude = null;
+
+    #[ORM\Column]
+    private ?float $longitude = null;
+
+    #[ORM\ManyToMany(targetEntity: ServiceCategory::class, mappedBy: 'establishement')]
+    private Collection $serviceCategories;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->serviceCategories = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -76,17 +109,6 @@ class Establishment
         return $this;
     }
 
-    public function getLocalisation(): array
-    {
-        return $this->localisation;
-    }
-
-    public function setLocalisation(array $localisation): static
-    {
-        $this->localisation = $localisation;
-
-        return $this;
-    }
 
     public function getProvider(): ?Provider
     {
@@ -231,6 +253,57 @@ class Establishment
     public function setOpeningHours(WeeklyOpeningHours $opening_hours): static
     {
         $this->opening_hours = $opening_hours;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(float $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(float $longitude): static
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceCategory>
+     */
+    public function getServiceCategories(): Collection
+    {
+        return $this->serviceCategories;
+    }
+
+    public function addServiceCategory(ServiceCategory $serviceCategory): static
+    {
+        if (!$this->serviceCategories->contains($serviceCategory)) {
+            $this->serviceCategories->add($serviceCategory);
+            $serviceCategory->addEstablishement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceCategory(ServiceCategory $serviceCategory): static
+    {
+        if ($this->serviceCategories->removeElement($serviceCategory)) {
+            $serviceCategory->removeEstablishement($this);
+        }
 
         return $this;
     }

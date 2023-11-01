@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Entity\Auth\User;
 use App\Repository\ProviderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -24,12 +25,6 @@ class Provider
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $first_name = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $last_name = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -38,14 +33,15 @@ class Provider
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
     private Collection $establishments;
 
-    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: ServiceCategory::class, orphanRemoval: true)]
-    private Collection $serviceCategories;
-
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Barber::class, orphanRemoval: true)]
     private Collection $barbers;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
+
+    #[ORM\OneToOne(inversedBy: 'provider', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -68,30 +64,6 @@ class Provider
     public function setKbis(string $kbis): static
     {
         $this->kbis = $kbis;
-
-        return $this;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->first_name;
-    }
-
-    public function setFirstName(string $first_name): static
-    {
-        $this->first_name = $first_name;
-
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->last_name;
-    }
-
-    public function setLastName(string $last_name): static
-    {
-        $this->last_name = $last_name;
 
         return $this;
     }
@@ -144,36 +116,6 @@ class Provider
             // set the owning side to null (unless already changed)
             if ($establishment->getProvider() === $this) {
                 $establishment->setProvider(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ServiceCategory>
-     */
-    public function getServiceCategories(): Collection
-    {
-        return $this->serviceCategories;
-    }
-
-    public function addServiceCategory(ServiceCategory $serviceCategory): static
-    {
-        if (!$this->serviceCategories->contains($serviceCategory)) {
-            $this->serviceCategories->add($serviceCategory);
-            $serviceCategory->setProvider($this);
-        }
-
-        return $this;
-    }
-
-    public function removeServiceCategory(ServiceCategory $serviceCategory): static
-    {
-        if ($this->serviceCategories->removeElement($serviceCategory)) {
-            // set the owning side to null (unless already changed)
-            if ($serviceCategory->getProvider() === $this) {
-                $serviceCategory->setProvider(null);
             }
         }
 
@@ -236,6 +178,18 @@ class Provider
                 $feedback->setProvider(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
