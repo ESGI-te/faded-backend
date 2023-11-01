@@ -16,20 +16,19 @@ class ServiceCategoryFixtures extends Fixture implements DependentFixtureInterfa
     public const  CATEGORY_REFERENCE_5 = 'Lissage & Permanente';
 
 
-    public function load(ObjectManager $manager):void
+    public function load(ObjectManager $manager): void
     {
         $max = 5;
-        for ($i=0 ; $i<$max ; $i++ )
-        {
+        for ($i = 0; $i < $max; $i++) {
             $category = new ServiceCategory();
-            $referenceName = 'CATEGORY_REFERENCE_' . $i+1;
+            $referenceName = 'CATEGORY_REFERENCE_' . $i + 1;
             $dynamicReference = constant("self::$referenceName");
             $category->setName($dynamicReference);
-            $establishement1 = $this->getReference(EstablishementFixtures::ESTABLISHEMENT_REFERENCE.'-'.$i);
-            $establishement = $this->getReference(EstablishementFixtures::ESTABLISHEMENT_REFERENCE.'-'.$max*2-1-$i);
-            $category->addEstablishement($establishement1);
-            $category->addEstablishement($establishement);
-            $this->addReference($dynamicReference,$category);
+            $establishment1 = $this->getReference(EstablishmentFixtures::ESTABLISHEMENT_REFERENCE . '-' . $i);
+            $establishment = $this->getReference(EstablishmentFixtures::ESTABLISHEMENT_REFERENCE . '-' . $max * 2 - 1 - $i);
+            $category->addEstablishment($establishment1);
+            $category->addEstablishment($establishment);
+            $this->addReference($dynamicReference, $category);
             $manager->persist($category);
         }
 
@@ -37,8 +36,8 @@ class ServiceCategoryFixtures extends Fixture implements DependentFixtureInterfa
     }
 
 
-    public function getDependencies():array
+    public function getDependencies(): array
     {
-        return [EstablishementFixtures::class];
+        return [EstablishmentFixtures::class];
     }
 }

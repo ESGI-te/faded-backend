@@ -22,31 +22,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(operations: [
-    new GetCollection(normalizationContext: ['groups' => 'search-info']),
-    new Post(),
-    new Get(),
     new GetCollection(
         name: 'search-info',
-        uriTemplate: '/establishements/search',
+        uriTemplate: '/establishments/search',
         controller: GeoLocalisationController::class,
-        security: "is_granted('ROLE_USER')",
-
     ),
-    new Patch( ),
-    new Delete(security: "is_granted('ROLE_ADMIN')"),])]
-#[ApiFilter(SearchFilter::class,properties: ['name'=>'partial'])]
+    new GetCollection(normalizationContext: ['groups' => 'establishment-suggestion']),
+    new Post(),
+    new Get(),
+    new Patch(),
+    new Delete(security: "is_granted('ROLE_ADMIN')"),
+])]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 class Establishment
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['search-info'])]
+    #[Groups(['establishment-suggestion'])]
     protected UuidInterface|string $id;
 
 
     #[ORM\Column(length: 255)]
-    #[Groups(['search-info'])]
+    #[Groups(['establishment-suggestion'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
@@ -81,7 +80,7 @@ class Establishment
     #[ORM\Column]
     private ?float $longitude = null;
 
-    #[ORM\ManyToMany(targetEntity: ServiceCategory::class, mappedBy: 'establishement')]
+    #[ORM\ManyToMany(targetEntity: ServiceCategory::class, mappedBy: 'establishment')]
     private Collection $serviceCategories;
 
     public function __construct()
@@ -293,7 +292,7 @@ class Establishment
     {
         if (!$this->serviceCategories->contains($serviceCategory)) {
             $this->serviceCategories->add($serviceCategory);
-            $serviceCategory->addEstablishement($this);
+            $serviceCategory->addEstablishment($this);
         }
 
         return $this;
@@ -302,7 +301,7 @@ class Establishment
     public function removeServiceCategory(ServiceCategory $serviceCategory): static
     {
         if ($this->serviceCategories->removeElement($serviceCategory)) {
-            $serviceCategory->removeEstablishement($this);
+            $serviceCategory->removeEstablishment($this);
         }
 
         return $this;
