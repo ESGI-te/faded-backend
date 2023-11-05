@@ -1,5 +1,5 @@
 SELECT
-    e.id,e.name as name , e.address,
+    e.id,e.name as name , e.address, e.longitude,e.latitude,
     (
         SELECT ARRAY_AGG(sr.name)
         FROM service_establishment s
