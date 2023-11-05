@@ -49,8 +49,8 @@ class GeoLocalisationController
                             'distance' => number_format($establishment['distance'], 2),
                             'note' => number_format($establishment['moyenne'], 2),
                             'note_count' => $establishment['note_count'],
-                            'lat' => $establishment['latitude'],
-                            'lng' => $establishment['longitude']
+                            'lat' => floatval($establishment['latitude']),
+                            'lng' => floatval($establishment['longitude'])
                         ];
                 }
             } else {
@@ -60,8 +60,8 @@ class GeoLocalisationController
                     'distance' => number_format($establishment['distance'], 2),
                     'note' => number_format($establishment['moyenne'], 2),
                     'note_count' => $establishment['note_count'],
-                    'lat' => $establishment['latitude'],
-                    'lng' => $establishment['longitude']
+                    'lat' => floatval($establishment['latitude']),
+                    'lng' => floatval($establishment['longitude'])
                 ];
             }
         }
