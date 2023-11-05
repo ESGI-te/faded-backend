@@ -44,7 +44,7 @@ class EstablishmentRepository extends ServiceEntityRepository
     public function findAllNearToAdress($lat, $lng, $radius)
     {
         $sql_query = 'SELECT
-                            e.id,e.name as name , e.address,
+                            e.id,e.name as name , e.address,e.latitude,e.longitude,
                             (
                                 SELECT ARRAY_AGG(sr.id)
                                 FROM service_category_establishment sc
