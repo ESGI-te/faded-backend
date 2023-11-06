@@ -44,6 +44,7 @@ class GeoLocalisationController
                 foreach ($uuidArray as $cat) {
                     if ($cat == $categoryId)
                         $sortedEstablishments[] = [
+                            'id' => $establishment['id'],
                             'name' => $establishment['name'],
                             'address' => $establishment['address'],
                             'distance' => number_format($establishment['distance'], 2),
@@ -55,6 +56,7 @@ class GeoLocalisationController
                 }
             } else {
                 $sortedEstablishments[] = [
+                    'id' => $establishment['id'],
                     'name' => $establishment['name'],
                     'address' => $establishment['address'],
                     'distance' => number_format($establishment['distance'], 2),
