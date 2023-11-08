@@ -7,6 +7,7 @@ use App\Repository\WeeklyOpeningHoursRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: WeeklyOpeningHoursRepository::class)]
 #[ApiResource]
@@ -16,48 +17,63 @@ class WeeklyOpeningHours
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['establishment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $mondayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $mondayClose = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $tuesdayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $tuesdayClose = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $wednesdayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $wednesdayClose = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $thursdayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $thursdayClose = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $fridayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $fridayClose = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $saturdayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $saturdayClose = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $sundayOpen = null;
 
     #[ORM\Column(type: "time", nullable: true)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $sundayClose = null;
 
     public function getId(): UuidInterface|string
