@@ -47,8 +47,8 @@ class GeoLocalisationController
                             'id' => $establishment['id'],
                             'name' => $establishment['name'],
                             'address' => $establishment['address'],
-                            'distance' => number_format($establishment['distance'], 2),
-                            'note' => number_format($establishment['moyenne'], 2),
+                            'distance' => floatval($establishment['distance']),
+                            'note' => floatval($establishment['moyenne']),
                             'note_count' => $establishment['note_count'],
                             'lat' => floatval($establishment['latitude']),
                             'lng' => floatval($establishment['longitude'])
@@ -59,8 +59,8 @@ class GeoLocalisationController
                     'id' => $establishment['id'],
                     'name' => $establishment['name'],
                     'address' => $establishment['address'],
-                    'distance' => number_format($establishment['distance'], 2),
-                    'note' => number_format($establishment['moyenne'], 2),
+                    'distance' => floatval($establishment['distance']),
+                    'note' => floatval($establishment['moyenne']),
                     'note_count' => $establishment['note_count'],
                     'lat' => floatval($establishment['latitude']),
                     'lng' => floatval($establishment['longitude'])
