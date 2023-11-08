@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 #[ApiResource]
@@ -18,6 +19,7 @@ class Feedback
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['establishment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
@@ -29,13 +31,16 @@ class Feedback
     private ?Establishment $establishment = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['establishment-read'])]
     private ?\DateTimeInterface $date_time = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment-read'])]
     private ?Service $service = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['establishment-read'])]
     private ?string $comment = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
@@ -44,9 +49,11 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment-read'])]
     private ?Barber $barber = null;
 
     #[ORM\Column]
+    #[Groups(['establishment-read'])]
     private ?int $note = null;
 
     public function getId(): ?string

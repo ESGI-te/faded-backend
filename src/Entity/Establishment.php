@@ -27,9 +27,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         uriTemplate: '/establishments/search',
         controller: GeoLocalisationController::class,
     ),
-    new GetCollection(normalizationContext: ['groups' => 'establishment-suggestion']),
+    new GetCollection(denormalizationContext: ['groups' => 'establishment-suggestion']),
     new Post(),
-    new Get(),
+    new Get(normalizationContext: ['groups' => 'establishment-read']),
     new Patch(),
     new Delete(security: "is_granted('ROLE_ADMIN')"),
 ])]
@@ -40,47 +40,58 @@ class Establishment
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-suggestion'])]
+    #[Groups(['establishment-suggestion','establishment-read'])]
     protected UuidInterface|string $id;
 
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-suggestion'])]
+    #[Groups(['establishment-suggestion','establishment-read'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment-read'])]
     private ?Provider $provider = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment-read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment-read'])]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment-read'])]
     private ?string $address = null;
 
     #[ORM\ManyToMany(targetEntity: Service::class, mappedBy: 'establishment')]
+    #[Groups(['establishment-read'])]
     private Collection $services;
 
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Barber::class)]
+    #[Groups(['establishment-read'])]
     private Collection $barbers;
 
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Feedback::class, orphanRemoval: true)]
+    #[Groups(['establishment-read'])]
     private Collection $feedback;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment-read'])]
     private ?WeeklyOpeningHours $opening_hours = null;
 
     #[ORM\Column]
+    #[Groups(['establishment-read'])]
     private ?float $latitude = null;
 
     #[ORM\Column]
+    #[Groups(['establishment-read'])]
     private ?float $longitude = null;
 
     #[ORM\ManyToMany(targetEntity: ServiceCategory::class, mappedBy: 'establishment')]
+    #[Groups(['establishment-read'])]
     private Collection $serviceCategories;
 
     public function __construct()
