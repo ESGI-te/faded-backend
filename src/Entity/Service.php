@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource]
@@ -19,15 +20,19 @@ class Service
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['establishment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment-read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    #[Groups(['establishment-read'])]
     private ?string $price = null;
 
     #[ORM\Column]
+    #[Groups(['establishment-read'])]
     private ?int $duration = null;
 
     #[ORM\ManyToMany(targetEntity: Establishment::class, inversedBy: 'services')]
@@ -35,6 +40,7 @@ class Service
 
     #[ORM\ManyToOne(inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment-read'])]
     private ?ServiceCategory $category = null;
 
     public function __construct()

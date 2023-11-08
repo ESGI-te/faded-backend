@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BarberRepository::class)]
 #[ApiResource]
@@ -18,12 +19,15 @@ class Barber
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['establishment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment-read'])]
     private ?string $first_name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment-read'])]
     private ?string $last_name = null;
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]

@@ -44,6 +44,7 @@ COPY ./.docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 WORKDIR /srv/app/
 
+
 #USER prod
 
 COPY ./composer.json ./composer.lock* /srv/app/
@@ -52,6 +53,12 @@ COPY ./symfony.lock /srv/app/
 RUN composer install --no-dev --no-scripts
 
 COPY . /srv/app/
+
+# permission to write in public directory 
+
+RUN chown -R www-data:www-data public/images/
+RUN chmod -R 755 public/images/
+
 
 RUN APP_ENV=prod composer run auto-scripts
 
