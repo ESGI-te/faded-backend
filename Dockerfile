@@ -44,7 +44,6 @@ COPY ./.docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 WORKDIR /srv/app/
 
-
 #USER prod
 
 COPY ./composer.json ./composer.lock* /srv/app/
@@ -54,24 +53,18 @@ RUN composer install --no-dev --no-scripts
 
 COPY . /srv/app/
 
-# permission to write in public directory 
-
-RUN chown -R www-data:www-data public/images/
-RUN chmod -R 755 public/images/
-
-
-RUN APP_ENV=prod composer run auto-scripts
+RUN composer run auto-scripts
 
 #<<<<<<<<<<End: PHP-FPM Image Target>>>>>>>>>>#
 
 #<<<<<<<<<<Start: PHP-FPM Image For the Dev Environment Target>>>>>>>>>>#
-FROM php as php_dev
+#FROM php as php_dev
 
 # xdebug
-RUN apk add --update linux-headers
-RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} && \
-    pecl install xdebug && \
-    docker-php-ext-enable xdebug
+#RUN apk add --update linux-headers
+#RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} && \
+#    pecl install xdebug && \
+#    docker-php-ext-enable xdebug
 
 #<<<<<<<<<<End: PHP-FPM Image For the Dev Environment Target>>>>>>>>>>#
 
