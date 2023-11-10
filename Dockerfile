@@ -53,8 +53,6 @@ RUN composer install --no-dev --no-scripts
 
 COPY . /srv/app/
 
-RUN composer run auto-scripts
-
 #<<<<<<<<<<End: PHP-FPM Image Target>>>>>>>>>>#
 
 #<<<<<<<<<<Start: PHP-FPM Image For the Dev Environment Target>>>>>>>>>>#
