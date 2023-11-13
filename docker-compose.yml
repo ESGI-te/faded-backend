@@ -28,9 +28,9 @@ services:
   database:
     image: postgres:15.4-alpine
     environment:
-      POSTGRES_DB: symfony
-      POSTGRES_PASSWORD: root
-      POSTGRES_USER: root
+      POSTGRES_DB: faded-db
+      POSTGRES_PASSWORD: fl0user
+      POSTGRES_USER: KMhFy7aXN4Jt
     volumes:
       - database_data:/var/lib/postgresql/data:rw
     ports:
