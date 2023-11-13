@@ -13,6 +13,8 @@ Makefile.local.mk
 
 /migrations
 
+/public/images/media
+
 /.idea
 /.docker
 ###< symfony/framework-bundle ###
