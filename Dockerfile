@@ -54,12 +54,6 @@ RUN composer install --no-dev --no-scripts
 
 COPY . /srv/app/
 
-# permission to write in public directory 
-
-RUN chown -R www-data:www-data public/images/
-RUN chmod -R 755 public/images/
-
-
 RUN APP_ENV=prod composer run auto-scripts
 
 #<<<<<<<<<<End: PHP-FPM Image Target>>>>>>>>>>#
