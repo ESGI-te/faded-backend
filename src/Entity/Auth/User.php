@@ -26,10 +26,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(normalizationContext: ['groups' => 'user-read']),
+        new GetCollection(
+            normalizationContext: ['groups' => 'user-read'],
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Post(
             normalizationContext: ['groups' => 'user-read'],
-            denormalizationContext: ['groups' => 'user-write']
+            denormalizationContext: ['groups' => 'user-create']
         ),
         new Get(
             name: 'user-info',
@@ -39,10 +42,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
             read: false,
             normalizationContext: ['groups' => 'user-read']
         ),
-        new Get(normalizationContext: ['groups' => 'user-read']),
-        new Patch(
+        new Get(
             normalizationContext: ['groups' => 'user-read'],
-            denormalizationContext: ['groups' => 'user-write']
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'user-read-update'],
+            denormalizationContext: ['groups' => 'user-update']
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
@@ -53,15 +59,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use Auth;
-    #[Groups(['user-read', 'user-write'])]
+    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[Groups(['user-read', 'user-write'])]
+    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
     #[ORM\Column(length: 255)]
     private ?string $last_name = null;
 
-    #[Groups(['user-read', 'user-write'])]
+    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
     #[ORM\Column(length: 255)]
     private ?string $first_name = null;
 
@@ -71,6 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
+    #[Groups(['user-read', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
     private ?LocalesEnum $locale = LocalesEnum::FR;
 
