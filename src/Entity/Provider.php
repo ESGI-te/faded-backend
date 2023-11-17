@@ -46,7 +46,6 @@ class Provider
     public function __construct()
     {
         $this->establishments = new ArrayCollection();
-        $this->serviceCategories = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
     }
