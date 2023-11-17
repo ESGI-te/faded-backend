@@ -10,8 +10,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\EstablishmentFeedbackController;
 use App\Controller\GeoLocalisationController;
+use App\Controller\UploadEstablishmentImageController;
 use App\Repository\EstablishmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,8 +29,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ),
     new GetCollection(normalizationContext: ['groups' => 'establishment-suggestion']),
     new Post(
+        uriTemplate: '/establishments/{id}/images/upload',
+        controller: UploadEstablishmentImageController::class,
+        name: 'establishment_image_upload',
+        deserialize: false,
+        normalizationContext: [
+            'groups' => ['establishment-image-write']
+        ],
+    ),
+    new Post(
         normalizationContext: ['groups' => 'establishment-write-read'],
         denormalizationContext: ['groups' => 'establishment-write'],
+    ),
+    new Get(
+        uriTemplate: '/establishment/{id}/images',
+        normalizationContext: ['groups' => 'establishment-image-read']
     ),
     new Get(normalizationContext: ['groups' => 'establishment-read']),
     new Patch(
@@ -100,12 +113,17 @@ class Establishment
     #[Groups(['establishment-read'])]
     private Collection $serviceCategories;
 
+    #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Image::class)]
+    #[Groups(['establishment-image-read'])]
+    private Collection $images;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
         $this->serviceCategories = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -319,6 +337,36 @@ class Establishment
     {
         if ($this->serviceCategories->removeElement($serviceCategory)) {
             $serviceCategory->removeEstablishment($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setEstablishment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getEstablishment() === $this) {
+                $image->setEstablishment(null);
+            }
         }
 
         return $this;
