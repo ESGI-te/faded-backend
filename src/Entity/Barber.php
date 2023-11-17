@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
 use App\Repository\BarberRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,9 +11,31 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use App\Controller\UploadBarberImageController;
 
 #[ORM\Entity(repositoryClass: BarberRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/barbers/{id}/images/upload',
+            controller: UploadBarberImageController::class,
+            name: 'barber_image_upload',
+            deserialize: false,
+            normalizationContext: [
+                'groups' => ['barber-image-write']
+            ],
+        ),
+        new Get(
+            uriTemplate: '/barber/{id}/images',
+            normalizationContext: ['groups' => 'barber-image-read']
+        ),
+        new GetCollection(),
+        new Patch(),
+    ]
+)]
 class Barber
 {
     #[ORM\Id]
@@ -47,6 +70,10 @@ class Barber
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?WeeklyOpeningHours $working_hours = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[Groups(['barber-image-read'])]
+    private ?Image $image = null;
 
     public function __construct()
     {
@@ -175,6 +202,18 @@ class Barber
     public function setWorkingHours(WeeklyOpeningHours $working_hours): static
     {
         $this->working_hours = $working_hours;
+
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
