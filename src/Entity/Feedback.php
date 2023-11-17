@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Auth\User;
 use App\Repository\FeedbackRepository;
@@ -13,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
 class Feedback
 {
     #[ORM\Id]
@@ -36,7 +39,6 @@ class Feedback
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['establishment-read'])]
     private ?Service $service = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -45,11 +47,11 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment-read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['establishment-read'])]
     private ?Barber $barber = null;
 
     #[ORM\Column]

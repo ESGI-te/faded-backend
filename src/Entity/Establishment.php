@@ -10,8 +10,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\EstablishmentFeedbackController;
 use App\Controller\GeoLocalisationController;
-use App\Controller\UserInfoController;
 use App\Repository\EstablishmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,10 +27,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
         uriTemplate: '/establishments/search',
         controller: GeoLocalisationController::class,
     ),
-    new GetCollection(denormalizationContext: ['groups' => 'establishment-suggestion']),
-    new Post(),
+    new GetCollection(normalizationContext: ['groups' => 'establishment-suggestion']),
+    new Post(
+        normalizationContext: ['groups' => 'establishment-write-read'],
+        denormalizationContext: ['groups' => 'establishment-write'],
+    ),
     new Get(normalizationContext: ['groups' => 'establishment-read']),
-    new Patch(),
+    new Patch(
+        normalizationContext: ['groups' => 'establishment-write-read'],
+        denormalizationContext: ['groups' => 'establishment-write'],
+    ),
     new Delete(security: "is_granted('ROLE_ADMIN')"),
 ])]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
@@ -40,12 +46,12 @@ class Establishment
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-suggestion','establishment-read'])]
+    #[Groups(['establishment-suggestion', 'establishment-read'])]
     protected UuidInterface|string $id;
 
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-suggestion','establishment-read'])]
+    #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
@@ -54,15 +60,15 @@ class Establishment
     private ?Provider $provider = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?string $address = null;
 
     #[ORM\ManyToMany(targetEntity: Service::class, mappedBy: 'establishment')]
@@ -83,11 +89,11 @@ class Establishment
     private ?WeeklyOpeningHours $opening_hours = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?float $latitude = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?float $longitude = null;
 
     #[ORM\ManyToMany(targetEntity: ServiceCategory::class, mappedBy: 'establishment')]

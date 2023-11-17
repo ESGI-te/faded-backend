@@ -27,7 +27,7 @@ trait Auth
     #[ORM\Column]
     private string $password = '';
 
-    #[Groups(['user-write'])]
+    #[Groups(['user-create', 'user-update'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string
