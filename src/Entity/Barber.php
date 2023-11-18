@@ -29,7 +29,7 @@ use App\Controller\UploadBarberImageController;
             ],
         ),
         new Get(
-            uriTemplate: '/barber/{id}/images',
+            uriTemplate: '/barbers/{id}/images',
             normalizationContext: ['groups' => 'barber-image-read']
         ),
         new GetCollection(),
