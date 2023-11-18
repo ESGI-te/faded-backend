@@ -37,7 +37,7 @@ final class PaginateJsonSubscriber implements EventSubscriberInterface
                 'previous' => $data->getCurrentPage() - 1 <= 0 ? 1 : $data->getCurrentPage() - 1,
                 'next' => $data->getCurrentPage() + 1 > $data->getLastPage() ? $data->getLastPage() : $data->getCurrentPage() + 1,
                 'totalItems' => $data->getTotalItems(),
-                'parPage' => count($data)
+                'perPage' => count($data)
             ];
             $res = [
                 "data" => $json,
