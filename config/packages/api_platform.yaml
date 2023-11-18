@@ -19,7 +19,7 @@ api_platform:
   collection:
     pagination:
       enabled_parameter_name: "pagination"
-      items_per_page_parameter_name: "itemsPerPage"
+      items_per_page_parameter_name: "perPage"
       page_parameter_name: "page"
       partial_parameter_name: "partial"
 

@@ -42,7 +42,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         denormalizationContext: ['groups' => 'establishment-write'],
     ),
     new Get(
-        uriTemplate: '/establishment/{id}/images',
+        uriTemplate: '/establishments/{id}/images',
         normalizationContext: ['groups' => 'establishment-image-read']
     ),
     new Get(normalizationContext: ['groups' => 'establishment-read']),
