@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -13,6 +14,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\GeoLocalisationController;
 use App\Controller\UploadEstablishmentImageController;
 use App\Repository\EstablishmentRepository;
+use App\Validator\Constraints\Planning;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -96,11 +98,6 @@ class Establishment
     #[Groups(['establishment-read'])]
     private Collection $feedback;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['establishment-read'])]
-    private ?WeeklyOpeningHours $opening_hours = null;
-
     #[ORM\Column]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
     private ?float $latitude = null;
@@ -116,6 +113,43 @@ class Establishment
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Image::class)]
     #[Groups(['establishment-image-read'])]
     private Collection $images;
+
+    #[ORM\Column(type: 'json')]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'object',
+            'example' => [
+                'monday' => [
+                    'open' => '2000-01-01 00:00:00',
+                    'close' => '2000-01-01 00:00:00',
+                ],
+                'tuesday' => [
+                    'open' => '2000-01-01 00:00:00',
+                    'close' => '2000-01-01 00:00:00',
+                ],
+                'wednesday' => [
+                    'open' => '2000-01-01 00:00:00',
+                    'close' => '2000-01-01 00:00:00',
+                ],
+                'thursday' => [
+                    'open' => '2000-01-01 00:00:00',
+                    'close' => '2000-01-01 00:00:00',
+                ],
+                'friday' => [
+                    'open' => '2000-01-01 00:00:00',
+                    'close' => '2000-01-01 00:00:00',
+                ],
+                'saturday' => [
+                    'open' => '2000-01-01 00:00:00',
+                    'close' => '2000-01-01 00:00:00',
+                ],
+                'sunday' => [],
+            ]
+        ]
+    )]
+    #[Planning]
+    private array $planning = [];
 
     public function __construct()
     {
@@ -142,7 +176,6 @@ class Establishment
 
         return $this;
     }
-
 
     public function getProvider(): ?Provider
     {
@@ -279,18 +312,6 @@ class Establishment
         return $this;
     }
 
-    public function getOpeningHours(): ?WeeklyOpeningHours
-    {
-        return $this->opening_hours;
-    }
-
-    public function setOpeningHours(WeeklyOpeningHours $opening_hours): static
-    {
-        $this->opening_hours = $opening_hours;
-
-        return $this;
-    }
-
     public function getLatitude(): ?float
     {
         return $this->latitude;
@@ -368,6 +389,18 @@ class Establishment
                 $image->setEstablishment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPlanning(): array
+    {
+        return $this->planning;
+    }
+
+    public function setPlanning(array $planning): static
+    {
+        $this->planning = $planning;
 
         return $this;
     }
