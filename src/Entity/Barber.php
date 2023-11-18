@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\Repository\BarberRepository;
@@ -27,6 +28,10 @@ use App\Controller\UploadBarberImageController;
             normalizationContext: [
                 'groups' => ['barber-image-write']
             ],
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'barber-write-read'],
+            denormalizationContext: ['groups' => 'barber-write'],
         ),
         new Get(
             uriTemplate: '/barbers/{id}/images',
@@ -68,12 +73,47 @@ class Barber
     private Collection $feedback;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?WeeklyOpeningHours $working_hours = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[Groups(['barber-image-read'])]
     private ?Image $image = null;
+
+    #[ORM\Column]
+    #[Groups(['barber-read', 'barber-write-read', 'barber-write'])]
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'object',
+            'example' => [
+                'monday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+                'tuesday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+                'wednesday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+                'thursday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+                'friday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+                'saturday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+                'sunday' => [
+                    'open' => '08:00',
+                    'close' => '12:00',
+                ],
+            ]
+        ]
+    )]
+    private array $planning = [];
 
     public function __construct()
     {
@@ -194,17 +234,6 @@ class Barber
         return $this;
     }
 
-    public function getWorkingHours(): ?WeeklyOpeningHours
-    {
-        return $this->working_hours;
-    }
-
-    public function setWorkingHours(WeeklyOpeningHours $working_hours): static
-    {
-        $this->working_hours = $working_hours;
-
-        return $this;
-    }
 
     public function getImage(): ?Image
     {
@@ -214,6 +243,18 @@ class Barber
     public function setImage(?Image $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getPlanning(): array
+    {
+        return $this->planning;
+    }
+
+    public function setPlanning(array $planning): static
+    {
+        $this->planning = $planning;
 
         return $this;
     }
