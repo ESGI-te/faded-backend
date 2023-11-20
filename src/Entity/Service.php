@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource]
@@ -25,14 +26,19 @@ class Service
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read'])]
+    #[Assert\Length(min: 2)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     #[Groups(['establishment-read'])]
-    private ?string $price = null;
+    #[Assert\Type(type: 'float')]
+    #[Assert\PositiveOrZero]
+    private ?float $price = null;
 
     #[ORM\Column]
     #[Groups(['establishment-read'])]
+    #[Assert\Type(type: 'integer')]
+    #[Assert\Positive]
     private ?int $duration = null;
 
     #[ORM\ManyToMany(targetEntity: Establishment::class, inversedBy: 'services')]
@@ -65,12 +71,12 @@ class Service
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(float $price): static
     {
         $this->price = $price;
 

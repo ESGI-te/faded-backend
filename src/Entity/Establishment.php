@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(operations: [
@@ -67,6 +68,7 @@ class Establishment
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Assert\Length(min: 2)]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
@@ -76,14 +78,17 @@ class Establishment
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Assert\Length(min: 5)]
     private ?string $address = null;
 
     #[ORM\ManyToMany(targetEntity: Service::class, mappedBy: 'establishment')]
@@ -100,10 +105,12 @@ class Establishment
 
     #[ORM\Column]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Assert\Type(type: 'float')]
     private ?float $latitude = null;
 
     #[ORM\Column]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Assert\Type(type: 'float')]
     private ?float $longitude = null;
 
     #[ORM\ManyToMany(targetEntity: ServiceCategory::class, mappedBy: 'establishment')]
@@ -151,6 +158,9 @@ class Establishment
     #[Planning]
     private array $planning = [];
 
+    #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Appointment::class, orphanRemoval: true)]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -158,6 +168,7 @@ class Establishment
         $this->feedback = new ArrayCollection();
         $this->serviceCategories = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -401,6 +412,36 @@ class Establishment
     public function setPlanning(array $planning): static
     {
         $this->planning = $planning;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setEstablishment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getEstablishment() === $this) {
+                $appointment->setEstablishment(null);
+            }
+        }
 
         return $this;
     }

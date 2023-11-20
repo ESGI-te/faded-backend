@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
 #[ApiResource]
@@ -25,9 +26,11 @@ class Provider
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
