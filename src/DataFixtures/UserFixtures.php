@@ -3,55 +3,66 @@
 namespace App\DataFixtures;
 
 use App\Entity\Auth\User;
-use App\Enum\RolesEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class UserFixtures extends Fixture
 {
     private UserPasswordHasherInterface $passwordHasher;
-    private  \Faker\Generator $faker;
-    public const USER_REFERENCE = 'user';
-    public const USER_PROVIDER_REFERENCE = 'user-provider';
-    public const USER_ADMIN_REFERENCE = 'user-Admin';
+    public const USER_REFERENCE = 'user_';
+    public const USER_PROVIDER_REFERENCE = 'user_provider_';
+    public const USER_ADMIN_REFERENCE = 'user_admin_';
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher) {
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
         $this->passwordHasher = $passwordHasher;
-        $this->faker = Factory::create();
     }
 
     public function load(ObjectManager $manager): void
     {
-        for($i = 0; $i < 10; $i++) {
-            $user = $this->createUser();
-            $this->addReference(self::USER_REFERENCE . '-' . $i, $user);
+
+        $users = Yaml::parseFile(__DIR__ . '/data/users.yaml');
+        $createReferenceCallback = $this->createReference();
+
+        foreach ($users as $userData) {
+            $user = new User();
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $userData['password']);
+            $user->setEmail($userData['email']);
+            $user->setLastName($userData['lastName']);
+            $user->setFirstName($userData['firstName']);
+            $user->setRoles($userData['roles']);
+            $user->setPassword($hashedPassword);
+            $user->setlocale($userData['locale']);
             $manager->persist($user);
-        }
 
-        for($i = 0; $i < 10; $i++) {
-            $provider_user = $this->createUser();
-            $provider_user->setRoles([RolesEnum::PROVIDER->value]);
-            $this->addReference(self::USER_PROVIDER_REFERENCE . '-' . $i, $provider_user);
-            $manager->persist($provider_user);
+            $createReferenceCallback($user);
         }
-
-        $admin_user = $this->createUser();
-        $admin_user->setRoles([RolesEnum::ADMIN->value]);
-        $this->addReference(self::USER_ADMIN_REFERENCE, $admin_user);
-        $manager->persist($admin_user);
 
         $manager->flush();
     }
 
-    private function createUser():User {
-        $user = new User();
-        $hashedPassword = $this->passwordHasher->hashPassword($user, "password");
-        $user->setEmail($this->faker->email);
-        $user->setLastName($this->faker->lastName);
-        $user->setFirstName($this->faker->firstName);
-        $user->setPassword($hashedPassword);
-        return $user;
+    private function createReference(): \Closure
+    {
+        $userIndex = 1;
+        $providerIndex = 1;
+        $adminIndex = 1;
+
+        return function (User $user) use (&$userIndex, &$providerIndex, &$adminIndex) {
+            if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+                $this->addReference(self::USER_ADMIN_REFERENCE . $adminIndex, $user);
+                $adminIndex++;
+                return;
+            }
+            if (in_array('ROLE_PROVIDER', $user->getRoles(), true)) {
+                $this->addReference(self::USER_PROVIDER_REFERENCE . $providerIndex, $user);
+                $providerIndex++;
+                return;
+            }
+            $this->addReference(self::USER_REFERENCE . $userIndex, $user);
+            $userIndex++;
+            return;
+        };
     }
 }
