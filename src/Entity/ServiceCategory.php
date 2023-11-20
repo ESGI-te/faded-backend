@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ServiceCategoryRepository::class)]
 #[ApiResource]
@@ -24,6 +25,7 @@ class ServiceCategory
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read'])]
+    #[Assert\Length(min: 2)]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Service::class, orphanRemoval: true)]
