@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Auth\User;
 use App\Enum\AppointmentStatusEnum;
@@ -11,9 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
 class Appointment
 {
     #[ORM\Id]
