@@ -87,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user-read', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
     #[Assert\Type(type: LocalesEnum::class, groups: ['user-update'])]
-    private ?LocalesEnum $locale = LocalesEnum::FR;
+    private ?string $locale = LocalesEnum::FR->value;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Provider $provider = null;
@@ -194,12 +194,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLocale(): ?LocalesEnum
+    public function getLocale(): ?string
     {
         return $this->locale;
     }
 
-    public function setLocale(LocalesEnum $locale): static
+    public function setLocale(string $locale): static
     {
         $this->locale = $locale;
 

@@ -1,0 +1,595 @@
+# USER #
+
+user_1:
+  email: user1@example.com
+  password: password
+  firstName: John
+  lastName: Doe
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_2:
+  email: user2@example.com
+  password: password
+  firstName: Jane
+  lastName: Smith
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_3:
+  email: user3@example.com
+  password: password
+  firstName: James
+  lastName: Brown
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_4:
+  email: user4@example.com
+  password: password
+  firstName: Emily
+  lastName: Johnson
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_5:
+  email: user5@example.com
+  password: password
+  firstName: Michael
+  lastName: Davis
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_6:
+  email: user6@example.com
+  password: password
+  firstName: Sarah
+  lastName: Miller
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_7:
+  email: user7@example.com
+  password: password
+  firstName: Daniel
+  lastName: Wilson
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_8:
+  email: user8@example.com
+  password: password
+  firstName: Olivia
+  lastName: Moore
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_9:
+  email: user9@example.com
+  password: password
+  firstName: Ethan
+  lastName: Turner
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_10:
+  email: user10@example.com
+  password: password
+  firstName: Chloe
+  lastName: Parker
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_11:
+  email: user11@example.com
+  password: password
+  firstName: Benjamin
+  lastName: Rogers
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_12:
+  email: user12@example.com
+  password: password
+  firstName: Ava
+  lastName: Hayes
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_13:
+  email: user13@example.com
+  password: password
+  firstName: Noah
+  lastName: Fisher
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_14:
+  email: user14@example.com
+  password: password
+  firstName: Grace
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_15:
+  email: user15@example.com
+  password: password
+  firstName: Samuel
+  lastName: Brooks
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_16:
+  email: user16@example.com
+  password: password
+  firstName: Lily
+  lastName: Powell
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_17:
+  email: user17@example.com
+  password: password
+  firstName: Christopher
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_18:
+  email: user18@example.com
+  password: password
+  firstName: Sophia
+  lastName: Bell
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_19:
+  email: user19@example.com
+  password: password
+  firstName: Liam
+  lastName: Peterson
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_20:
+  email: user20@example.com
+  password: password
+  firstName: Zoe
+  lastName: Scott
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_21:
+  email: user21@example.com
+  password: password
+  firstName: Jacob
+  lastName: Price
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_22:
+  email: user22@example.com
+  password: password
+  firstName: Isabella
+  lastName: Sanders
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_23:
+  email: user23@example.com
+  password: password
+  firstName: Lucas
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_24:
+  email: user24@example.com
+  password: password
+  firstName: Mia
+  lastName: Turner
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_25:
+  email: user25@example.com
+  password: password
+  firstName: Alexander
+  lastName: Cooper
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_26:
+  email: user26@example.com
+  password: password
+  firstName: Harper
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_27:
+  email: user27@example.com
+  password: password
+  firstName: Ryan
+  lastName: Foster
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_28:
+  email: user28@example.com
+  password: password
+  firstName: Aiden
+  lastName: Hayes
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_29:
+  email: user29@example.com
+  password: password
+  firstName: Evelyn
+  lastName: Reed
+  roles:
+    - ROLE_USER
+  locale: fr
+
+user_30:
+  email: user30@example.com
+  password: password
+  firstName: Carter
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+  locale: fr
+
+# PROVIDER #
+
+user_31:
+  email: provider1@example.com
+  password: password
+  firstName: Gabrielle
+  lastName: Turner
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_32:
+  email: provider2@example.com
+  password: password
+  firstName: Adrian
+  lastName: Parker
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_33:
+  email: provider3@example.com
+  password: password
+  firstName: Isabelle
+  lastName: Hayes
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_34:
+  email: provider4@example.com
+  password: password
+  firstName: Oliver
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_35:
+  email: provider5@example.com
+  password: password
+  firstName: Amelia
+  lastName: Brooks
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_36:
+  email: provider6@example.com
+  password: password
+  firstName: Sebastian
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_37:
+  email: provider7@example.com
+  password: password
+  firstName: Mia
+  lastName: Scott
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_38:
+  email: provider8@example.com
+  password: password
+  firstName: Elijah
+  lastName: Bell
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_39:
+  email: provider9@example.com
+  password: password
+  firstName: Grace
+  lastName: Peterson
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_40:
+  email: provider10@example.com
+  password: password
+  firstName: Lucas
+  lastName: Sanders
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_41:
+  email: provider11@example.com
+  password: password
+  firstName: Lily
+  lastName: Turner
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_42:
+  email: provider12@example.com
+  password: password
+  firstName: Benjamin
+  lastName: Rogers
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_43:
+  email: provider13@example.com
+  password: password
+  firstName: Zoe
+  lastName: Foster
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_44:
+  email: provider14@example.com
+  password: password
+  firstName: Samuel
+  lastName: Hayes
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_45:
+  email: provider15@example.com
+  password: password
+  firstName: Ava
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_46:
+  email: provider16@example.com
+  password: password
+  firstName: Christopher
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_47:
+  email: provider17@example.com
+  password: password
+  firstName: Sophia
+  lastName: Cooper
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_48:
+  email: provider18@example.com
+  password: password
+  firstName: Liam
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_49:
+  email: provider19@example.com
+  password: password
+  firstName: Harper
+  lastName: Foster
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_50:
+  email: provider20@example.com
+  password: password
+  firstName: Ryan
+  lastName: Hayes
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_51:
+  email: provider21@example.com
+  password: password
+  firstName: Aiden
+  lastName: Reed
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_52:
+  email: provider22@example.com
+  password: password
+  firstName: Evelyn
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_53:
+  email: provider23@example.com
+  password: password
+  firstName: Carter
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_54:
+  email: provider24@example.com
+  password: password
+  firstName: Mia
+  lastName: Turner
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_55:
+  email: provider25@example.com
+  password: password
+  firstName: Alexander
+  lastName: Cooper
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_56:
+  email: provider26@example.com
+  password: password
+  firstName: Harper
+  lastName: Murphy
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_57:
+  email: provider27@example.com
+  password: password
+  firstName: Ryan
+  lastName: Foster
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_58:
+  email: provider28@example.com
+  password: password
+  firstName: Aiden
+  lastName: Hayes
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_59:
+  email: provider29@example.com
+  password: password
+  firstName: Evelyn
+  lastName: Reed
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+user_60:
+  email: provider30@example.com
+  password: password
+  firstName: Carter
+  lastName: Simmons
+  roles:
+    - ROLE_USER
+    - ROLE_PROVIDER
+  locale: fr
+
+# ADMIN #
+
+user_61:
+  email: admin1@example.com
+  password: password
+  firstName: Chakib
+  lastName: Karmim
+  roles:
+    - ROLE_USER
+    - ROLE_ADMIN
+  locale: fr
+
+user_62:
+  email: admin2@example.com
+  password: password
+  firstName: Teo
+  lastName: Lugat
+  roles:
+    - ROLE_USER
+    - ROLE_ADMIN
+  locale: fr

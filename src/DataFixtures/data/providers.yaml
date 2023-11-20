@@ -1,0 +1,209 @@
+provider_1:
+  name: Black Box
+  email: blackbox@gmail.com
+  phone: "0123456789"
+  address: 5 avenue du Maine
+  kbis: 362 521 879
+
+provider_2:
+  name: Elegant Styles
+  email: elegantstyles@gmail.com
+  phone: "0987654321"
+  address: 10 Rue de la République
+  kbis: 123 456 789
+
+provider_3:
+  name: Chic Cuts
+  email: chiccuts@gmail.com
+  phone: "0123456123"
+  address: 15 Boulevard Haussmann
+  kbis: 987 654 321
+
+provider_4:
+  name: Trendy Tresses
+  email: trendy.tresses@gmail.com
+  phone: "0765432109"
+  address: 20 Avenue des Champs-Élysées
+  kbis: 456 789 123
+
+provider_5:
+  name: Urban Glam
+  email: urbanglam@gmail.com
+  phone: "0312345678"
+  address: 25 Rue de la Paix
+  kbis: 789 123 456
+
+provider_6:
+  name: Style Central
+  email: stylecentral@gmail.com
+  phone: "0654321098"
+  address: 30 Boulevard Saint-Germain
+  kbis: 321 654 987
+
+provider_7:
+  name: Haute Hair
+  email: hautehair@gmail.com
+  phone: "0412345678"
+  address: 35 Avenue Montaigne
+  kbis: 654 987 321
+
+provider_8:
+  name: Classic Curls
+  email: classiccurls@gmail.com
+  phone: "0765432109"
+  address: 40 Rue de Rivoli
+  kbis: 234 567 890
+
+provider_9:
+  name: Velvet Vibe
+  email: velvetvibe@gmail.com
+  phone: "0321098765"
+  address: 45 Boulevard des Capucines
+  kbis: 890 123 456
+
+provider_10:
+  name: Modern Mane
+  email: modernmane@gmail.com
+  phone: "0987654321"
+  address: 50 Avenue Marceau
+  kbis: 567 890 123
+
+provider_11:
+  name: Sleek Strands
+  email: sleekstrands@gmail.com
+  phone: "0123456789"
+  address: 55 Rue de la Fayette
+  kbis: 321 654 098
+
+provider_12:
+  name: Posh Pixie
+  email: poshpixie@gmail.com
+  phone: "0765432109"
+  address: 60 Avenue de l'Opéra
+  kbis: 890 123 456
+
+provider_13:
+  name: Dapper Dos
+  email: dapperdos@gmail.com
+  phone: "0312345678"
+  address: 65 Boulevard Poissonnière
+  kbis: 234 567 890
+
+provider_14:
+  name: Stylish Shears
+  email: stylishshears@gmail.com
+  phone: "0654321098"
+  address: 70 Rue du Faubourg Saint-Antoine
+  kbis: 789 012 345
+
+provider_15:
+  name: Trendsetter Tress
+  email: trendsettertress@gmail.com
+  phone: "0987654321"
+  address: 75 Avenue des Gobelins
+  kbis: 456 789 012
+
+provider_16:
+  name: Viva Volume
+  email: vivavolume@gmail.com
+  phone: "0321098765"
+  address: 80 Boulevard de la Villette
+  kbis: 123 456 789
+
+provider_17:
+  name: Elite Extensions
+  email: eliteextensions@gmail.com
+  phone: "0412345678"
+  address: 85 Rue de la Roquette
+  kbis: 789 012 345
+
+provider_18:
+  name: Glamour Grove
+  email: glamourgrove@gmail.com
+  phone: "0987654321"
+  address: 90 Avenue Parmentier
+  kbis: 234 567 890
+
+provider_19:
+  name: Radiant Ringlets
+  email: radiantringlets@gmail.com
+  phone: "0312345678"
+  address: 95 Boulevard de Belleville
+  kbis: 567 890 123
+
+provider_20:
+  name: Polished Ponies
+  email: polishedponies@gmail.com
+  phone: "0765432109"
+  address: 100 Rue de Ménilmontant
+  kbis: 890 123 456
+
+provider_21:
+  name: Blissful Braids
+  email: blissfulbraids@gmail.com
+  phone: "0412345678"
+  address: 110 Boulevard de la Chapelle
+  kbis: 654 098 321
+
+provider_22:
+  name: Harmony Hair Hub
+  email: harmonyhairhub@gmail.com
+  phone: "0654321098"
+  address: 115 Rue de la Courtille
+  kbis: 789 012 345
+
+provider_23:
+  name: Couture Curls
+  email: couturecurls@gmail.com
+  phone: "0987654321"
+  address: 120 Avenue de Clichy
+  kbis: 234 567 890
+
+provider_24:
+  name: Lustrous Locks
+  email: lustrouslocks@gmail.com
+  phone: "0321098765"
+  address: 125 Boulevard de l'Hôpital
+  kbis: 567 890 123
+
+provider_25:
+  name: Velvet Victory
+  email: velvetvictory@gmail.com
+  phone: "0765432109"
+  address: 130 Rue de la Pompe
+  kbis: 890 123 456
+
+provider_26:
+  name: Radiant Roots
+  email: radiantroots@gmail.com
+  phone: "0412345678"
+  address: 135 Avenue de Suffren
+  kbis: 321 654 098
+
+provider_27:
+  name: Splendid Strands
+  email: splendidstrands@gmail.com
+  phone: "0987654321"
+  address: 140 Boulevard Exelmans
+  kbis: 654 098 321
+
+provider_28:
+  name: Allure Attire
+  email: allureattire@gmail.com
+  phone: "0321098765"
+  address: 145 Rue de la Pompe
+  kbis: 789 012 345
+
+provider_29:
+  name: Mystique Mane
+  email: mystiquemane@gmail.com
+  phone: "0654321098"
+  address: 150 Avenue des Ternes
+  kbis: 234 567 890
+
+provider_30:
+  name: Enchanting Elegance
+  email: enchantingelegance@gmail.com
+  phone: "0412345678"
+  address: 155 Boulevard Exelmans
+  kbis: 567 890 123
