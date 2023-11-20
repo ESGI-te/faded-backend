@@ -1,0 +1,328 @@
+service_1:
+  name: Coupe + Shampooing
+  duration: 30
+  price: 22
+  category: category_1
+  establishment:
+
+service_2:
+  name: Brushing Express
+  duration: 15
+  price: 15
+  category: category_1
+  establishment:
+
+service_3:
+  name: Coiffure Homme
+  duration: 30
+  price: 20
+  category: category_1
+  establishment:
+
+service_4:
+  name: Coupe Enfant
+  duration: 20
+  price: 15
+  category: category_1
+  establishment:
+
+service_5:
+  name: Lissage Brésilien
+  duration: 120
+  price: 80
+  category: category_1
+  establishment:
+
+service_6:
+  name: Soin du Visage
+  duration: 45
+  price: 40
+  category: category_2
+  establishment:
+
+service_7:
+  name: Épilation Sourcils
+  duration: 15
+  price: 12
+  category: category_2
+  establishment:
+
+service_8:
+  name: Massage Relaxant
+  duration: 60
+  price: 50
+  category: category_2
+  establishment:
+
+service_9:
+  name: Manucure
+  duration: 30
+  price: 25
+  category: category_2
+  establishment:
+
+service_10:
+  name: Pédicure
+  duration: 45
+  price: 35
+  category: category_2
+  establishment:
+
+service_11:
+  name: Taille de Barbe
+  duration: 20
+  price: 18
+  category: category_3
+  establishment:
+
+service_12:
+  name: Rasage Traditionnel
+  duration: 30
+  price: 25
+  category: category_3
+  establishment:
+
+service_13:
+  name: Coiffure + Barbe
+  duration: 40
+  price: 35
+  category: category_3
+  establishment:
+
+service_14:
+  name: Taille de Moustache
+  duration: 15
+  price: 12
+  category: category_3
+  establishment:
+
+service_15:
+  name: Coloration Racines
+  duration: 45
+  price: 40
+  category: category_4
+  establishment:
+
+service_16:
+  name: Mèches Partielles
+  duration: 60
+  price: 55
+  category: category_4
+  establishment:
+
+service_17:
+  name: Décoloration
+  duration: 75
+  price: 70
+  category: category_4
+  establishment:
+
+service_18:
+  name: Coloration Complète
+  duration: 90
+  price: 80
+  category: category_4
+  establishment:
+
+service_19:
+  name: Balayage
+  duration: 60
+  price: 60
+  category: category_4
+  establishment:
+
+service_20:
+  name: Brushing Simple
+  duration: 25
+  price: 25
+  category: category_5
+  establishment:
+
+service_21:
+  name: Brushing Volumineux
+  duration: 35
+  price: 30
+  category: category_5
+  establishment:
+
+service_22:
+  name: Brushing Lisse
+  duration: 20
+  price: 18
+  category: category_5
+  establishment:
+
+service_23:
+  name: Brushing Ondulé
+  duration: 30
+  price: 25
+  category: category_5
+  establishment:
+
+service_24:
+  name: Coiffure + Brushing
+  duration: 40
+  price: 35
+  category: category_5
+  establishment:
+
+service_25:
+  name: Mèches et Brushing
+  duration: 75
+  price: 65
+  category: category_5
+  establishment:
+
+service_26:
+  name: Coupe + Shampooing
+  duration: 30
+  price: 22
+  category: category_6
+  establishment: establishment_1
+
+service_27:
+  name: Coloration
+  duration: 60
+  price: 45
+  category: category_6
+  establishment: establishment_2
+
+service_28:
+  name: Manucure
+  duration: 45
+  price: 30
+  category: category_6
+  establishment: establishment_3
+
+service_29:
+  name: Extension de cheveux naturels
+  duration: 120
+  price: 150
+  category: category_6
+  establishment: establishment_4
+
+service_30:
+  name: Extension de cheveux synthétiques
+  duration: 90
+  price: 120
+  category: category_6
+  establishment: establishment_5
+
+service_31:
+  name: Coupe Homme Classique
+  duration: 20
+  price: 18
+  category: category_7
+  establishment: establishment_1
+
+service_32:
+  name: Coupe Homme Barbe
+  duration: 45
+  price: 35
+  category: category_7
+  establishment: establishment_2
+
+service_33:
+  name: Coupe Homme Moderne
+  duration: 30
+  price: 25
+  category: category_7
+  establishment: establishment_3
+
+service_34:
+  name: Coupe Homme Rasé
+  duration: 15
+  price: 20
+  category: category_7
+  establishment: establishment_4
+
+service_35:
+  name: Coupe Homme Longue
+  duration: 45
+  price: 30
+  category: category_7
+  establishment: establishment_5
+
+service_36:
+  name: Coupe Femme Classique
+  duration: 45
+  price: 40
+  category: category_8
+  establishment: establishment_1
+
+service_37:
+  name: Coupe Femme Moderne
+  duration: 60
+  price: 55
+  category: category_8
+  establishment: establishment_2
+
+service_38:
+  name: Coupe Femme Longue
+  duration: 75
+  price: 70
+  category: category_8
+  establishment: establishment_3
+
+service_39:
+  name: Coupe Femme Dégradée
+  duration: 90
+  price: 85
+  category: category_8
+  establishment: establishment_4
+
+service_40:
+  name: Coupe Femme Courte
+  duration: 30
+  price: 30
+  category: category_8
+  establishment: establishment_5
+
+service_45:
+  name: Coupe Enfant Garçon
+  duration: 30
+  price: 20
+  category: category_9
+  establishment: establishment_1
+
+service_46:
+  name: Coupe Enfant Fille
+  duration: 45
+  price: 25
+  category: category_9
+  establishment: establishment_2
+
+service_47:
+  name: Coiffure Enfant Spéciale
+  duration: 60
+  price: 35
+  category: category_9
+  establishment: establishment_3
+
+service_48:
+  name: Coupe Enfant Moderne
+  duration: 30
+  price: 30
+  category: category_9
+  establishment: establishment_4
+
+service_49:
+  name: Coupe Enfant Traditionnelle
+  duration: 45
+  price: 40
+  category: category_9
+  establishment: establishment_5
+
+service_50:
+  name: Permanente Classique
+  duration: 120
+  price: 60
+  category: category_10
+  establishment: establishment_1
+
+service_51:
+  name: Permanente Bouclée
+  duration: 90
+  price: 50
+  category: category_10
+  establishment: establishment_2
