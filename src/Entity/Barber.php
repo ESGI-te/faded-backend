@@ -16,6 +16,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use App\Controller\UploadBarberImageController;
+use App\Validator\Constraints\Planning;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BarberRepository::class)]
 #[ApiResource(
@@ -52,11 +54,13 @@ class Barber
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read'])]
-    private ?string $first_name = null;
+    #[Assert\Length(min: 2)]
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read'])]
-    private ?string $last_name = null;
+    #[Assert\Length(min: 2)]
+    private ?string $lastName = null;
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
     #[ORM\JoinColumn(nullable: true)]
@@ -113,6 +117,7 @@ class Barber
             ]
         ]
     )]
+    #[Planning]
     private array $planning = [];
 
     public function __construct()
@@ -128,24 +133,24 @@ class Barber
 
     public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstName(string $first_name): static
+    public function setFirstName(string $firstName): static
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
     public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    public function setLastName(string $last_name): static
+    public function setLastName(string $lastName): static
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
 
         return $this;
     }
