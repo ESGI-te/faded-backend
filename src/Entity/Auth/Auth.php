@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 trait Auth
 {
@@ -28,6 +29,7 @@ trait Auth
     private string $password = '';
 
     #[Groups(['user-create', 'user-update'])]
+    #[Assert\Length(min: 6, groups: ['user-create', 'user-update'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string

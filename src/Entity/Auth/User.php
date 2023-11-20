@@ -21,10 +21,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
+
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => 'user-read'],
@@ -32,7 +34,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Post(
             normalizationContext: ['groups' => 'user-read'],
-            denormalizationContext: ['groups' => 'user-create']
+            denormalizationContext: ['groups' => 'user-create'],
+            validationContext: ['groups' => ['user-create']],
         ),
         new Get(
             name: 'user-info',
@@ -48,7 +51,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Patch(
             normalizationContext: ['groups' => 'user-read-update'],
-            denormalizationContext: ['groups' => 'user-update']
+            denormalizationContext: ['groups' => 'user-update'],
+            validationContext: ['groups' => 'user-update']
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
@@ -61,15 +65,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use Auth;
     #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
+    #[Assert\Email(groups: ['user-create', 'user-update'])]
     private ?string $email = null;
 
     #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
     #[ORM\Column(length: 255)]
-    private ?string $last_name = null;
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update'])]
+    private ?string $lastName = null;
 
     #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
     #[ORM\Column(length: 255)]
-    private ?string $first_name = null;
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update'])]
+    private ?string $firstName = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class, orphanRemoval: true)]
     private Collection $appointments;
@@ -79,6 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['user-read', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
+    #[Assert\Type(type: LocalesEnum::class, groups: ['user-update'])]
     private ?LocalesEnum $locale = LocalesEnum::FR;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
@@ -104,24 +112,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    public function setLastName(string $last_name): static
+    public function setLastName(string $lastName): static
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
     public function getFirstname(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstname(string $first_name): static
+    public function setFirstname(string $firstName): static
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
 
         return $this;
     }
@@ -186,12 +194,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLocale(): ?string
+    public function getLocale(): ?LocalesEnum
     {
         return $this->locale;
     }
 
-    public function setLocale(string $locale): static
+    public function setLocale(LocalesEnum $locale): static
     {
         $this->locale = $locale;
 

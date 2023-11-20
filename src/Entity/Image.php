@@ -7,6 +7,7 @@ use App\Repository\ImageRepository;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 class Image
@@ -19,6 +20,7 @@ class Image
 
     #[Groups(['establishment-image-read', 'barber-image-read'])]
     #[ORM\Column(length: 255)]
+    #[Assert\Url]
     private ?string $url = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]

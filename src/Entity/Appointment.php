@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Auth\User;
+use App\Enum\AppointmentStatusEnum;
 use App\Repository\AppointmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
 #[ApiResource]
@@ -33,10 +35,16 @@ class Appointment
     private ?Service $service = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[Assert\Type(type: AppointmentStatusEnum::class)]
+    private ?AppointmentStatusEnum $status = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\DateTime]
     private ?\DateTimeInterface $date_time = null;
+
+    #[ORM\ManyToOne(inversedBy: 'appointments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Establishment $establishment = null;
 
     public function getId(): ?string
     {
@@ -99,6 +107,18 @@ class Appointment
     public function setDateTime(\DateTimeInterface $date_time): static
     {
         $this->date_time = $date_time;
+
+        return $this;
+    }
+
+    public function getEstablishment(): ?Establishment
+    {
+        return $this->establishment;
+    }
+
+    public function setEstablishment(?Establishment $establishment): static
+    {
+        $this->establishment = $establishment;
 
         return $this;
     }

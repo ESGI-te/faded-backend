@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 #[ApiResource]
@@ -43,6 +44,7 @@ class Feedback
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['establishment-read'])]
+    #[Assert\Length(min: 10, max: 255)]
     private ?string $comment = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
@@ -56,6 +58,11 @@ class Feedback
 
     #[ORM\Column]
     #[Groups(['establishment-read'])]
+    #[Assert\Type(type: 'integer')]
+    #[Assert\Range([
+        'min' => 0,
+        'max' => 5,
+    ])]
     private ?int $note = null;
 
     public function getId(): ?string
