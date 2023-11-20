@@ -9,31 +9,31 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\Yaml\Yaml;
 
-class FeedbaclFixtures extends Fixture implements DependentFixtureInterface
+class FeedbackFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const FEEDBACK_REFERENCE = 'feedback_reference';
 
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
         $establishments = Yaml::parseFile(__DIR__ . '/data/establishments.yaml');
-        $index = 0;
+        $index = 1;
 
         foreach ($establishments as $establishmentData) {
 
-            for ($i = 0; $i < random_int(0, 30); $i++) {
+            for ($i = 1; $i < random_int(0, 30); $i++) {
                 $establishment = $this->getReference(EstablishmentFixtures::ESTABLISHEMENT_REFERENCE . $index);
                 $user = $this->getReference(UserFixtures::USER_REFERENCE . $i);
                 $barbers = $establishment->getBarbers();
-                $barber = $barbers[random_int(0, count($barbers))];
+                $barber = $barbers[random_int(0, count($barbers) - 1)];
                 $provider = $establishment->getProvider();
                 $services = $establishment->getServices();
+                $service = $services[random_int(0, count($services) - 1)];
 
                 $feedback = new Feedback();
                 $feedback->setComment($faker->text(200));
                 $feedback->setNote($faker->numberBetween(0, 5));
                 $feedback->setDateTime($faker->dateTimeBetween('-1 years', 'now'));
-                $feedback->setService($services[random_int(0, count($services))]);
+                $feedback->setService($service);
 
                 $provider->addFeedback($feedback);
                 $establishment->addFeedback($feedback);
@@ -55,9 +55,8 @@ class FeedbaclFixtures extends Fixture implements DependentFixtureInterface
         return [
             ProviderFixtures::class,
             UserFixtures::class,
-            ServiceFixtures::class,
+            ServiceCategoryFixtures::class,
             EstablishmentFixtures::class,
-            BarberFixtures::class,
         ];
     }
 }
