@@ -21,11 +21,11 @@ class Service
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read'])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
 
@@ -36,7 +36,7 @@ class Service
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read'])]
     #[Assert\Type(type: 'integer')]
     #[Assert\Positive]
     private ?int $duration = null;

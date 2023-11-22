@@ -20,6 +20,7 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
+
   App\Service\GeocodingService:
     arguments:
       $apiKey: "%env(GEOCODE_API_KEY)%"
