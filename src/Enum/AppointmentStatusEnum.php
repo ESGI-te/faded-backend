@@ -6,7 +6,13 @@ namespace App\Enum;
 
 enum AppointmentStatusEnum: string
 {
-    case FINISHED = StatusEnum::FINISHED->value;
-    case PLANIFIED = StatusEnum::PLANIFIED->value;
-    case CANCELED = StatusEnum::CANCELED->value;
+    case FINISHED = 'finished';
+    case PLANNED = 'planned';
+    case CANCELED = 'canceled';
+
+    public static function getValues(): array
+    {
+        $cases = self::cases();
+        return array_map(static fn(\UnitEnum $case) => $case->value, $cases);
+    }
 }

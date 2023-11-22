@@ -44,11 +44,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         normalizationContext: ['groups' => 'establishment-write-read'],
         denormalizationContext: ['groups' => 'establishment-write'],
     ),
+    new Get(normalizationContext: ['groups' => 'establishment-read']),
     new Get(
         uriTemplate: '/establishments/{id}/images',
         normalizationContext: ['groups' => 'establishment-image-read']
     ),
-    new Get(normalizationContext: ['groups' => 'establishment-read']),
     new Patch(
         normalizationContext: ['groups' => 'establishment-write-read'],
         denormalizationContext: ['groups' => 'establishment-write'],
@@ -62,12 +62,18 @@ class Establishment
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-suggestion', 'establishment-read'])]
+    #[Groups(['establishment-suggestion', 'establishment-read', 'appointment-read'])]
     protected UuidInterface|string $id;
 
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Groups([
+        'establishment-suggestion',
+        'establishment-read',
+        'establishment-write-read',
+        'establishment-write',
+        'appointment-read',
+    ])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
 
