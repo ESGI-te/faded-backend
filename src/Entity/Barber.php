@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
@@ -35,30 +37,28 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'barber-write-read'],
             denormalizationContext: ['groups' => 'barber-write'],
         ),
-        new Get(
-            uriTemplate: '/barbers/{id}/images',
-            normalizationContext: ['groups' => 'barber-image-read']
-        ),
-        new GetCollection(),
+        new Get(normalizationContext: ['groups' => 'barber-read'],),
+        new GetCollection(normalizationContext: ['groups' => 'barber-read'],),
         new Patch(),
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
 class Barber
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read'])]
     #[Assert\Length(min: 2)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read'])]
     #[Assert\Length(min: 2)]
     private ?string $lastName = null;
 
