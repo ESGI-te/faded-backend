@@ -38,16 +38,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: ['groups' => ['user-create']],
         ),
         new Get(
+            normalizationContext: ['groups' => 'user-read'],
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Get(
             name: 'user-info',
-            uriTemplate: '/users/me',
+            uriTemplate: '/auth/user',
             controller: UserInfoController::class,
             security: "is_granted('ROLE_USER')",
             read: false,
             normalizationContext: ['groups' => 'user-read']
-        ),
-        new Get(
-            normalizationContext: ['groups' => 'user-read'],
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Patch(
             normalizationContext: ['groups' => 'user-read-update'],
@@ -70,12 +70,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update'])]
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
     private ?string $lastName = null;
 
     #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update'])]
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
     private ?string $firstName = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class, orphanRemoval: true)]
@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['user-read', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
-    #[Assert\Type(type: LocalesEnum::class, groups: ['user-update'])]
+    #[Assert\Choice(choices: [LocalesEnum::FR->value, LocalesEnum::EN->value], groups: ['user-update'])]
     private ?string $locale = LocalesEnum::FR->value;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
