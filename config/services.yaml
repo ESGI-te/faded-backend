@@ -20,7 +20,6 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
-
   App\Service\GeocodingService:
     arguments:
       $apiKey: "%env(GEOCODE_API_KEY)%"
@@ -30,6 +29,11 @@ services:
 
   App\Controller\GeoLocalisationController:
     tags: ["controller.service_arguments"]
+
+  'App\Doctrine\CurrentUserAppointmentsExtension':
+    tags:
+      - { name: api_platform.doctrine.orm.query_extension.collection }
+      - { name: api_platform.doctrine.orm.query_extension.item }
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
