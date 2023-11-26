@@ -30,21 +30,30 @@ $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(normalizationContext: ['groups' => 'appointment-read']),
+        new GetCollection(
+            normalizationContext: ['groups' => 'appointment-read'],
+            security: "is_granted('ROLE_USER')"
+        ),
         new Post(
             controller: CreateAppointmentController::class,
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-write'],
         ),
-        new Get(normalizationContext: ['groups' => 'appointment-read']),
+        new Get(
+            normalizationContext: ['groups' => 'appointment-read'],
+            security:
+            "is_granted('ROLE_USER') and object.getUser() == user 
+            or is_granted('ROLE_PROVIDER') and object.getEstablishment().getProvider().getUser() == user
+            or is_granted('ROLE_ADMIN')"
+        ),
         new Patch(
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-update'],
+            security: "is_granted('ROLE_USER') or object.getUser() == user",
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
 class Appointment
 {
     #[ORM\Id]
