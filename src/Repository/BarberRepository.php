@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Appointment;
 use App\Entity\Barber;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,28 +22,24 @@ class BarberRepository extends ServiceEntityRepository
         parent::__construct($registry, Barber::class);
     }
 
-//    /**
-//     * @return Barber[] Returns an array of Barber objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @param string $establishmentId
+     * @param string $dateTime
+     * @return Barber[] Returns an array of Barber objects
+     */
+    public function findAvailableBarbers(string $establishmentId, string $dateTime): array
+    {
+        $qb = $this->createQueryBuilder('b');
 
-//    public function findOneBySomeField($value): ?Barber
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $qb->select('b.id', 'b.firstName', 'b.lastName', 'a.dateTime')
+            ->join(Appointment::class, 'a', 'WITH', 'a.barber = b.id')
+            ->where('b.establishment = :establishmentId')
+            ->andWhere($qb->expr()->neq('a.dateTime', ':dateTime'))
+            ->setParameters([
+                'establishmentId' => $establishmentId,
+                'dateTime' => $dateTime,
+            ]);
+
+        return $qb->getQuery()->getResult();
+    }
 }
