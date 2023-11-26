@@ -93,7 +93,7 @@ class Establishment
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write', 'appointment-read'])]
     #[Assert\Length(min: 5)]
     private ?string $address = null;
 
