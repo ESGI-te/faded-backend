@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use App\Controller\CreateAppointmentController;
 use App\Entity\Auth\User;
 use App\Enum\AppointmentStatusEnum;
 use App\Enum\StatusEnum;
@@ -22,6 +23,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Validator\Constraints\DateTimeAfterNow;
 
 $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
 
@@ -30,6 +32,7 @@ $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
     operations: [
         new GetCollection(normalizationContext: ['groups' => 'appointment-read']),
         new Post(
+            controller: CreateAppointmentController::class,
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-write'],
         ),
@@ -75,6 +78,7 @@ class Appointment
     #[Assert\Type(type: \DateTimeInterface::class)]
     #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-update'])]
     #[Context(normalizationContext: [DateTimeNormalizer::class])]
+    #[DateTimeAfterNow]
     private ?\DateTimeInterface $dateTime = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
