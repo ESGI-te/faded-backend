@@ -30,13 +30,13 @@ class Service
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read'])]
     #[Assert\Type(type: 'float')]
     #[Assert\PositiveOrZero]
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read', 'appointment-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'appointment-establishment-read'])]
     #[Assert\Type(type: 'integer')]
     #[Assert\Positive]
     private ?int $duration = null;
