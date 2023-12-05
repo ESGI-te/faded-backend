@@ -32,14 +32,15 @@ class BarberRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('b');
 
         $qb->select('b.id', 'b.firstName', 'b.lastName', 'a.dateTime')
-            ->join(Appointment::class, 'a', 'WITH', 'a.barber = b.id')
+            ->leftJoin(Appointment::class, 'a', 'WITH', 'a.barber = b.id')
             ->where('b.establishment = :establishmentId')
-            ->andWhere($qb->expr()->neq('a.dateTime', ':dateTime'))
+            ->andWhere($qb->expr()->neq('a.dateTime', ':dateTime') . ' OR a.dateTime IS NULL') // Ajoutez cette condition pour inclure les barbiers sans rendez-vous
             ->setParameters([
                 'establishmentId' => $establishmentId,
                 'dateTime' => $dateTime,
             ]);
 
+        dump($qb->getQuery()->getResult());
         return $qb->getQuery()->getResult();
     }
 }

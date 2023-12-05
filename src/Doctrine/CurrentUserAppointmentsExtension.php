@@ -24,7 +24,6 @@ final readonly class CurrentUserAppointmentsExtension implements QueryCollection
 //        if($operation && $operation->getName() === 'get_collection' && $operation->getNormalizationContext() == 'appointment-establishment-read') {
 //            return;
 //        }
-        dump($operation->withFilters());
         $this->addWhere($queryBuilder, $resourceClass);
     }
 
