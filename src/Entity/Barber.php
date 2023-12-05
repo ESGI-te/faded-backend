@@ -49,7 +49,7 @@ class Barber
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'appointment-establishment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]

@@ -34,6 +34,10 @@ $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
             normalizationContext: ['groups' => 'appointment-read'],
             security: "is_granted('ROLE_USER')"
         ),
+        new GetCollection(
+            uriTemplate: '/appointments/establishment',
+            normalizationContext: ['groups' => 'appointment-establishment-read'],
+        ),
         new Post(
             controller: CreateAppointmentController::class,
             normalizationContext: ['groups' => 'appointment-read'],
@@ -54,6 +58,7 @@ $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
 class Appointment
 {
     #[ORM\Id]
@@ -64,8 +69,8 @@ class Appointment
     protected UuidInterface|string $id;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-establishment-read'])]
     private ?Barber $barber = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
@@ -75,7 +80,7 @@ class Appointment
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write'])]
+    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-establishment-read'])]
     private ?Service $service = null;
 
     #[ORM\Column(length: 255)]
@@ -85,7 +90,7 @@ class Appointment
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\Type(type: \DateTimeInterface::class)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-update'])]
+    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-update', 'appointment-establishment-read'])]
     #[Context(normalizationContext: [DateTimeNormalizer::class])]
     #[DateTimeAfterNow]
     private ?\DateTimeInterface $dateTime = null;

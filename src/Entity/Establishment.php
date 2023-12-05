@@ -26,7 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(operations: [
     new GetCollection(
-        name: 'search-info',
         uriTemplate: '/establishments/search',
         controller: GeoLocalisationController::class,
     ),
@@ -34,7 +33,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Post(
         uriTemplate: '/establishments/{id}/images/upload',
         controller: UploadEstablishmentImageController::class,
-        name: 'establishment_image_upload',
         deserialize: false,
         normalizationContext: [
             'groups' => ['establishment-image-write']
