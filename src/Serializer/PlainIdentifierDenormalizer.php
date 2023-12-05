@@ -28,10 +28,18 @@ class PlainIdentifierDenormalizer implements ContextAwareDenormalizerInterface, 
      */
     public function denormalize($data, $class, $format = null, array $context = [])
     {
-        isset($data['barber']) && $data['barber'] = $this->iriConverter->getIriFromResource(resource: Barber::class, context: ['uri_variables' => ['id' => $data['barber']]]);
-        isset($data['establishment']) && $data['establishment'] = $this->iriConverter->getIriFromResource(resource: Establishment::class, context: ['uri_variables' => ['id' => $data['establishment']]]);
-        isset($data['service']) && $data['service'] = $this->iriConverter->getIriFromResource(resource: Service::class, context: ['uri_variables' => ['id' => $data['service']]]);
-        isset($data['user']) && $data['user'] = $this->iriConverter->getIriFromResource(resource: User::class, context: ['uri_variables' => ['id' => $data['user']]]);
+        if($data['barber']) {
+            $data['barber'] = $this->iriConverter->getIriFromResource(resource: Barber::class, context: ['uri_variables' => ['id' => $data['barber']]]);
+        }
+        if($data['establishment']) {
+            $data['establishment'] = $this->iriConverter->getIriFromResource(resource: Establishment::class, context: ['uri_variables' => ['id' => $data['establishment']]]);
+        }
+        if($data['service']) {
+            $data['service'] = $this->iriConverter->getIriFromResource(resource: Service::class, context: ['uri_variables' => ['id' => $data['service']]]);
+        }
+        if($data['user']) {
+            $data['user'] = $this->iriConverter->getIriFromResource(resource: User::class, context: ['uri_variables' => ['id' => $data['user']]]);
+        }
 
         return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
     }
@@ -42,8 +50,7 @@ class PlainIdentifierDenormalizer implements ContextAwareDenormalizerInterface, 
     public function supportsDenormalization($data, $type, $format = null, array $context = []): bool
     {
         $hasRelationship =
-            !empty($data['barber'])
-            || !empty($data['establishment'])
+            !empty($data['establishment'])
             || !empty($data['service'])
             || !empty($data['user']);
 
