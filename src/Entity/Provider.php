@@ -21,7 +21,7 @@ class Provider
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['user-read-barber'])]
+    #[Groups(['user-read-barber', 'user-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]

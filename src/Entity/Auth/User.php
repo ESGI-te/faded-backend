@@ -112,6 +112,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $locale = LocalesEnum::FR->value;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[Groups(['user-read'])]
     private ?Provider $provider = null;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
