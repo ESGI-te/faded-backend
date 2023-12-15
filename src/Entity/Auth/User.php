@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\UserInfoController;
 use App\Entity\Appointment;
+use App\Entity\Barber;
 use App\Entity\Feedback;
 use App\Entity\Provider;
 use App\Enum\LocalesEnum;
@@ -37,17 +38,22 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'user-create'],
             validationContext: ['groups' => ['user-create']],
         ),
+        new Post(
+            uriTemplate: '/users/barber',
+            normalizationContext: ['groups' => 'user-read-barber'],
+            denormalizationContext: ['groups' => 'user-create-barber'],
+            validationContext: ['groups' => ['user-create']],
+        ),
         new Get(
             normalizationContext: ['groups' => 'user-read'],
             security: "is_granted('ROLE_ADMIN')"
         ),
         new Get(
-            name: 'user-info',
             uriTemplate: '/auth/user',
             controller: UserInfoController::class,
+            normalizationContext: ['groups' => 'user-read'],
             security: "is_granted('ROLE_USER')",
             read: false,
-            normalizationContext: ['groups' => 'user-read']
         ),
         new Patch(
             normalizationContext: ['groups' => 'user-read-update'],
@@ -63,19 +69,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use Auth;
-    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update'])]
+    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'user-create-barber', 'user-read-barber'])]
     #[ORM\Column(length: 255)]
     #[Assert\Email(groups: ['user-create', 'user-update'])]
     private ?string $email = null;
 
-    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
+    #[Groups([
+        'user-read',
+        'user-create',
+        'user-update',
+        'user-read-update',
+        'establishment-read',
+        'user-create-barber',
+        'user-read-barber'
+    ])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
     private ?string $lastName = null;
 
-    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'establishment-read'])]
+    #[Groups([
+        'user-read',
+        'user-create',
+        'user-update',
+        'user-read-update',
+        'establishment-read',
+        'user-create-barber',
+        'user-read-barber'
+    ])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
     private ?string $firstName = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class, orphanRemoval: true)]
@@ -84,13 +106,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
-    #[Groups(['user-read', 'user-update', 'user-read-update'])]
+    #[Groups(['user-read', 'user-update', 'user-read-update', 'user-read-barber'])]
     #[ORM\Column(length: 255)]
     #[Assert\Choice(choices: [LocalesEnum::FR->value, LocalesEnum::EN->value], groups: ['user-update'])]
     private ?string $locale = LocalesEnum::FR->value;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Provider $provider = null;
+
+    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[Groups(['user-create-barber', 'user-read-barber'])]
+    private ?Barber $barber = null;
 
     public function __construct()
     {
@@ -219,6 +245,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->provider = $provider;
+
+        return $this;
+    }
+
+    public function getBarber(): ?Barber
+    {
+        return $this->barber;
+    }
+
+    public function setBarber(?Barber $barber): static
+    {
+        $this->barber = $barber;
 
         return $this;
     }

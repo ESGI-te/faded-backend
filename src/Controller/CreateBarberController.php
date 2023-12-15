@@ -8,7 +8,7 @@ use App\Repository\BarberRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use \Symfony\Component\HttpFoundation\Request;
 
-class CreateAppointmentController extends AbstractController
+class CreateBarberController extends AbstractController
 {
     public function __invoke(
         Appointment $appointment,

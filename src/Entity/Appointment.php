@@ -25,8 +25,6 @@ use ApiPlatform\Metadata\Patch;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Validator\Constraints\DateTimeAfterNow;
 
-$APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
-
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
 #[ApiResource(
     operations: [
@@ -42,6 +40,8 @@ $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
             controller: CreateAppointmentController::class,
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-write'],
+            security: "is_granted('ROLE_USER')",
+            validationContext: ['groups' => 'appointment-write'],
         ),
         new Get(
             normalizationContext: ['groups' => 'appointment-read'],
@@ -52,8 +52,22 @@ $APPOINTMENT_STATUS = AppointmentStatusEnum::getValues();
         ),
         new Patch(
             normalizationContext: ['groups' => 'appointment-read'],
-            denormalizationContext: ['groups' => 'appointment-update'],
-            security: "is_granted('ROLE_USER') or object.getUser() == user",
+            denormalizationContext: ['groups' => 'appointment-postpone'],
+            security: "is_granted('ROLE_USER') and object.getUser() == user",
+        ),
+        new Patch(
+            uriTemplate: '/appointments/{id}/cancel',
+            normalizationContext: ['groups' => 'appointment-read'],
+            denormalizationContext: ['groups' => 'appointment-cancel'],
+            security: "is_granted('ROLE_USER') and object.getUser() == user",
+            validationContext: ['groups' => 'appointment-cancel'],
+        ),
+        new Patch(
+            uriTemplate: '/appointments/{id}/complete',
+            normalizationContext: ['groups' => 'appointment-read'],
+            denormalizationContext: ['groups' => 'appointment-complete'],
+            security: "is_granted('ROLE_USER')",
+            validationContext: ['groups' => 'appointment-complete'],
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ]
@@ -65,39 +79,45 @@ class Appointment
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['appointment-read', 'appointment-read'])]
+    #[Groups(['appointment-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-establishment-read'])]
+    #[Groups(['appointment-read', 'appointment-postpone', 'appointment-write', 'appointment-establishment-read'])]
     private ?Barber $barber = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write'])]
+    #[Groups(['appointment-read', 'appointment-write'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-establishment-read'])]
+    #[Groups(['appointment-read', 'appointment-write', 'appointment-establishment-read'])]
     private ?Service $service = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Choice([StatusEnum::FINISHED->value, StatusEnum::PLANNED->value, StatusEnum::CANCELED->value])]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-update'])]
+    #[Assert\EqualTo(value: AppointmentStatusEnum::CANCELED->value, groups: ['appointment-cancel'])]
+    #[Assert\EqualTo(value: AppointmentStatusEnum::FINISHED->value, groups: ['appointment-complete'])]
+    #[Groups(['appointment-read', 'appointment-cancel', 'appointment-complete'])]
     private ?string $status = StatusEnum::PLANNED->value;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\Type(type: \DateTimeInterface::class)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write', 'appointment-update', 'appointment-establishment-read'])]
+    #[Groups([
+        'appointment-read',
+        'appointment-write',
+        'appointment-postpone',
+        'appointment-cancel',
+        'appointment-establishment-read'])]
     #[Context(normalizationContext: [DateTimeNormalizer::class])]
-    #[DateTimeAfterNow]
+    #[Assert\Type(type: \DateTimeInterface::class)]
+    #[DateTimeAfterNow(groups: ['appointment-postpone', 'appointment-cancel', 'appointment-write'])]
     private ?\DateTimeInterface $dateTime = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['appointment-read', 'appointment-read', 'appointment-write'])]
+    #[Groups(['appointment-read', 'appointment-write'])]
     private ?Establishment $establishment = null;
 
     public function getId(): ?string
