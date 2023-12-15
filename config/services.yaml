@@ -26,6 +26,9 @@ services:
   App\Service\ImageUploaderService:
     arguments:
       $cloudinaryUrl: "%env(CLOUDINARY_URL)%"
+  App\Service\EmailService:
+    arguments:
+      $apiKey: "%env(RESEND_API_KEY)%"
 
   App\Controller\GeoLocalisationController:
     tags: ["controller.service_arguments"]
