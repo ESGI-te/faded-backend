@@ -40,7 +40,6 @@ class BarberRepository extends ServiceEntityRepository
                 'dateTime' => $dateTime,
             ]);
 
-        dump($qb->getQuery()->getResult());
         return $qb->getQuery()->getResult();
     }
 }
