@@ -10,11 +10,11 @@ class EmailService
         $this->resend = \Resend::client($apiKey);
     }
 
-    public function sendEmail(array $emails, string $subject, string $content)
+    public function sendEmail(string $from, array $emails, string $subject, string $content)
     {
         try {
             $result = $this->resend->emails->send([
-                "from" => " Chakou <welcome@barbers.hair>",
+                "from" => $from,
                 "to" => $emails,
                 "subject" => $subject,
                 "html" => $content,
