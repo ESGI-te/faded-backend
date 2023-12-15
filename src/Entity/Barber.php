@@ -7,6 +7,8 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
+use App\Controller\CreateBarberController;
+use App\Entity\Auth\User;
 use App\Repository\BarberRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,17 +27,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Post(
+//            uriTemplate: '/barbers',
+//            controller: CreateBarberController::class,
+            normalizationContext: ['groups' => 'barber-write-read'],
+            denormalizationContext: ['groups' => 'barber-write'],
+        ),
+        new Post(
             uriTemplate: '/barbers/{id}/images/upload',
             controller: UploadBarberImageController::class,
-            name: 'barber_image_upload',
-            deserialize: false,
             normalizationContext: [
                 'groups' => ['barber-image-write']
             ],
-        ),
-        new Post(
-            normalizationContext: ['groups' => 'barber-write-read'],
-            denormalizationContext: ['groups' => 'barber-write'],
+            deserialize: false,
+            name: 'barber_image_upload',
         ),
         new Get(normalizationContext: ['groups' => 'barber-read'],),
         new GetCollection(normalizationContext: ['groups' => 'barber-read'],),
@@ -49,16 +53,16 @@ class Barber
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'appointment-establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'appointment-establishment-read', 'user-read-barber'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber'])]
     #[Assert\Length(min: 2)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber'])]
     #[Assert\Length(min: 2)]
     private ?string $lastName = null;
 
@@ -68,6 +72,7 @@ class Barber
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['barber-read', 'barber-write-read', 'user-create-barber', 'user-read-barber'])]
     private ?Provider $provider = null;
 
     #[ORM\OneToMany(mappedBy: 'barber', targetEntity: Appointment::class, orphanRemoval: true)]
@@ -81,7 +86,7 @@ class Barber
     private ?Image $image = null;
 
     #[ORM\Column]
-    #[Groups(['barber-read', 'barber-write-read', 'barber-write'])]
+    #[Groups(['barber-read', 'barber-write-read', 'barber-write-planning'])]
     #[ApiProperty(
         openapiContext: [
             'type' => 'object',
@@ -119,6 +124,10 @@ class Barber
     )]
     #[Planning]
     private array $planning = [];
+
+    #[ORM\OneToOne(mappedBy: 'barber', cascade: ['persist', 'remove'])]
+    #[Groups(['barber-write-read', 'barber-write'])]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -260,6 +269,28 @@ class Barber
     public function setPlanning(array $planning): static
     {
         $this->planning = $planning;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setBarber(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getBarber() !== $this) {
+            $user->setBarber($this);
+        }
+
+        $this->user = $user;
 
         return $this;
     }
