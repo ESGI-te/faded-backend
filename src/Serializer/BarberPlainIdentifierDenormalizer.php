@@ -29,8 +29,11 @@ class BarberPlainIdentifierDenormalizer implements ContextAwareDenormalizerInter
      */
     public function denormalize($data, $class, $format = null, array $context = [])
     {
-        if($data['provider']) {
+        if(!empty($data['provider'])) {
             $data['provider'] = $this->iriConverter->getIriFromResource(resource: Provider::class, context: ['uri_variables' => ['id' => $data['provider']]]);
+        }
+        if(!empty($data['user'])) {
+            $data['user'] = $this->iriConverter->getIriFromResource(resource: Provider::class, context: ['uri_variables' => ['id' => $data['user']]]);
         }
         
         return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
@@ -42,7 +45,8 @@ class BarberPlainIdentifierDenormalizer implements ContextAwareDenormalizerInter
     public function supportsDenormalization($data, $type, $format = null, array $context = []): bool
     {
         $hasRelationship =
-            !empty($data['provider']);
+            !empty($data['provider'])
+            || !empty($data['user']);
 
         return \in_array($format, ['json', 'jsonld'], true)
             && is_a($type, Barber::class, true)
