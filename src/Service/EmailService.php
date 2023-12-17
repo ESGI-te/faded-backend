@@ -4,7 +4,7 @@ namespace App\Service;
 
 class EmailService
 {
-
+    
     public function __construct(string $apiKey)
     {
         $this->resend = \Resend::client($apiKey);
@@ -26,3 +26,4 @@ class EmailService
     }
 
 }
+

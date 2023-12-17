@@ -25,14 +25,17 @@ class Provider
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Email]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
@@ -49,9 +52,11 @@ class Provider
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $address = null;
 
     public function __construct()
