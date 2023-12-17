@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait Auth
 {
-    #[Groups(['user-read', 'appointment-read', 'user-create-barber', 'user-read-barber'])]
+    #[Groups(['user-read', 'appointment-read', 'user-create-barber', 'user-read-barber', 'barber-read'])]
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
