@@ -40,12 +40,14 @@ final readonly class CurrentProviderBarbersExtension implements QueryCollectionE
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-
         $queryBuilder->leftJoin(sprintf('%s.establishment', $rootAlias), 'e');
-        $queryBuilder->leftJoin('e.barbers', 'b');
-        $queryBuilder->leftJoin('b.provider', 'p');
-        $queryBuilder->andWhere('p.user = :current_user');
+        $queryBuilder->leftJoin(sprintf('%s.provider', $rootAlias), 'p');
+        $queryBuilder->andWhere($queryBuilder->expr()->orX(
+            $queryBuilder->expr()->isNull('e.id'),
+            $queryBuilder->expr()->eq('p.user', ':current_user')
+        ));
         $queryBuilder->setParameter('current_user', $user);
+
 
     }
 }

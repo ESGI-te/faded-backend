@@ -6,8 +6,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
-use App\Controller\CreateBarberController;
 use App\Entity\Auth\User;
 use App\Repository\BarberRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,42 +27,62 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Post(
-//            uriTemplate: '/barbers',
-//            controller: CreateBarberController::class,
-            normalizationContext: ['groups' => 'barber-write-read'],
-            denormalizationContext: ['groups' => 'barber-write'],
-        ),
-        new Post(
             uriTemplate: '/barbers/{id}/images/upload',
             controller: UploadBarberImageController::class,
             normalizationContext: [
                 'groups' => ['barber-image-write']
             ],
+            security: "is_granted('ROLE_PROVIDER')",
             deserialize: false,
             name: 'barber_image_upload',
         ),
-        new Get(normalizationContext: ['groups' => 'barber-read'],),
-        new GetCollection(normalizationContext: ['groups' => 'barber-read'],),
-        new Patch(),
+        new Get(normalizationContext: ['groups' => 'barber-read']),
+        new GetCollection(normalizationContext: ['groups' => 'barber-read']),
+        new Patch(
+            normalizationContext: ['groups' => 'barber-read'],
+            denormalizationContext: ['groups' => 'barber-update'],
+        ),
+        new Patch(
+            uriTemplate: '/barbers/{id}/planning',
+            normalizationContext: ['groups' => 'barber-read'],
+            denormalizationContext: ['groups' => 'barber-update-planning'],
+            validationContext: ['groups' => ['barber-update-planning']],
+        ),
+        new Delete(
+            normalizationContext: ['groups' => 'barber-delete'],
+            security: "
+            is_granted('ROLE_ADMIN') 
+            or is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"
+        ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'establishment' => 'exact',
+    'lastName' => 'ipartial',
+])]
 class Barber
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'appointment-establishment-read', 'user-read-barber'])]
+    #[Groups([
+        'establishment-read',
+        'appointment-read',
+        'barber-read',
+        'appointment-establishment-read',
+        'user-read-barber',
+        'barber-delete'
+    ])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber', 'barber-update'])]
     #[Assert\Length(min: 2)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber', 'barber-update'])]
     #[Assert\Length(min: 2)]
     private ?string $lastName = null;
 
@@ -86,7 +106,7 @@ class Barber
     private ?Image $image = null;
 
     #[ORM\Column]
-    #[Groups(['barber-read', 'barber-write-read', 'barber-write-planning'])]
+    #[Groups(['barber-read', 'barber-update-planning'])]
     #[ApiProperty(
         openapiContext: [
             'type' => 'object',
@@ -122,11 +142,11 @@ class Barber
             ]
         ]
     )]
-    #[Planning]
+    #[Planning(groups: ['barber-update-planning'])]
     private array $planning = [];
 
     #[ORM\OneToOne(mappedBy: 'barber', cascade: ['persist', 'remove'])]
-    #[Groups(['barber-write-read', 'barber-write'])]
+    #[Groups(['barber-write-read', 'barber-write', 'barber-read'])]
     private ?User $user = null;
 
     public function __construct()

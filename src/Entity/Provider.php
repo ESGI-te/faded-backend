@@ -14,14 +14,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['provider-read']],
+    denormalizationContext: ['groups' => ['provider-write']],
+)]
 class Provider
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['user-read-barber', 'user-read'])]
+    #[Groups(['user-read-barber', 'user-read', 'provider-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
