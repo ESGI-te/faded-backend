@@ -2,44 +2,89 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\AcceptProviderController;
+use App\Controller\UploadBarberImageController;
 use App\Repository\ProviderRequestRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProviderRequestRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+    new Post(
+        denormalizationContext: ['groups' => ['provider-request-write']],
+    ),
+    new Get(),
+    new GetCollection(),
+    new Patch(
+        uriTemplate: '/provider-requests/{id}/accept',
+        controller: AcceptProviderController::class,
+        denormalizationContext: ['groups' => ['provider-request-patch']],
+    ),
+    new Put(),
+    new Delete()
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['token' => 'exact'])]
 class ProviderRequest
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: "uuid", unique: true)]
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['provider-request-write'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['provider-request-write'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['provider-request-write'])]
     private ?string $personalEmail = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['provider-request-write'])]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['provider-request-write'])]
     private ?string $professionalEmail = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['provider-request-write'])]
     private ?string $companyName = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $companyAddres = null;
+    #[Groups(['provider-request-write'])]
+    private ?string $companyAddress = null;
 
+    #[Groups(['provider-request-write'])]
     #[ORM\Column(length: 255)]
     private ?string $kbis = null;
 
-    public function getId(): ?int
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $token = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $tokenExpirationDate = null;
+
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -116,14 +161,14 @@ class ProviderRequest
         return $this;
     }
 
-    public function getCompanyAddres(): ?string
+    public function getCompanyAddress(): ?string
     {
-        return $this->companyAddres;
+        return $this->companyAddress;
     }
 
-    public function setCompanyAddres(string $companyAddres): static
+    public function setCompanyAddress(string $companyAddress): static
     {
-        $this->companyAddres = $companyAddres;
+        $this->companyAddress = $companyAddress;
 
         return $this;
     }
@@ -136,6 +181,30 @@ class ProviderRequest
     public function setKbis(string $kbis): static
     {
         $this->kbis = $kbis;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): static
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getTokenExpirationDate(): ?\DateTimeInterface
+    {
+        return $this->tokenExpirationDate;
+    }
+
+    public function setTokenExpirationDate(?\DateTimeInterface $tokenExpirationDate): static
+    {
+        $this->tokenExpirationDate = $tokenExpirationDate;
 
         return $this;
     }

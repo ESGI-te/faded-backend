@@ -20,7 +20,7 @@ trait Auth
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     protected UuidInterface|string $id;
 
-    #[Groups(['user-read', 'user-create-barber', 'user-read-barber'])]
+    #[Groups(['user-read', 'user-create-barber', 'user-read-barber', 'user-create-provider'])]
     #[ORM\Column]
     private array $roles = [RolesEnum::USER->value];
 
