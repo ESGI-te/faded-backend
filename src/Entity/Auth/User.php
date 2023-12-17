@@ -44,6 +44,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'user-create-barber'],
             validationContext: ['groups' => ['user-create']],
         ),
+        new Post(
+            uriTemplate: '/users/provider',
+            normalizationContext: ['groups' => ['user-read-provider','user-read']],
+            denormalizationContext: ['groups' => ['user-create-provider','user-create']],
+            validationContext: ['groups' => ['user-create']],
+        ),
         new Get(
             normalizationContext: ['groups' => 'user-read'],
             security: "is_granted('ROLE_ADMIN')"
@@ -112,11 +118,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $locale = LocalesEnum::FR->value;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    #[Groups(['user-read'])]
+    #[Groups(['user-read','user-read-provider', 'user-create-provider'])]
     private ?Provider $provider = null;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
-    #[Groups(['user-create-barber', 'user-read-barber'])]
+    #[Groups(['user-read','user-create-barber', 'user-read-barber'])]
     private ?Barber $barber = null;
 
     public function __construct()
