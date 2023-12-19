@@ -20,6 +20,7 @@ security:
             stateless: true
             security: true
             provider: user_provider
+            entry_point: jwt
             json_login:
                 check_path: api_login_route
                 username_path: email
@@ -27,7 +28,11 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
+            refresh_jwt:
+                check_path: api_refresh_token
+
     access_control:
+        - { path: ^/api/(login|token/refresh), roles: PUBLIC_ACCESS }
 #        - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
 #        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI docs
 #        - { path: ^/auth, roles: PUBLIC_ACCESS }
