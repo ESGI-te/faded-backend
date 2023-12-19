@@ -2,6 +2,10 @@ api_login_route:
   path: /api/login
   methods: ['POST']
 
+api_refresh_token:
+  path: /api/token/refresh
+
+
 controllers:
   resource: ../src/Controller/
   type: attribute
