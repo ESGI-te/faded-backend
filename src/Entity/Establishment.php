@@ -29,14 +29,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/establishments/search',
         controller: GeoLocalisationController::class,
     ),
-    new GetCollection(normalizationContext: ['groups' => 'establishment-suggestion']),
+    new GetCollection(
+        security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')",
+    ),
+    new GetCollection(
+        uriTemplate: '/establishments/suggestions',
+        normalizationContext: ['groups' => 'establishment-suggestion']
+    ),
     new Post(
         uriTemplate: '/establishments/{id}/images/upload',
         controller: UploadEstablishmentImageController::class,
-        deserialize: false,
         normalizationContext: [
             'groups' => ['establishment-image-write']
         ],
+        deserialize: false,
     ),
     new Post(
         normalizationContext: ['groups' => 'establishment-write-read'],
