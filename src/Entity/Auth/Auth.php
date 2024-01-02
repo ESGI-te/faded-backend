@@ -13,7 +13,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 trait Auth
 {
-    #[Groups(['user-read', 'appointment-read', 'user-create-barber', 'user-read-barber', 'barber-read'])]
+    #[Groups([
+        'user-read',
+        'appointment-read',
+        'user-create-barber',
+        'user-read-barber',
+        'barber-read',
+        'password-reset-token-read',
+    ])]
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
@@ -28,8 +35,8 @@ trait Auth
     #[ORM\Column]
     private string $password = '';
 
-    #[Groups(['user-create', 'user-create-barber', 'user-update'])]
-    #[Assert\Length(min: 6, groups: ['user-create', 'user-update'])]
+    #[Groups(['user-create', 'user-create-barber', 'user-update-password'])]
+    #[Assert\Length(min: 6, groups: ['user-create', 'user-create-barber', 'user-update-password'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string
