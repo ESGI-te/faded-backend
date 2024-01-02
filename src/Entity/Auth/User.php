@@ -2,6 +2,8 @@
 
 namespace App\Entity\Auth;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -13,8 +15,10 @@ use App\Entity\Appointment;
 use App\Entity\Barber;
 use App\Entity\Feedback;
 use App\Entity\Provider;
+use App\Entity\ResetPasswordToken;
 use App\Enum\LocalesEnum;
 use App\Repository\UserRepository;
+use App\State\UpdateUserPasswordProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,7 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => 'user-read'],
@@ -66,17 +69,26 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'user-update'],
             validationContext: ['groups' => 'user-update']
         ),
+        new Patch(
+            uriTemplate: '/users/{id}/password',
+            normalizationContext: ['groups' => 'user-update-password-read'],
+            denormalizationContext: ['groups' => 'user-update-password'],
+            validationContext: ['groups' => 'user-update-password'],
+            name: 'user_update_password',
+            processor: UpdateUserPasswordProcessor::class,
+        ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
 )]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'exact'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use Auth;
     #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'user-create-barber', 'user-read-barber', 'barber-read'])]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\Email(groups: ['user-create', 'user-update'])]
     private ?string $email = null;
 
@@ -125,10 +137,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user-read','user-create-barber', 'user-read-barber'])]
     private ?Barber $barber = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordToken::class)]
+    private Collection $resetPasswordTokens;
+
     public function __construct()
     {
         $this->appointments = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->resetPasswordTokens = new ArrayCollection();
     }
 
     public function getEmail(): ?string
@@ -266,5 +282,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->barber = $barber;
 
         return $this;
+    }
+
+    public function getResetPasswordTokens(): Collection
+    {
+        return $this->resetPasswordTokens;
     }
 }

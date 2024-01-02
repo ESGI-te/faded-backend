@@ -77,6 +77,7 @@ class Establishment
         'establishment-write-read',
         'establishment-write',
         'appointment-read',
+        'barber-read'
     ])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
