@@ -88,6 +88,7 @@ class Barber
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['barber-read'])]
     private ?Establishment $establishment = null;
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]

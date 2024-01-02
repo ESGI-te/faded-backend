@@ -34,7 +34,7 @@ class AcceptProviderController extends AbstractController
                     <a href='http://localhost:5173/provider-request/password-set?token=" . $token . "'>
                     Valider mon inscription</a>";
 
-        $from =EmailSenderEnum::NO_REPLY->value;
+        $from = EmailSenderEnum::NO_REPLY->value;
 
         try {
             $emailService->sendEmail($from, [$ProviderEmail], $subject, $content);
