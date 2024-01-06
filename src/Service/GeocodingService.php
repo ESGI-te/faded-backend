@@ -7,21 +7,22 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 
 class GeocodingService
 {
-    private string $apiUrl = 'https://api.opencagedata.com/geocode/v1/json';
+    protected static string $apiUrl = 'https://api.opencagedata.com/geocode/v1/json';
+    protected static string $apiKey;
 
     public function __construct(string $apiKey)
     {
-        $this->apiKey = $apiKey;
+        self::$apiKey = $apiKey;
     }
 
-    public function geocodeAddress(string $address) : array
+    static function geocodeAddress(string $address) : array
     {
         $httpClient = HttpClient::create();
 
-        $response = $httpClient->request('GET', $this->apiUrl, [
+        $response = $httpClient->request('GET', self::$apiUrl, [
             'query' => [
                 'q' => $address,
-                'key' => $this->apiKey,
+                'key' => self::$apiKey,
             ],
         ]);
 
@@ -36,15 +37,5 @@ class GeocodingService
         } else {
             return [];
         }
-    }
-
-    function haversineDistance($lat1, $lon1, $lat2, $lon2) {
-        $earthRadius = 6371; // Radius of the Earth in kilometers
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLon = deg2rad($lon2 - $lon1);
-        $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-        $distance = $earthRadius * $c;
-        return $distance;
     }
 }
