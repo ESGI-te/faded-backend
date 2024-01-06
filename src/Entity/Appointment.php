@@ -4,14 +4,14 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use App\Controller\CreateAppointmentController;
 use App\Entity\Auth\User;
 use App\Enum\AppointmentStatusEnum;
 use App\Enum\StatusEnum;
 use App\Repository\AppointmentRepository;
+use App\State\CreateAppointmentProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -37,11 +37,11 @@ use App\Validator\Constraints\DateTimeAfterNow;
             normalizationContext: ['groups' => 'appointment-establishment-read'],
         ),
         new Post(
-            controller: CreateAppointmentController::class,
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-write'],
             security: "is_granted('ROLE_USER')",
             validationContext: ['groups' => 'appointment-write'],
+            processor: CreateAppointmentProcessor::class,
         ),
         new Get(
             normalizationContext: ['groups' => 'appointment-read'],
@@ -77,8 +77,6 @@ class Appointment
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[Groups(['appointment-read'])]
     protected UuidInterface|string $id;
 
@@ -119,6 +117,11 @@ class Appointment
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['appointment-read', 'appointment-write'])]
     private ?Establishment $establishment = null;
+
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
 
     public function getId(): ?string
     {
