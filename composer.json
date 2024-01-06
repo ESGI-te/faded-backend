@@ -8,6 +8,7 @@
 		"ext-ctype": "*",
 		"ext-iconv": "*",
 		"api-platform/core": "^3.1",
+		"beberlei/doctrineextensions": "dev-master",
 		"cloudinary/cloudinary_php": "^2.11",
 		"doctrine/doctrine-bundle": "^2.10",
 		"doctrine/doctrine-migrations-bundle": "^3.2",

@@ -16,12 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
    operations: [
-       new Post(uriTemplate: '/reset_password'),
+       new Post(uriTemplate: '/reset_password', processor: ResetPasswordTokenProcessor::class),
        new GetCollection()
     ],
     normalizationContext: ['groups' => ['password-reset-token-read']],
     denormalizationContext: ['groups' => ['password-reset-token-write']],
-    processor: ResetPasswordTokenProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['token' => 'exact'])]
 #[ORM\Entity(repositoryClass: ResetPasswordTokenRepository::class)]
