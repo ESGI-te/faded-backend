@@ -11,8 +11,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\GeoLocalisationController;
 use App\Controller\UploadEstablishmentImageController;
+use App\Filter\EstablishmentFilter;
 use App\Repository\EstablishmentRepository;
 use App\Validator\Constraints\Planning;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(operations: [
     new GetCollection(
         uriTemplate: '/establishments/search',
-        controller: GeoLocalisationController::class,
+        normalizationContext: ['groups' => 'establishment-search-read']
     ),
     new GetCollection(
         security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')",
@@ -36,8 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/establishments/suggestions',
         normalizationContext: ['groups' => 'establishment-suggestion']
     ),
-    new Post(
-        uriTemplate: '/establishments/{id}/images/upload',
+    new Patch(
+        uriTemplate: '/establishments/{id}/images',
         controller: UploadEstablishmentImageController::class,
         normalizationContext: [
             'groups' => ['establishment-image-write']
@@ -59,14 +59,21 @@ use Symfony\Component\Validator\Constraints as Assert;
     ),
     new Delete(security: "is_granted('ROLE_ADMIN')"),
 ])]
-#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
+#[ApiFilter(EstablishmentFilter::class, properties:
+[
+    'address' => 'partial',
+    'serviceCategories' => 'exact',
+])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'name' => 'partial',
+])]
 class Establishment
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-suggestion', 'establishment-read', 'appointment-read'])]
+    #[Groups(['establishment-suggestion', 'establishment-read', 'appointment-read', 'establishment-search-read'])]
     protected UuidInterface|string $id;
 
 
@@ -77,7 +84,8 @@ class Establishment
         'establishment-write-read',
         'establishment-write',
         'appointment-read',
-        'barber-read'
+        'barber-read',
+        'establishment-search-read'
     ])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
@@ -98,7 +106,7 @@ class Establishment
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write', 'appointment-read'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write', 'appointment-read', 'establishment-search-read'])]
     #[Assert\Length(min: 5)]
     private ?string $address = null;
 
@@ -115,12 +123,12 @@ class Establishment
     private Collection $feedback;
 
     #[ORM\Column]
-    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write', 'establishment-search-read'])]
     #[Assert\Type(type: 'float')]
     private ?float $latitude = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write'])]
+    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-write', 'establishment-search-read'])]
     #[Assert\Type(type: 'float')]
     private ?float $longitude = null;
 
