@@ -30,9 +30,6 @@ services:
     arguments:
       $apiKey: "%env(RESEND_API_KEY)%"
 
-  App\Controller\GeoLocalisationController:
-    tags: ["controller.service_arguments"]
-
   'App\Doctrine\CurrentUserAppointmentsExtension':
     tags:
       - { name: api_platform.doctrine.orm.query_extension.collection }
