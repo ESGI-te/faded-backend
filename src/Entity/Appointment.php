@@ -118,6 +118,9 @@ class Appointment
     #[Groups(['appointment-read', 'appointment-write'])]
     private ?Establishment $establishment = null;
 
+    #[ORM\ManyToOne(inversedBy: 'appointments')]
+    private ?Provider $provider = null;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -196,6 +199,18 @@ class Appointment
     public function setEstablishment(?Establishment $establishment): static
     {
         $this->establishment = $establishment;
+
+        return $this;
+    }
+
+    public function getProvider(): ?Provider
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(?Provider $provider): static
+    {
+        $this->provider = $provider;
 
         return $this;
     }
