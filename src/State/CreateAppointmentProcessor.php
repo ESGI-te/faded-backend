@@ -37,12 +37,20 @@ final class CreateAppointmentProcessor implements ProcessorInterface
         $this->security = $security;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
         if(!$data->getBarber())
         {
             $this->addRandomBarber($data);
         }
+
+        $establishment = $data->getEstablishment();
+        $provider = $establishment->getProvider();
+
+        $data->setProvider($provider);
 
         $user = $this->security->getUser();
         $data->setUser($user);

@@ -62,11 +62,15 @@ class Provider
     #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $address = null;
 
+    #[ORM\OneToMany(mappedBy: 'provider_id', targetEntity: Appointment::class)]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->establishments = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -232,6 +236,36 @@ class Provider
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setProviderId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getProviderId() === $this) {
+                $appointment->setProviderId(null);
+            }
+        }
 
         return $this;
     }
