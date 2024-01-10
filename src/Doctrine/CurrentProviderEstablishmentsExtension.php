@@ -1,5 +1,4 @@
 <?php
-// api/src/Doctrine/CurrentUserAppointmentsExtension.php
 
 namespace App\Doctrine;
 
@@ -8,12 +7,14 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Appointment;
+use App\Entity\Barber;
+use App\Entity\Establishment;
 use App\Enum\RolesEnum;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 
-final readonly class CurrentUserAppointmentsExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+final readonly class CurrentProviderEstablishmentsExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     public function __construct(private Security $security)
     {
@@ -32,26 +33,16 @@ final readonly class CurrentUserAppointmentsExtension implements QueryCollection
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
         $user = $this->security->getUser();
-        $isAdmin = $this->security->isGranted('ROLE_ADMIN');
         $isProvider = $this->security->isGranted('ROLE_PROVIDER');
 
         if (
-            Appointment::class !== $resourceClass || $isAdmin || !$user) {
+            Establishment::class !== $resourceClass || !$isProvider) {
             return;
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-
-        if($isProvider) {
-            $queryBuilder->leftJoin(sprintf('%s.establishment', $rootAlias), 'e');
-            $queryBuilder->leftJoin('e.provider', 'p');
-            $queryBuilder->andWhere('p.user = :current_user');
-            $queryBuilder->setParameter('current_user', $user);
-            return;
-        }
-
-        $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
+        $queryBuilder->leftJoin(sprintf('%s.provider', $rootAlias), 'p');
+        $queryBuilder->andWhere('p.user = :current_user');
         $queryBuilder->setParameter('current_user', $user);
-
     }
 }

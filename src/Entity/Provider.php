@@ -10,27 +10,35 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['provider-read']],
+    denormalizationContext: ['groups' => ['provider-write']],
+)]
 class Provider
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['user-read-barber', 'user-read', 'provider-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Email]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
@@ -47,16 +55,22 @@ class Provider
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider'])]
     private ?string $address = null;
+
+    #[ORM\OneToMany(mappedBy: 'provider_id', targetEntity: Appointment::class)]
+    private Collection $appointments;
 
     public function __construct()
     {
         $this->establishments = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -222,6 +236,36 @@ class Provider
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setProviderId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getProviderId() === $this) {
+                $appointment->setProviderId(null);
+            }
+        }
 
         return $this;
     }

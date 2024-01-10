@@ -6,21 +6,25 @@ use ApiPlatform\Metadata\ApiProperty;
 use App\Enum\RolesEnum;
 use App\Enum\UserAccountTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait Auth
 {
-    #[Groups(['user-read', 'appointment-read'])]
+    #[Groups([
+        'user-read',
+        'appointment-read',
+        'user-create-barber',
+        'user-read-barber',
+        'barber-read',
+        'password-reset-token-read',
+    ])]
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     protected UuidInterface|string $id;
 
-    #[Groups(['user-read'])]
+    #[Groups(['user-read', 'user-create-barber', 'user-read-barber', 'user-create-provider'])]
     #[ORM\Column]
     private array $roles = [RolesEnum::USER->value];
 
@@ -28,8 +32,8 @@ trait Auth
     #[ORM\Column]
     private string $password = '';
 
-    #[Groups(['user-create', 'user-update'])]
-    #[Assert\Length(min: 6, groups: ['user-create', 'user-update'])]
+    #[Groups(['user-create', 'user-create-barber', 'user-update-password'])]
+    #[Assert\Length(min: 6, groups: ['user-create', 'user-create-barber', 'user-update-password'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string

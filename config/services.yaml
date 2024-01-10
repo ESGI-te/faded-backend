@@ -26,11 +26,19 @@ services:
   App\Service\ImageUploaderService:
     arguments:
       $cloudinaryUrl: "%env(CLOUDINARY_URL)%"
-
-  App\Controller\GeoLocalisationController:
-    tags: ["controller.service_arguments"]
+  App\Service\EmailService:
+    arguments:
+      $apiKey: "%env(RESEND_API_KEY)%"
 
   'App\Doctrine\CurrentUserAppointmentsExtension':
+    tags:
+      - { name: api_platform.doctrine.orm.query_extension.collection }
+      - { name: api_platform.doctrine.orm.query_extension.item }
+  'App\Doctrine\CurrentProviderBarbersExtension':
+    tags:
+      - { name: api_platform.doctrine.orm.query_extension.collection }
+      - { name: api_platform.doctrine.orm.query_extension.item }
+  'App\Doctrine\CurrentProviderEstablishmentsExtension':
     tags:
       - { name: api_platform.doctrine.orm.query_extension.collection }
       - { name: api_platform.doctrine.orm.query_extension.item }
