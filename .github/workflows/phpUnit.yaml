@@ -1,4 +1,4 @@
-name: Run PHPUnit Tests
+name: Run PHPUnit
 
 on:
   push:
@@ -21,6 +21,8 @@ jobs:
 
     - name: Set environment variables
       run: |
+        echo "APP_ENV=test" >> $GITHUB_ENV
+        echo "APP_DEBUG=1" >> $GITHUB_ENV
         echo "CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}" >> $GITHUB_ENV
         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
         echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> $GITHUB_ENV
