@@ -59,13 +59,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     ),
     new Delete(security: "is_granted('ROLE_ADMIN')"),
 ])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'name' => 'partial',
+])]
 #[ApiFilter(EstablishmentFilter::class, properties:
 [
     'address' => 'partial',
     'serviceCategories' => 'exact',
-])]
-#[ApiFilter(SearchFilter::class, properties: [
-    'name' => 'partial',
 ])]
 class Establishment
 {

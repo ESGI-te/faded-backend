@@ -91,8 +91,6 @@ final class EstablishmentFilter extends AbstractFilter
             ->distinct();
     }
 
-
-
     public function getDescription(string $resourceClass): array
     {
         return [];
