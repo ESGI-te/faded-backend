@@ -12,11 +12,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
         tools: composer, phpunit
+
+    - name: Set environment variables
+      run: |
+        echo "CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}" >> $GITHUB_ENV
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+        echo "DATABASE_VERSION=${{ secrets.DATABASE_VERSION }}" >> $GITHUB_ENV
+        echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}" >> $GITHUB_ENV
+        echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
