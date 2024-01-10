@@ -7,8 +7,10 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Auth\User;
 use App\Enum\AppointmentStatusEnum;
 use App\Enum\StatusEnum;
+use App\Filter\DeepSearchFilter;
 use App\Repository\AppointmentRepository;
 use App\State\CreateAppointmentProcessor;
+use App\Validator\Constraints\AppointmentCode;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -66,13 +68,22 @@ use App\Validator\Constraints\DateTimeAfterNow;
             uriTemplate: '/appointments/{id}/complete',
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-complete'],
-            security: "is_granted('ROLE_USER')",
+            security: "is_granted('ROLE_BARBER') and object.getBarber() == user
+            or is_granted('ROLE_PROVIDER') and object.getEstablishment().getProvider().getUser() == user",
             validationContext: ['groups' => 'appointment-complete'],
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
+#[ApiFilter(DeepSearchFilter::class, properties: [
+    'user.firstName',
+    'user.lastName',
+    'barber.firstName',
+    'barber.lastName',
+    'establishment.name',
+])]
+#[ORM\HasLifecycleCallbacks]
 class Appointment
 {
     #[ORM\Id]
@@ -98,6 +109,7 @@ class Appointment
     #[ORM\Column(length: 255)]
     #[Assert\EqualTo(value: AppointmentStatusEnum::CANCELED->value, groups: ['appointment-cancel'])]
     #[Assert\EqualTo(value: AppointmentStatusEnum::FINISHED->value, groups: ['appointment-complete'])]
+    #[AppointmentCode(groups: ['appointment-complete'])]
     #[Groups(['appointment-read', 'appointment-cancel', 'appointment-complete'])]
     private ?string $status = StatusEnum::PLANNED->value;
 
@@ -120,6 +132,9 @@ class Appointment
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     private ?Provider $provider = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $code = null;
 
     public function __construct()
     {
@@ -211,6 +226,21 @@ class Appointment
     public function setProvider(?Provider $provider): static
     {
         $this->provider = $provider;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    #[ORM\PrePersist]
+    public function setCode(): static
+    {
+        $code = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 6);
+
+        $this->code = $code;
 
         return $this;
     }

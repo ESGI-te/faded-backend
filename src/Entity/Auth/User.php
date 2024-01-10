@@ -102,7 +102,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user-read-update',
         'establishment-read',
         'user-create-barber',
-        'user-read-barber'
+        'user-read-barber',
+        'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
     #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
@@ -115,7 +116,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user-read-update',
         'establishment-read',
         'user-create-barber',
-        'user-read-barber'
+        'user-read-barber',
+        'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
     #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
