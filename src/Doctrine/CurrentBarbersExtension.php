@@ -13,7 +13,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 
-final readonly class CurrentProviderBarbersExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+final readonly class CurrentBarbersExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     public function __construct(private Security $security)
     {
@@ -33,13 +33,21 @@ final readonly class CurrentProviderBarbersExtension implements QueryCollectionE
     {
         $user = $this->security->getUser();
         $isProvider = $this->security->isGranted('ROLE_PROVIDER');
+        $isBarber = $this->security->isGranted('ROLE_BARBER');
 
         if (
-            Barber::class !== $resourceClass || !$isProvider) {
+            Barber::class !== $resourceClass || (!$isProvider && !$isBarber)) {
             return;
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
+
+        if($isBarber) {
+            $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
+            $queryBuilder->setParameter('current_user', $user);
+            return;
+        }
+
         $queryBuilder->leftJoin(sprintf('%s.establishment', $rootAlias), 'e');
         $queryBuilder->leftJoin(sprintf('%s.provider', $rootAlias), 'p');
         $queryBuilder->andWhere($queryBuilder->expr()->orX(
@@ -47,7 +55,5 @@ final readonly class CurrentProviderBarbersExtension implements QueryCollectionE
             $queryBuilder->expr()->eq('p.user', ':current_user')
         ));
         $queryBuilder->setParameter('current_user', $user);
-
-
     }
 }
