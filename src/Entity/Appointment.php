@@ -34,10 +34,6 @@ use App\Validator\Constraints\DateTimeAfterNow;
             normalizationContext: ['groups' => 'appointment-read'],
             security: "is_granted('ROLE_USER')"
         ),
-        new GetCollection(
-            uriTemplate: '/appointments/establishment',
-            normalizationContext: ['groups' => 'appointment-establishment-read'],
-        ),
         new Post(
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-write'],
@@ -61,7 +57,9 @@ use App\Validator\Constraints\DateTimeAfterNow;
             uriTemplate: '/appointments/{id}/cancel',
             normalizationContext: ['groups' => 'appointment-read'],
             denormalizationContext: ['groups' => 'appointment-cancel'],
-            security: "is_granted('ROLE_USER') and object.getUser() == user",
+            security: "is_granted('ROLE_USER') and object.getUser() == user
+            or is_granted('ROLE_BARBER') and object.getBarber().getUser() == user
+            or is_granted('ROLE_PROVIDER') and object.getEstablishment().getProvider().getUser() == user",
             validationContext: ['groups' => 'appointment-cancel'],
         ),
         new Patch(
@@ -93,7 +91,7 @@ class Appointment
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['appointment-read', 'appointment-postpone', 'appointment-write', 'appointment-establishment-read'])]
+    #[Groups(['appointment-read', 'appointment-postpone', 'appointment-write'])]
     private ?Barber $barber = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
@@ -103,7 +101,7 @@ class Appointment
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['appointment-read', 'appointment-write', 'appointment-establishment-read'])]
+    #[Groups(['appointment-read', 'appointment-write'])]
     private ?Service $service = null;
 
     #[ORM\Column(length: 255)]
@@ -118,8 +116,7 @@ class Appointment
         'appointment-read',
         'appointment-write',
         'appointment-postpone',
-        'appointment-cancel',
-        'appointment-establishment-read'])]
+        'appointment-cancel'])]
     #[Context(normalizationContext: [DateTimeNormalizer::class])]
     #[Assert\Type(type: \DateTimeInterface::class)]
     #[DateTimeAfterNow(groups: ['appointment-postpone', 'appointment-cancel', 'appointment-write'])]
