@@ -36,7 +36,7 @@ class Service
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read', 'appointment-read', 'appointment-establishment-read'])]
+    #[Groups(['establishment-read', 'appointment-read'])]
     #[Assert\Type(type: 'integer')]
     #[Assert\Positive]
     private ?int $duration = null;
