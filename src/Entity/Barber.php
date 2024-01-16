@@ -58,7 +58,6 @@ class Barber
         'establishment-read',
         'appointment-read',
         'barber-read',
-        'appointment-establishment-read',
         'user-read-barber',
         'barber-delete'
     ])]
