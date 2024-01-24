@@ -55,7 +55,7 @@ class Provider
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user-read-provider','user-create-provider'])]
+    #[Groups(['user-read-provider','user-create-provider', 'user-read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
