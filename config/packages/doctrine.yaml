@@ -26,6 +26,8 @@ doctrine:
                 sin: DoctrineExtensions\Query\Mysql\Sin
                 cos: DoctrineExtensions\Query\Mysql\Cos
                 radians: DoctrineExtensions\Query\Mysql\Radians
+            string_functions:
+                DATE: DoctrineExtensions\Query\Mysql\Date
 
 when@test:
     doctrine:
