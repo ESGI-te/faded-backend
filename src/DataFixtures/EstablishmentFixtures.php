@@ -66,6 +66,7 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
             $establishment->setLongitude($establishmentData['longitude']);
             $establishment->setProvider($this->getReference($establishmentData['provider']));
             $establishment->setPlanning(self::PLANNING);
+            $establishment->setStatus($establishmentData['status']);
 
             $provider = $establishment->getProvider();
 
