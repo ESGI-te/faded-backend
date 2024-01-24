@@ -36,13 +36,27 @@ class FeedbackRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Feedback
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findAverageFeedbackForProvider($providerId):array
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->select('AVG(f.note) AS averageNote')
+            ->where('f.provider = :providerId')
+            ->setParameter('providerId', $providerId);
+
+        $result = $qb->getQuery()->getSingleScalarResult();
+        return ['note' => number_format((float)$result, 2, '.', '')];
+    }
+
+    public function findAverageFeedbackForEstablishment($establishmentId):array
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->select('AVG(f.note) AS averageNote')
+            ->where('f.establishment = :establishmentId')
+            ->setParameter('establishmentId', $establishmentId);
+
+        $result = $qb->getQuery()->getSingleScalarResult();
+
+        return ['note' => number_format((float)$result, 2, '.', '')];
+    }
+
 }
