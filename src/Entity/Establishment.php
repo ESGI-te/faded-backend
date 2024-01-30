@@ -24,6 +24,44 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+const DEFAULT_PLANNING = [
+    'monday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => true,
+    ],
+    'tuesday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => true,
+    ],
+    'wednesday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => true,
+    ],
+    'thursday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => true,
+    ],
+    'friday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => true,
+    ],
+    'saturday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => true,
+    ],
+    'sunday' => [
+        'open' => '09:00:00',
+        'close' => '18:00:00',
+        'isOpen' => false,
+    ],
+];
+
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(operations: [
     new GetCollection(
@@ -73,6 +111,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'address' => 'partial',
     'serviceCategories' => 'exact',
 ])]
+#[ORM\HasLifecycleCallbacks]
 class Establishment
 {
     #[ORM\Id]
@@ -152,33 +191,7 @@ class Establishment
     #[ApiProperty(
         openapiContext: [
             'type' => 'object',
-            'example' => [
-                'monday' => [
-                    'open' => '2000-01-01 00:00:00',
-                    'close' => '2000-01-01 00:00:00',
-                ],
-                'tuesday' => [
-                    'open' => '2000-01-01 00:00:00',
-                    'close' => '2000-01-01 00:00:00',
-                ],
-                'wednesday' => [
-                    'open' => '2000-01-01 00:00:00',
-                    'close' => '2000-01-01 00:00:00',
-                ],
-                'thursday' => [
-                    'open' => '2000-01-01 00:00:00',
-                    'close' => '2000-01-01 00:00:00',
-                ],
-                'friday' => [
-                    'open' => '2000-01-01 00:00:00',
-                    'close' => '2000-01-01 00:00:00',
-                ],
-                'saturday' => [
-                    'open' => '2000-01-01 00:00:00',
-                    'close' => '2000-01-01 00:00:00',
-                ],
-                'sunday' => [],
-            ]
+            'example' => DEFAULT_PLANNING,
         ]
     )]
     #[Planning]
@@ -443,6 +456,13 @@ class Establishment
     public function setPlanning(array $planning): static
     {
         $this->planning = $planning;
+
+        return $this;
+    }
+    #[ORM\PrePersist]
+    public function setDefaultPlanning(): static
+    {
+        $this->planning = DEFAULT_PLANNING;
 
         return $this;
     }
