@@ -17,30 +17,40 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
     public const ESTABLISHEMENT_REFERENCE = 'establishsment_';
     private const PLANNING = [
         'monday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'tuesday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'wednesday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'thursday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'friday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'saturday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
-        'sunday' => [],
+        'sunday' => [
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => false,
+        ],
     ];
     private $faker;
 
