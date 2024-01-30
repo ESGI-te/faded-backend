@@ -21,14 +21,26 @@ final class PlanningValidator extends ConstraintValidator
 
         foreach ($value as $day => $hours) {
 
-            if (empty($hours)) return;
-
             if (!isset($hours['open']) || !isset($hours['close'])) {
 
                 $missingType = !isset($hours['open']) ? 'Open' : 'Close';
 
                 $this->context->buildViolation($constraint->missingHoursMessage)
                     ->setParameters(['{{ day }}' => $day, '{{ type }}' => $missingType])
+                    ->addViolation();
+                return;
+            }
+
+            if(!isset($hours['isOpen'])) {
+                $this->context->buildViolation($constraint->missingIsOpenMessage)
+                    ->setParameters(['{{ day }}' => $day, '{{ type }}' => 'isOpen'])
+                    ->addViolation();
+                return;
+            }
+
+            if(gettype($hours['isOpen']) !== 'boolean') {
+                $this->context->buildViolation($constraint->invalidIsOpenTypeMessage)
+                    ->setParameters(['{{ day }}' => $day, '{{ type }}' => gettype($hours['isOpen']) ])
                     ->addViolation();
                 return;
             }
