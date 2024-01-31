@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-final class CreateEstablishmentProcessor implements ProcessorInterface
+final class AddProviderProcessor implements ProcessorInterface
 {
 
     private EntityManagerInterface $entityManager;

@@ -20,11 +20,11 @@ class ServiceCategory
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'service-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'service-read'])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
 
