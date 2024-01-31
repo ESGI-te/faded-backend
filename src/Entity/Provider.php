@@ -24,7 +24,7 @@ class Provider
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['user-read-barber', 'user-read', 'provider-read'])]
+    #[Groups(['user-read-barber', 'user-read', 'provider-read', 'service-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
@@ -65,12 +65,16 @@ class Provider
     #[ORM\OneToMany(mappedBy: 'provider_id', targetEntity: Appointment::class)]
     private Collection $appointments;
 
+    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Service::class, orphanRemoval: true)]
+    private Collection $services;
+
     public function __construct()
     {
         $this->establishments = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -264,6 +268,36 @@ class Provider
             // set the owning side to null (unless already changed)
             if ($appointment->getProviderId() === $this) {
                 $appointment->setProviderId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getProvider() === $this) {
+                $service->setProvider(null);
             }
         }
 
