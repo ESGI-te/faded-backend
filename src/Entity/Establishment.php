@@ -94,7 +94,7 @@ const DEFAULT_PLANNING = [
         denormalizationContext: ['groups' => 'establishment-write'],
         security: "is_granted('ROLE_PROVIDER')",
         validationContext: ['groups' => 'establishment-write'],
-        processor: 'App\State\CreateEstablishmentProcessor',
+        processor: 'App\State\AddProviderProcessor',
     ),
     new Get(normalizationContext: ['groups' => 'establishment-read']),
     new Get(
@@ -118,7 +118,7 @@ class Establishment
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'appointment-read', 'establishment-search-read'])]
+    #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'appointment-read', 'barber-read', 'establishment-search-read', 'service-read'])]
     protected UuidInterface|string $id;
 
 
