@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Barber;
 use App\Entity\Establishment;
+use App\Entity\Provider;
 use App\Entity\Service;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -96,7 +97,7 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
                 });
 
                 foreach ($categoryServices as $serviceData) {
-                    $service = $this->createService($serviceData);
+                    $service = $this->createService($serviceData, $establishment->getProvider());
                     $category->addService($service);
                     $manager->persist($service, $category);
                     $establishment->addService($service);
@@ -121,12 +122,13 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
         return $barber;
     }
 
-    private function createService($data): Service
+    private function createService($data, Provider $provider): Service
     {
         $service = new Service();
         $service->setName($data['name']);
         $service->setPrice($data['price']);
         $service->setDuration($data['duration']);
+        $service->setProvider($provider);
         return $service;
     }
 
