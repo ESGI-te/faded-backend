@@ -63,46 +63,48 @@ const DEFAULT_PLANNING = [
 ];
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
-#[ApiResource(operations: [
-    new GetCollection(
-        uriTemplate: '/establishments/search',
-        normalizationContext: ['groups' => 'establishment-search-read']
-    ),
-    new GetCollection(
-        security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')",
-    ),
-    new GetCollection(
-        uriTemplate: '/establishments/suggestions',
-        normalizationContext: ['groups' => 'establishment-suggestion']
-    ),
-    new Patch(
-        uriTemplate: '/establishments/{id}/images',
-        controller: UploadEstablishmentImageController::class,
-        normalizationContext: [
-            'groups' => ['establishment-image-write']
-        ],
-        deserialize: false,
-    ),
-    new Patch(
-        normalizationContext: ['groups' => 'establishment-write-read'],
-        denormalizationContext: ['groups' => 'establishment-write'],
-        security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
-        validationContext: ['groups' => 'establishment-update'],
-    ),
-    new Post(
-        normalizationContext: ['groups' => 'establishment-write-read'],
-        denormalizationContext: ['groups' => 'establishment-write'],
-        security: "is_granted('ROLE_PROVIDER')",
-        validationContext: ['groups' => 'establishment-write'],
-        processor: 'App\State\AddProviderProcessor',
-    ),
-    new Get(normalizationContext: ['groups' => 'establishment-read']),
-    new Get(
-        uriTemplate: '/establishments/{id}/images',
-        normalizationContext: ['groups' => 'establishment-image-read']
-    ),
-    new Delete(security: "is_granted('ROLE_ADMIN')"),
-])]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/establishments/search',
+            normalizationContext: ['groups' => 'establishment-search-read']
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_ADMIN')",
+        ),
+        new GetCollection(
+            uriTemplate: '/establishments/suggestions',
+            normalizationContext: ['groups' => 'establishment-suggestion']
+        ),
+        new Patch(
+            uriTemplate: '/establishments/{id}/images',
+            controller: UploadEstablishmentImageController::class,
+            normalizationContext: [
+                'groups' => ['establishment-image-write']
+            ],
+            deserialize: false,
+        ),
+        new Patch(
+            normalizationContext: ['groups' => 'establishment-write-read'],
+            denormalizationContext: ['groups' => 'establishment-write'],
+            security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
+            validationContext: ['groups' => 'establishment-update'],
+        ),
+        new Post(
+            normalizationContext: ['groups' => 'establishment-write-read'],
+            denormalizationContext: ['groups' => 'establishment-write'],
+            security: "is_granted('ROLE_PROVIDER')",
+            validationContext: ['groups' => 'establishment-write'],
+            processor: 'App\State\AddProviderProcessor',
+        ),
+        new Get(normalizationContext: ['groups' => 'establishment-read']),
+        new Get(
+            uriTemplate: '/establishments/{id}/images',
+            normalizationContext: ['groups' => 'establishment-image-read']
+        ),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    validationContext: ['groups' => [Establishment::class, 'validationGroups']])]
 #[ApiFilter(SearchFilter::class, properties: [
     'name' => 'partial',
 ])]
@@ -121,7 +123,6 @@ class Establishment
     #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'appointment-read', 'barber-read', 'establishment-search-read', 'service-read'])]
     protected UuidInterface|string $id;
 
-
     #[ORM\Column(length: 255)]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups([
@@ -134,7 +135,7 @@ class Establishment
         'establishment-search-read',
         'establishment-update'
     ])]
-    #[Assert\Length(min: 2)]
+    #[Assert\Length(min: 2, groups: ['establishment-write'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
@@ -507,5 +508,14 @@ class Establishment
         $this->status = $status;
 
         return $this;
+    }
+
+    public static function validationGroups(self $establishment): array
+    {
+        if ($establishment->getStatus() === EstablishmentStatusEnum::ACTIVE->value) {
+            return ['establishment-write'];
+        }
+
+        return ['a'];
     }
 }
