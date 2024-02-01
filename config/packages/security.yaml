@@ -15,7 +15,7 @@ security:
             pattern: ^/_(profiler|wdt)
             security: false
 
-        main:
+        api:
             lazy: true
             stateless: true
             security: true
@@ -28,11 +28,8 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
-                
-        api_token_refresh:
-            stateless: true
             refresh_jwt:
-                check_path: api_refresh_token
+                check_path: /api/token/refresh
 
     access_control:
         - { path: ^/api/(login|token/refresh), roles: PUBLIC_ACCESS }
