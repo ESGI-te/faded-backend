@@ -3,8 +3,8 @@ api_login_route:
   methods: ['POST']
 
 api_refresh_token:
-  path: /api/token/refresh
-
+    path: /api/token/refresh
+    methods: ['POST']
 
 controllers:
   resource: ../src/Controller/
