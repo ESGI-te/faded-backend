@@ -32,7 +32,6 @@ use App\Validator\Constraints\DateTimeAfterNow;
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => 'appointment-read'],
-            security: "is_granted('ROLE_USER')"
         ),
         new Post(
             normalizationContext: ['groups' => 'appointment-read'],

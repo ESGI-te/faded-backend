@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\UserInfoController;
+use App\Dto\UserDto;
 use App\Entity\Appointment;
 use App\Entity\Barber;
 use App\Entity\Feedback;
@@ -20,6 +21,7 @@ use App\Enum\LocalesEnum;
 use App\Repository\UserRepository;
 use App\State\CreateUserProcessor;
 use App\State\UpdateUserPasswordProcessor;
+use App\State\UserDtoValidationProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -70,7 +72,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             normalizationContext: ['groups' => 'user-read-update'],
             denormalizationContext: ['groups' => 'user-update'],
-            validationContext: ['groups' => 'user-update']
+            security: "is_granted('ROLE_BARBER') 
+            or is_granted('ROLE_PROVIDER') 
+            or is_granted('ROLE_ADMIN')",
+            validationContext: ['groups' => 'user-update'],
+//            input: UserDto::class,
+//            processor: UserDtoValidationProcessor::class
         ),
         new Patch(
             uriTemplate: '/users/{id}/password',
