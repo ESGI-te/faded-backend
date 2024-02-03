@@ -36,7 +36,7 @@ class FeedbackRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function findAverageFeedbackForProvider($providerId):array
+    public function findAverageFeedbackForProvider(string $providerId):array
     {
         $qb = $this->createQueryBuilder('f')
             ->select('AVG(f.note) AS averageNote')
@@ -47,7 +47,7 @@ class FeedbackRepository extends ServiceEntityRepository
         return ['note' => number_format((float)$result, 2, '.', '')];
     }
 
-    public function findAverageFeedbackForEstablishment($establishmentId):array
+    public function findAverageFeedbackForEstablishment(string $establishmentId):array
     {
         $qb = $this->createQueryBuilder('f')
             ->select('AVG(f.note) AS averageNote')
