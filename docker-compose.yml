@@ -34,7 +34,7 @@ services:
     volumes:
       - database_data:/var/lib/postgresql/data:rw
     ports:
-      - "5435:5435"
+      - "5432:5432"
 
   ###> symfony/mailer ###
   mailer:
