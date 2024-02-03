@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Appointment;
+use App\Entity\Provider;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -36,7 +37,7 @@ class AppointmentRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function findByRangAppointments(int $range): int
+    public function findByRangAppointments(string $provider,int $range, string $establishmentId = null): int
     {
 
         $start = (new \DateTime('-'.$range.' days'))->setTime(0, 0);
@@ -48,8 +49,15 @@ class AppointmentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('a')
             ->select('COUNT(a)')
             ->where('a.dateTime BETWEEN :start AND :end')
+            ->andWhere('a.provider = :provider')
+            ->setParameter('provider', $provider)
             ->setParameter('start', $startString)
             ->setParameter('end', $endString);
+
+        if($establishmentId) {
+            $qb->andWhere('a.establishment = :establishmentId')
+                ->setParameter('establishmentId', $establishmentId);
+        }
 
         try {
             $result = $qb->getQuery()->getSingleScalarResult();
@@ -60,24 +68,33 @@ class AppointmentRepository extends ServiceEntityRepository
         return (int) $result;
     }
 
-    public function findAppointmentsRatesByDateRange(\DateTime $startDate, \DateTime $endDate): array
+    public function findAppointmentsRatesByDateRange(string $provider,\DateTime $startDate, \DateTime $endDate, string $establishmentId = null): array
     {
         $qb = $this->createQueryBuilder('a')
             ->select('DATE(a.dateTime) as date, COUNT(a) as value')
             ->where('a.dateTime >= :start')
             ->andWhere('a.dateTime < :end')
+            ->andWhere('a.provider = :provider')
+            ->setParameter('provider', $provider)
             ->setParameter('start', $startDate->format('Y-m-d'))
             ->setParameter('end', $endDate->format('Y-m-d'))
             ->groupBy('date')
             ->orderBy('date', 'ASC');
 
+        if($establishmentId) {
+            $qb->andWhere('a.establishment = :establishmentId')
+                ->setParameter('establishmentId', $establishmentId);
+        }
+
         return $qb->getQuery()->getResult();
     }
 
-    public function findTopServicesByAppointmentCount(int $limit,string $establishmentId = null): array
+    public function findTopServicesByAppointmentCount(string $provider, int $limit,string $establishmentId = null): array
     {
         $qb =  $this->createQueryBuilder('a')
             ->select('IDENTITY(a.service) as id', 's.name', 'COUNT(a) as number', 's.price * COUNT(a) as turnover')
+            ->andWhere('a.provider = :provider')
+            ->setParameter('provider', $provider)
             ->join('a.service', 's')
             ->groupBy('a.service', 's.name', 's.price')
             ->orderBy('number', 'DESC')
