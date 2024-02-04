@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\UploadProviderImageController;
 use App\Entity\Auth\User;
 use App\Repository\ProviderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,8 +21,37 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
 #[ApiResource(
+    operations: [
+        new GetCollection(
+//            normalizationContext: ['groups' => 'provider-read'],
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Get(
+            security: "
+            is_granted('ROLE_ADMIN') 
+            or is_granted('ROLE_PROVIDER') and object.getUser() == user"
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['provider-create']],
+            security: "is_granted('ROLE_ADMIN')",
+            validationContext: ['groups' => ['provider-create']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['provider-update']],
+            security: "is_granted('ROLE_PROVIDER') and object.getUser() == user"
+        ),
+        new Patch(
+            uriTemplate: '/providers/{id}/image',
+            denormalizationContext: ['groups' => ['provider-update-image']],
+            security: "is_granted('ROLE_PROVIDER') and object.getUser() == user",
+        ),
+        new Delete(
+            security: "
+            is_granted('ROLE_ADMIN') 
+            or is_granted('ROLE_PROVIDER') and object.getUser() == user"
+        )
+    ],
     normalizationContext: ['groups' => ['provider-read']],
-    denormalizationContext: ['groups' => ['provider-write']],
 )]
 class Provider
 {
@@ -28,17 +63,17 @@ class Provider
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user-read-provider','user-create-provider'])]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-read'])]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Email]
-    #[Groups(['user-read-provider','user-create-provider'])]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
-    #[Groups(['user-read-provider','user-create-provider'])]
+    #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/')]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
@@ -55,11 +90,11 @@ class Provider
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user-read-provider','user-create-provider', 'user-read'])]
+    #[Groups(['user-read-provider','user-create-provider', 'user-read', 'provider-update', 'provider-read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user-read-provider','user-create-provider'])]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
     private ?string $address = null;
 
     #[ORM\OneToMany(mappedBy: 'provider_id', targetEntity: Appointment::class)]
@@ -67,6 +102,10 @@ class Provider
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Service::class, orphanRemoval: true)]
     private Collection $services;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user-read-provider', 'provider-update-image', 'provider-read'])]
+    private ?string $image = null;
 
     public function __construct()
     {
@@ -256,7 +295,7 @@ class Provider
     {
         if (!$this->appointments->contains($appointment)) {
             $this->appointments->add($appointment);
-            $appointment->setProviderId($this);
+            $appointment->setProvider($this);
         }
 
         return $this;
@@ -266,8 +305,8 @@ class Provider
     {
         if ($this->appointments->removeElement($appointment)) {
             // set the owning side to null (unless already changed)
-            if ($appointment->getProviderId() === $this) {
-                $appointment->setProviderId(null);
+            if ($appointment->getProvider() === $this) {
+                $appointment->setProvider(null);
             }
         }
 
@@ -300,6 +339,18 @@ class Provider
                 $service->setProvider(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
