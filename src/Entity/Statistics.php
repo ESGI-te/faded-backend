@@ -6,7 +6,9 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use App\State\AppointmentCountStatisticsProvider;
 use App\State\AppointmentRateStatisticsProvider;
+use App\State\DailyIndicatorsProvider;
 use App\State\FeedbackProvider;
+use App\State\GlobalIndicatorProvider;
 use App\State\TopServicesProvider;
 use App\State\TurnOverProvider;
 
@@ -151,6 +153,44 @@ use App\State\TurnOverProvider;
             ],
             security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
             provider: FeedbackProvider::class),
+        new Get(
+            uriTemplate: '/statistics/daily',
+            openapiContext: [
+                'summary' => 'Get daily indicators',
+                'description' => 'Calculate daily turnover, number of appointments and number of services made for the current provider or establishment.',
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'establishmentId',
+                        'required' => false,
+                        'schema' => [
+                            'type' => 'string',
+                            'description' => 'The establishment id to filter the appointments'
+                        ]
+                    ],
+                ],
+            ],
+            security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
+            provider: DailyIndicatorsProvider::class),
+        new Get(
+            uriTemplate: '/statistics/global',
+            openapiContext: [
+                'summary' => 'Get global indicators',
+                'description' => 'Calculate global turnover, number of appointments and feedback for the current provider or establishment.',
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'establishmentId',
+                        'required' => false,
+                        'schema' => [
+                            'type' => 'string',
+                            'description' => 'The establishment id to filter the appointments'
+                        ]
+                    ],
+                ],
+            ],
+            security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
+            provider: GlobalIndicatorProvider::class),
     ]
 
 
