@@ -4,10 +4,8 @@ namespace App\Serializer;
 
 use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Appointment;
-use App\Entity\Auth\User;
 use App\Entity\Barber;
 use App\Entity\Establishment;
-use App\Entity\Provider;
 use App\Entity\Service;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
