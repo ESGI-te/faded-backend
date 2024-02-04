@@ -127,4 +127,59 @@ class AppointmentRepository extends ServiceEntityRepository
 
         return ['turnover' => $result];
     }
+
+    public function findDailyIndicators(string $start,string $end,string $providerId,string $establishmentId = null): array
+    {
+
+        $startOfDay = new \DateTime($start);
+
+        $endOfDay = new \DateTime($end);
+
+        $qb = $this->createQueryBuilder('a')
+            ->select('SUM(s.price) AS turnover', 'COUNT(a) AS appointments', 'COUNT(s) AS services')
+            ->join('a.service', 's')
+            ->where('a.provider = :providerId')
+            ->andWhere('a.status = :status')
+            ->andWhere('a.dateTime >= :startOfDay AND a.dateTime < :endOfDay')
+            ->setParameter('providerId', $providerId)
+            ->setParameter('status', 'planned')
+            ->setParameter('startOfDay', $startOfDay)
+            ->setParameter('endOfDay', $endOfDay)
+            ->groupBy('a.provider');
+
+        if($establishmentId) {
+            $qb->andWhere('a.establishment = :establishmentId')
+                ->setParameter('establishmentId', $establishmentId);
+        }
+
+        if ($qb->getQuery()->getResult())
+        {
+            return $qb->getQuery()->getSingleResult();
+        }
+
+        return [];
+    }
+
+    public function findGlobalAppointments($id, string $establishmentId = null):int
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(a)')
+            ->where('a.provider = :id')
+            ->andWhere('a.status = :status')
+            ->setParameter('id', $id)
+            ->setParameter('status', 'planned');
+
+        if($establishmentId) {
+            $qb->andWhere('a.establishment = :establishmentId')
+                ->setParameter('establishmentId', $establishmentId);
+        }
+
+        try {
+            $result = $qb->getQuery()->getSingleScalarResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return 0;
+        }
+
+        return (int) $result;
+    }
 }
