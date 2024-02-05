@@ -61,24 +61,26 @@ class DailyIndicatorsProvider implements ProviderInterface
             $yesterdaysIndicators = $this->appointmentRepository->findDailyIndicators('today - 1 day','today',$id);
         }
 
-        if ($todaysIndicators && $yesterdaysIndicators){
-            return [
-                'turnover' => [
-                    'value' => $todaysIndicators['turnover'],
-                    'percentageChange' => $this->getPercentageChange($yesterdaysIndicators['turnover'],$todaysIndicators['turnover']) . '%'
-                ],
-                'appointments' => [
-                    'value' => $todaysIndicators['appointments'],
-                    'percentageChange' => $this->getPercentageChange($yesterdaysIndicators['appointments'],$todaysIndicators['appointments']) . '%'
-                ],
-                'services' => [
-                    'value' => $todaysIndicators['services'],
-                    'percentageChange' => $this->getPercentageChange($yesterdaysIndicators['services'],$todaysIndicators['services']) . '%'
-                ],
-            ];
-        }
-        else
-            return [];
+        $noValueArray = [
+            'value' => 0,
+            'percentageChange' => 0
+        ];
+
+        return [
+            'turnover' => isset($todaysIndicators['turnover']) ? [
+                'value' => $todaysIndicators['turnover'],
+                'percentageChange' => $this->getPercentageChange($yesterdaysIndicators['turnover'],$todaysIndicators['turnover']) . '%'
+            ] : $noValueArray,
+            'appointments' => isset($todaysIndicators['appointments']) ? [
+                'value' => $todaysIndicators['appointments'],
+                'percentageChange' => $this->getPercentageChange($yesterdaysIndicators['appointments'],$todaysIndicators['appointments']) . '%'
+            ] : $noValueArray,
+            'services' => isset( $todaysIndicators['services']) ? [
+                'value' => $todaysIndicators['services'],
+                'percentageChange' => $this->getPercentageChange($yesterdaysIndicators['services'],$todaysIndicators['services']) . '%'
+            ] : $noValueArray,
+        ];
+
     }
 
 
