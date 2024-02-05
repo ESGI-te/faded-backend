@@ -6,7 +6,7 @@ establishment_1:
   provider: provider_1
   longitude: 2.303627
   latitude: 48.832455
-
+  status: active
 establishment_2:
   name: Black Box Paris VIII
   email: blackboxparis8@gmail.com
@@ -15,7 +15,7 @@ establishment_2:
   provider: provider_1
   longitude: 2.322492
   latitude: 48.869033
-
+  status: active
 establishment_3:
   name: Black Box Versailles
   email: blackboxversailles@gmail.com
@@ -24,7 +24,7 @@ establishment_3:
   provider: provider_1
   longitude: 2.137597
   latitude: 48.815357
-
+  status: active
 establishment_4:
   name: Elegant Styles Paris XI
   email: elegantstylesparis11@gmail.com
@@ -33,7 +33,7 @@ establishment_4:
   provider: provider_2
   longitude: 2.363033
   latitude: 48.855349
-
+  status: active
 establishment_5:
   name: Elegant Styles Neuilly-sur-Seine
   email: elegantstylesneuilly@gmail.com
@@ -42,7 +42,7 @@ establishment_5:
   provider: provider_2
   longitude: 2.290730
   latitude: 48.886445
-
+  status: active
 establishment_6:
   name: Elegant Styles Saint-Germain-en-Laye
   email: elegantstylesstgermain@gmail.com
@@ -51,7 +51,7 @@ establishment_6:
   provider: provider_2
   longitude: 2.077036
   latitude: 48.874039
-
+  status: active
 establishment_7:
   name: Chic Cuts Paris
   email: chiccutsparis@gmail.com
@@ -60,7 +60,7 @@ establishment_7:
   provider: provider_3
   longitude: 2.282211
   latitude: 48.862345
-
+  status: active
 establishment_8:
   name: Chic Cuts Boulogne-Billancourt
   email: chiccutsboulogne@gmail.com
@@ -69,7 +69,7 @@ establishment_8:
   provider: provider_3
   longitude: 2.232137
   latitude: 48.843832
-
+  status: active
 establishment_9:
   name: Chic Cuts Vincennes
   email: chiccutsvincennes@gmail.com
@@ -78,7 +78,7 @@ establishment_9:
   provider: provider_3
   longitude: 2.419497
   latitude: 48.854394
-
+  status: active
 establishment_10:
   name: Trendy Tresses Paris
   email: trendytressesparis@gmail.com
@@ -87,7 +87,7 @@ establishment_10:
   provider: provider_4
   longitude: 2.343333
   latitude: 48.874255
-
+  status: active
 establishment_11:
   name: Trendy Tresses Levallois-Perret
   email: trendytresseslevallois@gmail.com
@@ -96,7 +96,7 @@ establishment_11:
   provider: provider_4
   longitude: 2.291444
   latitude: 48.894329
-
+  status: active
 establishment_12:
   name: Trendy Tresses Suresnes
   email: trendytressessuresnes@gmail.com
@@ -105,7 +105,7 @@ establishment_12:
   provider: provider_4
   longitude: 2.203056
   latitude: 48.830833
-
+  status: active
 establishment_13:
   name: Urban Glam Paris
   email: urbanglamparis@gmail.com
@@ -114,7 +114,7 @@ establishment_13:
   provider: provider_5
   longitude: 2.366667
   latitude: 48.832500
-
+  status: active
 establishment_14:
   name: Urban Glam Saint-Denis
   email: urbanglamsaintdenis@gmail.com
@@ -123,7 +123,7 @@ establishment_14:
   provider: provider_5
   longitude: 2.330556
   latitude: 48.920000
-
+  status: active
 establishment_15:
   name: Urban Glam Ivry-sur-Seine
   email: urbanglamivry@gmail.com
@@ -132,7 +132,7 @@ establishment_15:
   provider: provider_5
   longitude: 2.363889
   latitude: 48.821667
-
+  status: active
 establishment_16:
   name: Style Central Paris
   email: stylecentralparis@gmail.com
@@ -141,7 +141,7 @@ establishment_16:
   provider: provider_6
   longitude: 2.333056
   latitude: 48.866667
-
+  status: active
 establishment_17:
   name: Style Central Levallois-Perret
   email: stylecentrallevallois@gmail.com
@@ -150,7 +150,7 @@ establishment_17:
   provider: provider_6
   longitude: 2.288611
   latitude: 48.896389
-
+  status: active
 establishment_18:
   name: Style Central Neuilly-sur-Seine
   email: stylecentralneuilly@gmail.com
@@ -159,7 +159,7 @@ establishment_18:
   provider: provider_6
   longitude: 2.289722
   latitude: 48.890833
-
+  status: active
 establishment_19:
   name: Haute Hair Paris
   email: hautehairparis@gmail.com
@@ -168,7 +168,7 @@ establishment_19:
   provider: provider_7
   longitude: 2.322492
   latitude: 48.869033
-
+  status: active
 establishment_20:
   name: Haute Hair Neuilly-sur-Seine
   email: hautehairneuilly@gmail.com
@@ -177,7 +177,7 @@ establishment_20:
   provider: provider_7
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_21:
   name: Haute Hair Boulogne-Billancourt
   email: hautehairboulogne@gmail.com
@@ -186,7 +186,7 @@ establishment_21:
   provider: provider_7
   longitude: 2.237222
   latitude: 48.842222
-
+  status: active
 establishment_22:
   name: Classic Curls Paris
   email: classiccurlsparis@gmail.com
@@ -195,7 +195,7 @@ establishment_22:
   provider: provider_8
   longitude: 2.333056
   latitude: 48.866667
-
+  status: active
 establishment_23:
   name: Classic Curls Neuilly-sur-Seine
   email: classiccurlsneuilly@gmail.com
@@ -204,7 +204,7 @@ establishment_23:
   provider: provider_8
   longitude: 2.281944
   latitude: 48.891667
-
+  status: active
 establishment_24:
   name: Classic Curls Boulogne-Billancourt
   email: classiccurlsboulogne@gmail.com
@@ -213,7 +213,7 @@ establishment_24:
   provider: provider_8
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_25:
   name: Velvet Vibe Paris
   email: velvetvibeparis@gmail.com
@@ -222,7 +222,7 @@ establishment_25:
   provider: provider_9
   longitude: 2.328889
   latitude: 48.872500
-
+  status: active
 establishment_26:
   name: Velvet Vibe Saint-Denis
   email: velvetvibesaintdenis@gmail.com
@@ -231,7 +231,7 @@ establishment_26:
   provider: provider_9
   longitude: 2.330556
   latitude: 48.920000
-
+  status: active
 establishment_27:
   name: Velvet Vibe Ivry-sur-Seine
   email: velvetvibeivry@gmail.com
@@ -240,7 +240,7 @@ establishment_27:
   provider: provider_9
   longitude: 2.363889
   latitude: 48.821667
-
+  status: active
 establishment_28:
   name: Modern Mane Paris
   email: modernmaneparis@gmail.com
@@ -249,7 +249,7 @@ establishment_28:
   provider: provider_10
   longitude: 2.303627
   latitude: 48.832455
-
+  status: active
 establishment_29:
   name: Modern Mane Neuilly-sur-Seine
   email: modernmaneneuilly@gmail.com
@@ -258,7 +258,7 @@ establishment_29:
   provider: provider_10
   longitude: 2.274167
   latitude: 48.890278
-
+  status: active
 establishment_30:
   name: Modern Mane Boulogne-Billancourt
   email: modernmaneboulogne@gmail.com
@@ -267,7 +267,7 @@ establishment_30:
   provider: provider_10
   longitude: 2.232500
   latitude: 48.842778
-
+  status: active
 establishment_31:
   name: Sleek Strands Paris
   email: sleekstrandsparis@gmail.com
@@ -276,7 +276,7 @@ establishment_31:
   provider: provider_11
   longitude: 2.332778
   latitude: 48.873611
-
+  status: active
 establishment_32:
   name: Sleek Strands Neuilly-sur-Seine
   email: sleekstrandsneuilly@gmail.com
@@ -285,7 +285,7 @@ establishment_32:
   provider: provider_11
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_33:
   name: Sleek Strands Boulogne-Billancourt
   email: sleekstrandsboulogne@gmail.com
@@ -294,7 +294,7 @@ establishment_33:
   provider: provider_11
   longitude: 2.237222
   latitude: 48.842222
-
+  status: active
 establishment_34:
   name: Posh Pixie Paris
   email: poshpixieparis@gmail.com
@@ -303,7 +303,7 @@ establishment_34:
   provider: provider_12
   longitude: 2.339444
   latitude: 48.872222
-
+  status: active
 establishment_35:
   name: Posh Pixie Neuilly-sur-Seine
   email: poshpixieneuilly@gmail.com
@@ -312,7 +312,7 @@ establishment_35:
   provider: provider_12
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_36:
   name: Posh Pixie Boulogne-Billancourt
   email: poshpixieboulogne@gmail.com
@@ -321,7 +321,7 @@ establishment_36:
   provider: provider_12
   longitude: 2.229444
   latitude: 48.846944
-
+  status: active
 establishment_37:
   name: Dapper Dos Paris
   email: dapperdosparis@gmail.com
@@ -330,7 +330,7 @@ establishment_37:
   provider: provider_13
   longitude: 2.296111
   latitude: 48.874444
-
+  status: active
 establishment_38:
   name: Dapper Dos Neuilly-sur-Seine
   email: dapperdosneuilly@gmail.com
@@ -339,7 +339,7 @@ establishment_38:
   provider: provider_13
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_39:
   name: Dapper Dos Boulogne-Billancourt
   email: dapperdosboulogne@gmail.com
@@ -348,7 +348,7 @@ establishment_39:
   provider: provider_13
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_40:
   name: Stylish Shears Paris
   email: stylishshearsparis@gmail.com
@@ -357,7 +357,7 @@ establishment_40:
   provider: provider_14
   longitude: 2.369167
   latitude: 48.858056
-
+  status: active
 establishment_41:
   name: Stylish Shears Neuilly-sur-Seine
   email: stylishshearsneuilly@gmail.com
@@ -366,7 +366,7 @@ establishment_41:
   provider: provider_14
   longitude: 2.281944
   latitude: 48.891667
-
+  status: active
 establishment_42:
   name: Stylish Shears Boulogne-Billancourt
   email: stylishshearsboulogne@gmail.com
@@ -375,7 +375,7 @@ establishment_42:
   provider: provider_14
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_43:
   name: Trendsetter Tress Paris
   email: trendsettertressparis@gmail.com
@@ -384,7 +384,7 @@ establishment_43:
   provider: provider_15
   longitude: 2.366667
   latitude: 48.832500
-
+  status: active
 establishment_44:
   name: Trendsetter Tress Neuilly-sur-Seine
   email: trendsettertressneuilly@gmail.com
@@ -393,7 +393,7 @@ establishment_44:
   provider: provider_15
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_45:
   name: Trendsetter Tress Boulogne-Billancourt
   email: trendsettertressboulogne@gmail.com
@@ -402,7 +402,7 @@ establishment_45:
   provider: provider_15
   longitude: 2.237222
   latitude: 48.842222
-
+  status: active
 establishment_46:
   name: Viva Volume Paris
   email: vivavolumeparis@gmail.com
@@ -411,7 +411,7 @@ establishment_46:
   provider: provider_16
   longitude: 2.290833
   latitude: 48.856389
-
+  status: active
 establishment_47:
   name: Viva Volume Neuilly-sur-Seine
   email: vivavolumeneuilly@gmail.com
@@ -420,7 +420,7 @@ establishment_47:
   provider: provider_16
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_48:
   name: Viva Volume Boulogne-Billancourt
   email: vivavolumeboulogne@gmail.com
@@ -429,7 +429,7 @@ establishment_48:
   provider: provider_16
   longitude: 2.242500
   latitude: 48.835000
-
+  status: active
 establishment_49:
   name: Elite Extensions Paris
   email: eliteextensionsparis@gmail.com
@@ -438,7 +438,7 @@ establishment_49:
   provider: provider_17
   longitude: 2.385278
   latitude: 48.861389
-
+  status: active
 establishment_50:
   name: Elite Extensions Neuilly-sur-Seine
   email: eliteextensionsneuilly@gmail.com
@@ -447,7 +447,7 @@ establishment_50:
   provider: provider_17
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_51:
   name: Elite Extensions Boulogne-Billancourt
   email: eliteextensionsboulogne@gmail.com
@@ -456,7 +456,7 @@ establishment_51:
   provider: provider_17
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_52:
   name: Glamour Grove Paris
   email: glamourgroveparis@gmail.com
@@ -465,7 +465,7 @@ establishment_52:
   provider: provider_18
   longitude: 2.370556
   latitude: 48.854167
-
+  status: active
 establishment_53:
   name: Glamour Grove Neuilly-sur-Seine
   email: glamourgroveneuilly@gmail.com
@@ -474,7 +474,7 @@ establishment_53:
   provider: provider_18
   longitude: 2.281944
   latitude: 48.891667
-
+  status: active
 establishment_54:
   name: Glamour Grove Boulogne-Billancourt
   email: glamourgroveboulogne@gmail.com
@@ -483,7 +483,7 @@ establishment_54:
   provider: provider_18
   longitude: 2.237222
   latitude: 48.842222
-
+  status: active
 establishment_55:
   name: Radiant Ringlets Paris
   email: radiantringletsparis@gmail.com
@@ -492,7 +492,7 @@ establishment_55:
   provider: provider_19
   longitude: 2.296111
   latitude: 48.874444
-
+  status: active
 establishment_56:
   name: Radiant Ringlets Neuilly-sur-Seine
   email: radiantringletsneuilly@gmail.com
@@ -501,7 +501,7 @@ establishment_56:
   provider: provider_19
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_57:
   name: Radiant Ringlets Boulogne-Billancourt
   email: radiantringletsboulogne@gmail.com
@@ -510,7 +510,7 @@ establishment_57:
   provider: provider_19
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_58:
   name: Polished Ponies Paris
   email: polishedponiesparis@gmail.com
@@ -519,7 +519,7 @@ establishment_58:
   provider: provider_20
   longitude: 2.369167
   latitude: 48.858056
-
+  status: active
 establishment_59:
   name: Polished Ponies Neuilly-sur-Seine
   email: polishedponiesneuilly@gmail.com
@@ -528,7 +528,7 @@ establishment_59:
   provider: provider_20
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_60:
   name: Polished Ponies Boulogne-Billancourt
   email: polishedponiesboulogne@gmail.com
@@ -537,7 +537,7 @@ establishment_60:
   provider: provider_20
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_61:
   name: Blissful Braids Paris
   email: blissfulbraidsparis@gmail.com
@@ -546,7 +546,7 @@ establishment_61:
   provider: provider_21
   longitude: 2.366667
   latitude: 48.832500
-
+  status: active
 establishment_62:
   name: Blissful Braids Neuilly-sur-Seine
   email: blissfulbraidsneuilly@gmail.com
@@ -555,7 +555,7 @@ establishment_62:
   provider: provider_21
   longitude: 2.286944
   latitude: 48.890278
-
+  status: active
 establishment_63:
   name: Blissful Braids Boulogne-Billancourt
   email: blissfulbraidsboulogne@gmail.com
@@ -564,7 +564,7 @@ establishment_63:
   provider: provider_21
   longitude: 2.223472
   latitude: 48.834611
-
+  status: active
 establishment_64:
   name: Harmony Hair Hub Paris
   email: harmonyhairhubparis@gmail.com
@@ -573,7 +573,7 @@ establishment_64:
   provider: provider_22
   longitude: 2.295833
   latitude: 48.860556
-
+  status: active
 establishment_65:
   name: Harmony Hair Hub Neuilly-sur-Seine
   email: harmonyhairhubneuilly@gmail.com
@@ -582,7 +582,7 @@ establishment_65:
   provider: provider_22
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_66:
   name: Harmony Hair Hub Boulogne-Billancourt
   email: harmonyhairhubboulogne@gmail.com
@@ -591,7 +591,7 @@ establishment_66:
   provider: provider_22
   longitude: 2.286944
   latitude: 48.890278
-
+  status: active
 establishment_67:
   name: Couture Curls Paris
   email: couturecurlsparis@gmail.com
@@ -600,7 +600,7 @@ establishment_67:
   provider: provider_23
   longitude: 2.315000
   latitude: 48.875833
-
+  status: active
 establishment_68:
   name: Couture Curls Neuilly-sur-Seine
   email: couturecurlsneuilly@gmail.com
@@ -609,7 +609,7 @@ establishment_68:
   provider: provider_23
   longitude: 2.282222
   latitude: 48.891389
-
+  status: active
 establishment_69:
   name: Couture Curls Boulogne-Billancourt
   email: couturecurlsboulogne@gmail.com
@@ -618,7 +618,7 @@ establishment_69:
   provider: provider_23
   longitude: 2.236111
   latitude: 48.839444
-
+  status: active
 establishment_70:
   name: Lustrous Locks Paris
   email: lustrouslocksparis@gmail.com
@@ -627,7 +627,7 @@ establishment_70:
   provider: provider_24
   longitude: 2.295833
   latitude: 48.860556
-
+  status: active
 establishment_71:
   name: Lustrous Locks Neuilly-sur-Seine
   email: lustrouslocksneuilly@gmail.com
@@ -636,7 +636,7 @@ establishment_71:
   provider: provider_24
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_72:
   name: Lustrous Locks Boulogne-Billancourt
   email: lustrouslocksboulogne@gmail.com
@@ -645,7 +645,7 @@ establishment_72:
   provider: provider_24
   longitude: 2.286944
   latitude: 48.890278
-
+  status: active
 establishment_73:
   name: Velvet Victory Paris
   email: velvetvictoryparis@gmail.com
@@ -654,7 +654,7 @@ establishment_73:
   provider: provider_25
   longitude: 2.370556
   latitude: 48.854167
-
+  status: active
 establishment_74:
   name: Velvet Victory Neuilly-sur-Seine
   email: velvetvictoryneuilly@gmail.com
@@ -663,7 +663,7 @@ establishment_74:
   provider: provider_25
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_75:
   name: Velvet Victory Boulogne-Billancourt
   email: velvetvictoryboulogne@gmail.com
@@ -672,7 +672,7 @@ establishment_75:
   provider: provider_25
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_76:
   name: Radiant Roots Paris
   email: radiantrootsparis@gmail.com
@@ -681,7 +681,7 @@ establishment_76:
   provider: provider_26
   longitude: 2.296111
   latitude: 48.874444
-
+  status: active
 establishment_77:
   name: Radiant Roots Neuilly-sur-Seine
   email: radiantrootsneuilly@gmail.com
@@ -690,7 +690,7 @@ establishment_77:
   provider: provider_26
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_78:
   name: Radiant Roots Boulogne-Billancourt
   email: radiantrootsboulogne@gmail.com
@@ -699,7 +699,7 @@ establishment_78:
   provider: provider_26
   longitude: 2.232778
   latitude: 48.844444
-
+  status: active
 establishment_79:
   name: Splendid Strands Paris
   email: splendidstrandsparis@gmail.com
@@ -708,7 +708,7 @@ establishment_79:
   provider: provider_27
   longitude: 2.366667
   latitude: 48.832500
-
+  status: active
 establishment_80:
   name: Splendid Strands Neuilly-sur-Seine
   email: splendidstrandsneuilly@gmail.com
@@ -717,7 +717,7 @@ establishment_80:
   provider: provider_27
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_81:
   name: Splendid Strands Boulogne-Billancourt
   email: splendidstrandsboulogne@gmail.com
@@ -726,7 +726,7 @@ establishment_81:
   provider: provider_27
   longitude: 2.237222
   latitude: 48.842222
-
+  status: active
 establishment_82:
   name: Allure Attire Paris
   email: allureattireparis@gmail.com
@@ -735,7 +735,7 @@ establishment_82:
   provider: provider_28
   longitude: 2.295833
   latitude: 48.860556
-
+  status: active
 establishment_83:
   name: Allure Attire Neuilly-sur-Seine
   email: allureattireneuilly@gmail.com
@@ -744,7 +744,7 @@ establishment_83:
   provider: provider_28
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_84:
   name: Allure Attire Boulogne-Billancourt
   email: allureattireboulogne@gmail.com
@@ -753,7 +753,7 @@ establishment_84:
   provider: provider_28
   longitude: 2.286944
   latitude: 48.890278
-
+  status: active
 establishment_85:
   name: Mystique Mane Paris
   email: mystiquemaneparis@gmail.com
@@ -762,7 +762,7 @@ establishment_85:
   provider: provider_29
   longitude: 2.295833
   latitude: 48.860556
-
+  status: active
 establishment_86:
   name: Mystique Mane Neuilly-sur-Seine
   email: mystiquemane@gmail.com
@@ -771,7 +771,7 @@ establishment_86:
   provider: provider_29
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_87:
   name: Mystique Mane Boulogne-Billancourt
   email: mystiquemane@gmail.com
@@ -780,7 +780,7 @@ establishment_87:
   provider: provider_29
   longitude: 2.286944
   latitude: 48.890278
-
+  status: active
 establishment_88:
   name: Enchanting Elegance Paris
   email: enchantingeleganceparis@gmail.com
@@ -789,7 +789,7 @@ establishment_88:
   provider: provider_30
   longitude: 2.370556
   latitude: 48.854167
-
+  status: active
 establishment_89:
   name: Enchanting Elegance Neuilly-sur-Seine
   email: enchantingeleganceneuilly@gmail.com
@@ -798,7 +798,7 @@ establishment_89:
   provider: provider_30
   longitude: 2.285278
   latitude: 48.891389
-
+  status: active
 establishment_90:
   name: Enchanting Elegance Boulogne-Billancourt
   email: enchantingeleganceboulogne@gmail.com
@@ -807,3 +807,4 @@ establishment_90:
   provider: provider_30
   longitude: 2.232778
   latitude: 48.844444
+  status: active

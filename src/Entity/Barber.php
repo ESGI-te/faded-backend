@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\ExistsFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
@@ -44,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
+#[ApiFilter(ExistsFilter::class, properties: ['establishment'])]
 #[ApiFilter(SearchFilter::class, properties: [
     'establishment' => 'exact',
     'lastName' => 'ipartial',
@@ -58,7 +60,6 @@ class Barber
         'establishment-read',
         'appointment-read',
         'barber-read',
-        'appointment-establishment-read',
         'user-read-barber',
         'barber-delete'
     ])]
@@ -76,7 +77,7 @@ class Barber
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['barber-read'])]
+    #[Groups(['barber-read', 'barber-update'])]
     private ?Establishment $establishment = null;
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]

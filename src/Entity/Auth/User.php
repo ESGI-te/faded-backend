@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\UserInfoController;
+use App\Dto\UserDto;
 use App\Entity\Appointment;
 use App\Entity\Barber;
 use App\Entity\Feedback;
@@ -20,6 +21,7 @@ use App\Enum\LocalesEnum;
 use App\Repository\UserRepository;
 use App\State\CreateUserProcessor;
 use App\State\UpdateUserPasswordProcessor;
+use App\State\UserDtoValidationProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -73,14 +75,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'user-update'],
             validationContext: ['groups' => 'user-update']
         ),
-        new Patch(
-            uriTemplate: '/users/{id}/password',
-            normalizationContext: ['groups' => 'user-update-password-read'],
-            denormalizationContext: ['groups' => 'user-update-password'],
-            validationContext: ['groups' => 'user-update-password'],
-            name: 'user_update_password',
-            processor: UpdateUserPasswordProcessor::class,
-        ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
 )]
@@ -103,7 +97,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user-read-update',
         'establishment-read',
         'user-create-barber',
-        'user-read-barber'
+        'user-read-barber',
+        'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
     #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
@@ -116,7 +111,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user-read-update',
         'establishment-read',
         'user-create-barber',
-        'user-read-barber'
+        'user-read-barber',
+        'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
     #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]

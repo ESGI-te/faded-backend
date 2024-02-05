@@ -34,7 +34,7 @@ services:
     tags:
       - { name: api_platform.doctrine.orm.query_extension.collection }
       - { name: api_platform.doctrine.orm.query_extension.item }
-  'App\Doctrine\CurrentProviderBarbersExtension':
+  'App\Doctrine\CurrentBarbersExtension':
     tags:
       - { name: api_platform.doctrine.orm.query_extension.collection }
       - { name: api_platform.doctrine.orm.query_extension.item }
@@ -42,6 +42,17 @@ services:
     tags:
       - { name: api_platform.doctrine.orm.query_extension.collection }
       - { name: api_platform.doctrine.orm.query_extension.item }
+  'App\Doctrine\CurrentServicesExtension':
+    tags:
+      - { name: api_platform.doctrine.orm.query_extension.collection }
+      - { name: api_platform.doctrine.orm.query_extension.item }
+
+  App\Serializer\ProviderImageDenormalizer:
+    arguments:
+      $normalizer: '@serializer.normalizer.object'
+    tags:
+      - { name: 'serializer.normalizer', priority: 64 }
+
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

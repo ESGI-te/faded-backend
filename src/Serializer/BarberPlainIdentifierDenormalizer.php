@@ -3,12 +3,10 @@
 namespace App\Serializer;
 
 use ApiPlatform\Api\IriConverterInterface;
-use App\Entity\Appointment;
 use App\Entity\Auth\User;
 use App\Entity\Barber;
 use App\Entity\Establishment;
 use App\Entity\Provider;
-use App\Entity\Service;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
@@ -33,7 +31,10 @@ class BarberPlainIdentifierDenormalizer implements ContextAwareDenormalizerInter
             $data['provider'] = $this->iriConverter->getIriFromResource(resource: Provider::class, context: ['uri_variables' => ['id' => $data['provider']]]);
         }
         if(!empty($data['user'])) {
-            $data['user'] = $this->iriConverter->getIriFromResource(resource: Provider::class, context: ['uri_variables' => ['id' => $data['user']]]);
+            $data['user'] = $this->iriConverter->getIriFromResource(resource: User::class, context: ['uri_variables' => ['id' => $data['user']]]);
+        }
+        if(!empty($data['establishment'])) {
+            $data['establishment'] = $this->iriConverter->getIriFromResource(resource: Establishment::class, context: ['uri_variables' => ['id' => $data['establishment']]]);
         }
         
         return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
@@ -46,6 +47,7 @@ class BarberPlainIdentifierDenormalizer implements ContextAwareDenormalizerInter
     {
         $hasRelationship =
             !empty($data['provider'])
+            || !empty($data['establishment'])
             || !empty($data['user']);
 
         return \in_array($format, ['json', 'jsonld'], true)

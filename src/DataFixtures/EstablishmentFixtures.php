@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Barber;
 use App\Entity\Establishment;
+use App\Entity\Provider;
 use App\Entity\Service;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -17,30 +18,40 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
     public const ESTABLISHEMENT_REFERENCE = 'establishsment_';
     private const PLANNING = [
         'monday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'tuesday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'wednesday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'thursday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'friday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
         'saturday' => [
-            'open' => '2000-01-01 09:00:00',
-            'close' => '2000-01-01 19:00:00',
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => true,
         ],
-        'sunday' => [],
+        'sunday' => [
+            'open' => '09:00:00',
+            'close' => '18:00:00',
+            'IsOpen' => false,
+        ],
     ];
     private $faker;
 
@@ -66,6 +77,7 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
             $establishment->setLongitude($establishmentData['longitude']);
             $establishment->setProvider($this->getReference($establishmentData['provider']));
             $establishment->setPlanning(self::PLANNING);
+            $establishment->setStatus($establishmentData['status']);
 
             $provider = $establishment->getProvider();
 
@@ -85,7 +97,7 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
                 });
 
                 foreach ($categoryServices as $serviceData) {
-                    $service = $this->createService($serviceData);
+                    $service = $this->createService($serviceData, $establishment->getProvider());
                     $category->addService($service);
                     $manager->persist($service, $category);
                     $establishment->addService($service);
@@ -110,12 +122,13 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
         return $barber;
     }
 
-    private function createService($data): Service
+    private function createService($data, Provider $provider): Service
     {
         $service = new Service();
         $service->setName($data['name']);
         $service->setPrice($data['price']);
         $service->setDuration($data['duration']);
+        $service->setProvider($provider);
         return $service;
     }
 
