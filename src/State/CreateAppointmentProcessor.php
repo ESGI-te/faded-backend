@@ -11,6 +11,12 @@ use ApiPlatform\State\ProcessorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Color\Color;
+
 
 final class CreateAppointmentProcessor implements ProcessorInterface
 {
@@ -20,7 +26,6 @@ final class CreateAppointmentProcessor implements ProcessorInterface
     private EntityManagerInterface $entityManager;
     private BarberRepository $barberRepository;
     private Security $security;
-
 
     public function __construct(
         EmailService $emailService,
@@ -58,6 +63,9 @@ final class CreateAppointmentProcessor implements ProcessorInterface
         $this->entityManager->persist($data);
         $this->entityManager->flush();
         $this->sendAppointmentSummaryEmail($data);
+
+        // Générer le QR code pour l'identifiant de l'objet Appointment
+        $this->generateQRCode($data->getId());
     }
 
     private function addRandomBarber(Appointment $appointment): void
@@ -90,6 +98,23 @@ final class CreateAppointmentProcessor implements ProcessorInterface
         } catch (\Exception $e) {
             throw new \Exception('Error: ' . $e->getMessage());
         }
+    }
 
+    private function generateQRCode(string $appointmentId): void
+    {
+        // Création de l'objet QR Code
+        $qrCode = Builder::create()
+            ->data($appointmentId)
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(ErrorCorrectionLevel::Low) 
+            ->size(300)
+            ->margin(10)
+            ->roundBlockSizeMode(RoundBlockSizeMode::Margin) 
+            ->foregroundColor(new Color(0, 0, 0))
+            ->backgroundColor(new Color(255, 255, 255))
+            ->build();
+
+        // Obtenez la chaîne de caractères représentant le contenu du QR code
+        $qrCodeString = $qrCode->getString();
     }
 }
