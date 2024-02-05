@@ -44,7 +44,6 @@ use App\State\TurnOverProvider;
             security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
             provider: AppointmentCountStatisticsProvider::class
         ),
-
         new Get(
             uriTemplate: '/statistics/appointments/rate',
             openapiContext: [
@@ -82,7 +81,6 @@ use App\State\TurnOverProvider;
             ],
             security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
             provider: AppointmentRateStatisticsProvider::class),
-
         new Get(
             uriTemplate: '/statistics/services/top',
             openapiContext: [
@@ -112,8 +110,6 @@ use App\State\TurnOverProvider;
             ],
             security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
             provider: TopServicesProvider::class),
-
-
         new Get(
             uriTemplate: '/statistics/turnover',
             openapiContext: [

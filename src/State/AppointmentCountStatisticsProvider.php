@@ -56,7 +56,7 @@ class AppointmentCountStatisticsProvider implements ProviderInterface
         return null;
     }
 
-    private function getAppointments(int $id, int $days, string $establishmentId = null): array
+    private function getAppointments(string $id, int $days, string $establishmentId = null): array
     {
         if($establishmentId) {
             $appointments = $this->appointmentRepository->findByRangAppointments($id,$days,$establishmentId);

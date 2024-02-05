@@ -108,7 +108,7 @@ class AppointmentRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findGlobalTurnOver(string $providerId,string $establishmentId = null):array
+    public function findGlobalTurnOver(string $providerId,string $establishmentId = null): ?int
     {
         $qb = $this->createQueryBuilder('a')
             ->select('SUM(s.price) AS turnover')
@@ -123,9 +123,7 @@ class AppointmentRepository extends ServiceEntityRepository
                 ->setParameter('establishmentId', $establishmentId);
         }
 
-        $result = $qb->getQuery()->getSingleScalarResult();
-
-        return ['turnover' => $result];
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     public function findDailyIndicators(string $start,string $end,string $providerId,string $establishmentId = null): array
