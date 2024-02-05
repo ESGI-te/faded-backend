@@ -67,7 +67,7 @@ class GlobalIndicatorProvider implements ProviderInterface
         return [
             'turnover' => $globalTurnover,
             'appointments' => $globalAppointments,
-            'feedback' => $globalFeedback
+            'average_feedback' => $globalFeedback
         ];
 
     }
