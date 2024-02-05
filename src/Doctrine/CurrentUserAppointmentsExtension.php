@@ -21,9 +21,6 @@ final readonly class CurrentUserAppointmentsExtension implements QueryCollection
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
-//        if($operation && $operation->getName() === 'get_collection' && $operation->getNormalizationContext() == 'appointment-establishment-read') {
-//            return;
-//        }
         $this->addWhere($queryBuilder, $resourceClass);
     }
 
@@ -37,9 +34,10 @@ final readonly class CurrentUserAppointmentsExtension implements QueryCollection
         $user = $this->security->getUser();
         $isAdmin = $this->security->isGranted('ROLE_ADMIN');
         $isProvider = $this->security->isGranted('ROLE_PROVIDER');
+        $isBarber = $this->security->isGranted('ROLE_BARBER');
 
         if (
-            Appointment::class !== $resourceClass || $isAdmin || !$user) {
+            Appointment::class !== $resourceClass || !$user || $isAdmin) {
             return;
         }
 
@@ -49,6 +47,13 @@ final readonly class CurrentUserAppointmentsExtension implements QueryCollection
             $queryBuilder->leftJoin(sprintf('%s.establishment', $rootAlias), 'e');
             $queryBuilder->leftJoin('e.provider', 'p');
             $queryBuilder->andWhere('p.user = :current_user');
+            $queryBuilder->setParameter('current_user', $user);
+            return;
+        }
+
+        if($isBarber) {
+            $queryBuilder->leftJoin(sprintf('%s.barber', $rootAlias), 'b');
+            $queryBuilder->andWhere('b.user = :current_user');
             $queryBuilder->setParameter('current_user', $user);
             return;
         }

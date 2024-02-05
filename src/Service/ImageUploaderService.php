@@ -9,26 +9,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ImageUploaderService
 {
-    private EntityManagerInterface $entityManager;
 
     public function __construct(string $cloudinaryUrl, EntityManagerInterface $entityManager)
     {
         Configuration::instance($cloudinaryUrl);
-        $this->entityManager = $entityManager;
     }
 
-    public function uploadImage($file, $options): Image
+    public function uploadImage($file, $options): string
     {
         $upload = new UploadApi();
-        $image = new Image();
         $file = $upload->upload($file, [
             ...$options,
             'resource_type' => 'image'
         ]);
-        $image->setUrl($file['secure_url']);
-        $this->entityManager->persist($image);
-        $this->entityManager->flush();
-
-        return $image;
+        return $file['secure_url'];
     }
 }

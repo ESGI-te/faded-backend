@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\UploadProviderImageController;
 use App\Entity\Auth\User;
 use App\Repository\ProviderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,27 +16,64 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+//            normalizationContext: ['groups' => 'provider-read'],
+            security: "is_granted('ROLE_ADMIN')"
+        ),
+        new Get(
+            security: "
+            is_granted('ROLE_ADMIN') 
+            or is_granted('ROLE_PROVIDER') and object.getUser() == user"
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['provider-create']],
+            security: "is_granted('ROLE_ADMIN')",
+            validationContext: ['groups' => ['provider-create']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['provider-update']],
+            security: "is_granted('ROLE_PROVIDER') and object.getUser() == user"
+        ),
+        new Patch(
+            uriTemplate: '/providers/{id}/image',
+            denormalizationContext: ['groups' => ['provider-update-image']],
+            security: "is_granted('ROLE_PROVIDER') and object.getUser() == user",
+        ),
+        new Delete(
+            security: "
+            is_granted('ROLE_ADMIN') 
+            or is_granted('ROLE_PROVIDER') and object.getUser() == user"
+        )
+    ],
+    normalizationContext: ['groups' => ['provider-read']],
+)]
 class Provider
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['user-read-barber', 'user-read', 'provider-read', 'service-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-read'])]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Email]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
+    #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/')]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
@@ -47,16 +90,30 @@ class Provider
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider', 'user-read', 'provider-update', 'provider-read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
     private ?string $address = null;
+
+    #[ORM\OneToMany(mappedBy: 'provider_id', targetEntity: Appointment::class)]
+    private Collection $appointments;
+
+    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Service::class, orphanRemoval: true)]
+    private Collection $services;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user-read-provider', 'provider-update-image', 'provider-read'])]
+    private ?string $image = null;
 
     public function __construct()
     {
         $this->establishments = new ArrayCollection();
         $this->barbers = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -222,6 +279,78 @@ class Provider
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getProvider() === $this) {
+                $appointment->setProvider(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getProvider() === $this) {
+                $service->setProvider(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
