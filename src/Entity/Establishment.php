@@ -102,7 +102,7 @@ const DEFAULT_PLANNING = [
             uriTemplate: '/establishments/{id}/images',
             normalizationContext: ['groups' => 'establishment-image-read']
         ),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Delete(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"),
     ],
     validationContext: ['groups' => [Establishment::class, 'validationGroups']])]
 #[ApiFilter(SearchFilter::class, properties: [
