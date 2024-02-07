@@ -77,6 +77,14 @@ class ProviderRequest
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $tokenExpirationDate = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?string
     {
         return $this->id;
@@ -198,6 +206,18 @@ class ProviderRequest
     public function setTokenExpirationDate(?\DateTimeInterface $tokenExpirationDate): static
     {
         $this->tokenExpirationDate = $tokenExpirationDate;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

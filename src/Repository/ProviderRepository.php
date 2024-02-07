@@ -45,4 +45,12 @@ class ProviderRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findTotalProviders():int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p.id) as totalProviders')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }
