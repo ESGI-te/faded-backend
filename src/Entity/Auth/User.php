@@ -152,12 +152,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordToken::class)]
     private Collection $resetPasswordTokens;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
         $this->appointments = new ArrayCollection();
         $this->feedback = new ArrayCollection();
         $this->resetPasswordTokens = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getEmail(): ?string
@@ -300,5 +304,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getResetPasswordTokens(): Collection
     {
         return $this->resetPasswordTokens;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 }
