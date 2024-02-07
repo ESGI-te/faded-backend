@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use App\State\AdminIndicatorsProvider;
 use App\State\AppointmentCountStatisticsProvider;
 use App\State\AppointmentRateStatisticsProvider;
 use App\State\DailyIndicatorsProvider;
 use App\State\FeedbackProvider;
 use App\State\GlobalIndicatorProvider;
+use App\State\NewUserByDateRangeProvider;
 use App\State\TopServicesProvider;
 use App\State\TurnOverProvider;
 
@@ -187,6 +189,42 @@ use App\State\TurnOverProvider;
             ],
             security: "is_granted('ROLE_PROVIDER') or is_granted('ROLE_BARBER')",
             provider: GlobalIndicatorProvider::class),
+        new Get(
+            uriTemplate: '/statistics/admin/indicators',
+            openapiContext: [
+                'summary' => 'Get global indicators',
+                'description' => ' Calculate global indicators for admin new users, total count of providers and daily cash flow. ',
+            ],
+            //security: "is_granted('ROLE_ADMIN')",
+            provider: AdminIndicatorsProvider::class),
+        new Get(
+            uriTemplate: '/statistics/admin/userTraffic',
+            openapiContext: [
+                'summary' => 'Get user traffic by date rang',
+                'description' => ' Calculate user traffic by date range for admin.',
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'start',
+                        'required' => true,
+                        'schema' => [
+                            'type' => 'string',
+                            'description' => 'The start date to filter the creation date of the users'
+                        ]
+                    ],
+                    [
+                        'in' => 'query',
+                        'name' => 'end',
+                        'required' => true,
+                        'schema' => [
+                            'type' => 'string',
+                            'description' => 'The end date to filter the creation date of the users'
+                        ]
+                    ],
+                ],
+            ],
+            //security: "is_granted('ROLE_ADMIN')",
+            provider: NewUserByDateRangeProvider::class),
     ]
 
 

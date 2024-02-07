@@ -180,4 +180,28 @@ class AppointmentRepository extends ServiceEntityRepository
 
         return (int) $result;
     }
+
+    public function findAdminDailyIndicators(): int
+    {
+
+        $today = new \DateTime('today');
+        $tomorrow = new \DateTime('today +1 day');
+
+        $qb = $this->createQueryBuilder('a')
+            ->select('SUM(s.price) AS cash_flow')
+            ->join('a.service', 's')
+            ->andWhere('a.status = :status')
+            ->andWhere('a.dateTime >= :today AND a.dateTime < :tomorrow')
+            ->setParameter('status', 'planned')
+            ->setParameter('today', $today)
+            ->setParameter('tomorrow', $tomorrow);
+
+        if ($qb->getQuery()->getResult())
+        {
+            return $qb->getQuery()->getSingleScalarResult();
+        }
+
+        return 0;
+    }
+
 }

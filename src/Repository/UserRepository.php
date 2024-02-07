@@ -36,13 +36,29 @@ class UserRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?User
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findNewUsers()
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.createdAt >= :startOfDay')
+            ->andWhere('u.createdAt < :startOfNextDay')
+            ->setParameter('startOfDay', new \DateTimeImmutable('today'), \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE)
+            ->setParameter('startOfNextDay', new \DateTimeImmutable('tomorrow'), \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findNewUsersByDateRange(\DateTime $startDate, \DateTime $endDate, string $establishmentId = null): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('DATE(u.createdAt) as date, COUNT(u) as value')
+            ->where('u.createdAt >= :start')
+            ->andWhere('u.createdAt < :end')
+            ->setParameter('start', $startDate->format('Y-m-d'))
+            ->setParameter('end', $endDate->format('Y-m-d'))
+            ->groupBy('date')
+            ->orderBy('date', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
 }
