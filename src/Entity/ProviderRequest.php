@@ -11,7 +11,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Enum\ProviderRequestStatusEnum;
 use App\Repository\ProviderRequestRepository;
+use App\State\ProviderRequestProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -27,10 +29,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
     new Get(),
     new GetCollection(),
     new Put(),
+    new Patch(
+        denormalizationContext: ['groups' => ['provider-request-update']],
+        processor: ProviderRequestProcessor::class
+    ),
     new Delete()
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['token' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['companyName' => 'ipartial'])]
 class ProviderRequest
 {
     #[ORM\Id]
@@ -79,6 +85,9 @@ class ProviderRequest
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
+    #[Groups(['provider-request-update'])]
+    #[ORM\Column(length: 50)]
+    private ?string $status = ProviderRequestStatusEnum::PENDING->value;
 
     public function __construct()
     {
@@ -218,6 +227,18 @@ class ProviderRequest
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
