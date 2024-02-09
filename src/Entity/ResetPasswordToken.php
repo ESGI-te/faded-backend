@@ -24,7 +24,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['token' => 'exact'])]
 #[ORM\Entity(repositoryClass: ResetPasswordTokenRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class ResetPasswordToken
 {
     #[ORM\Id]
@@ -48,6 +47,14 @@ class ResetPasswordToken
     #[Groups(['password-reset-token-write'])]
     private ?string $email = null;
 
+
+    public function __construct()
+    {
+        $this->setToken();
+        $this->setExpiresAt();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,7 +64,7 @@ class ResetPasswordToken
     {
         return $this->token;
     }
-    #[ORM\PrePersist]
+
     public function setToken(): static
     {
         $this->token = bin2hex(random_bytes(32));
@@ -81,7 +88,7 @@ class ResetPasswordToken
     {
         return $this->expiresAt;
     }
-    #[ORM\PrePersist]
+
     public function setExpiresAt(): static
     {
         $this->expiresAt = new \DateTime('+24 hours');
