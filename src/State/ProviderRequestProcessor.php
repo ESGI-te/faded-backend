@@ -15,6 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class ProviderRequestProcessor implements ProcessorInterface
 {
@@ -84,6 +87,11 @@ class ProviderRequestProcessor implements ProcessorInterface
         }
     }
 
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
     private function sendResetPasswordEmail(User $user, string $token): void
     {
         $email = $user->getEmail();
