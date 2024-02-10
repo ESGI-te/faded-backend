@@ -169,6 +169,9 @@ class Establishment
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-update'])]
     private ?string $status = EstablishmentStatusEnum::DRAFT->value;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -480,5 +483,17 @@ class Establishment
         }
 
         return ['a'];
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?string $cover): static
+    {
+        $this->cover = $cover;
+
+        return $this;
     }
 }
