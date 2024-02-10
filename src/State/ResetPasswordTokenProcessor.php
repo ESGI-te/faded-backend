@@ -19,7 +19,14 @@ final class ResetPasswordTokenProcessor implements ProcessorInterface
     private EmailService $emailService;
 
 
-    public function __construct(UserRepository $userRepository, EmailService $emailService, EntityManagerInterface $entityManager, \Twig\Environment $twig)
+    public function __construct(
+        UserRepository $userRepository,
+        EmailService $emailService,
+        EntityManagerInterface $entityManager,
+        \Twig\Environment $twig,
+        readonly string $managerUrl,
+        readonly string $websiteUrl
+    )
     {
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
@@ -45,12 +52,13 @@ final class ResetPasswordTokenProcessor implements ProcessorInterface
 
     private function sendResetPasswordEmail(User $user, string $token): void
     {
+        $baseUrl = in_array('ROLE_BARBER', $user->getRoles(), true) || in_array('ROLE_PROVIDER', $user->getRoles(), true) ? $this->managerUrl : $this->websiteUrl;
+        $link = $baseUrl . '/reset-password?token=' . $token;
         $email = $user->getEmail();
         $subject = "Configurez un mot de passe";
         $from = EmailSenderEnum::NO_REPLY->value;
         $content = $this->twig->render('email/reset_password.html.twig', [
-            'name' => $user->getFirstName(),
-            'token' => $token
+            'link' => $link
         ]);
 
         try {

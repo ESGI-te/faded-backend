@@ -15,9 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class ProviderRequestProcessor implements ProcessorInterface
 {
@@ -31,13 +28,12 @@ class ProviderRequestProcessor implements ProcessorInterface
     /**
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager,HttpClientInterface $client, \Twig\Environment $twig, EmailService $emailService)
+    public function __construct(EntityManagerInterface $entityManager, HttpClientInterface $client, \Twig\Environment $twig, EmailService $emailService, private string $managerUrl)
     {
         $this->faker = Factory::create();
         $this->entityManager = $entityManager;
         $this->twig = $twig;
         $this->emailService = $emailService;
-
     }
 
 
@@ -54,7 +50,7 @@ class ProviderRequestProcessor implements ProcessorInterface
             return;
         }
 
-        if($data->getStatus() !== ProviderRequestStatusEnum::APPROVED->value) return;
+        if ($data->getStatus() !== ProviderRequestStatusEnum::APPROVED->value) return;
 
         try {
             $user = new User();
@@ -81,25 +77,22 @@ class ProviderRequestProcessor implements ProcessorInterface
             $this->entityManager->persist($data);
             $this->entityManager->flush();
 
-            $this->sendResetPasswordEmail($user, $resetPasswordToken->getToken());
+            $this->sendResetPasswordEmail($user, $provider, $resetPasswordToken->getToken());
         } catch (\Exception $e) {
             throw new \Exception('Error: ' . $e->getMessage());
         }
     }
 
-    /**
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws LoaderError
-     */
-    private function sendResetPasswordEmail(User $user, string $token): void
+    private function sendResetPasswordEmail(User $user, Provider $provider, string $token): void
     {
+        $link = $this->managerUrl . '/reset-password?token=' . $token;
         $email = $user->getEmail();
-        $subject = "Configurez un mot de passe";
+        $subject = "Bienvenue sur Barbers PRO";
         $from = EmailSenderEnum::NO_REPLY->value;
-        $content = $this->twig->render('email/reset_password.html.twig', [
-            'name' => $user->getFirstName(),
-            'token' => $token
+        $content = $this->twig->render('email/welcome_provider.html.twig', [
+            'name' => $provider->getName(),
+            'email' => $user->getEmail(),
+            'link' => $link
         ]);
 
         try {
@@ -107,7 +100,5 @@ class ProviderRequestProcessor implements ProcessorInterface
         } catch (\Exception $e) {
             throw new \Exception('Error: ' . $e->getMessage());
         }
-
     }
-
 }
