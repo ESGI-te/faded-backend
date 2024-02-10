@@ -30,6 +30,23 @@ services:
     arguments:
       $apiKey: "%env(RESEND_API_KEY)%"
 
+  App\State\ProviderRequestProcessor:
+    arguments:
+      $managerUrl: "%env(MANAGER_URL)%"
+
+  App\State\CreateBarberProcessor:
+    arguments:
+      $managerUrl: "%env(MANAGER_URL)%"
+
+  App\State\ResetPasswordTokenProcessor:
+    arguments:
+      $managerUrl: "%env(MANAGER_URL)%"
+      $websiteUrl: "%env(WEBSITE_URL)%"
+
+  App\State\CreateAppointmentProcessor:
+    arguments:
+      $websiteUrl: "%env(WEBSITE_URL)%"
+
   'App\Doctrine\CurrentUserAppointmentsExtension':
     tags:
       - { name: api_platform.doctrine.orm.query_extension.collection }

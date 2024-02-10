@@ -8,8 +8,11 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
 use App\Entity\Auth\User;
 use App\Repository\BarberRepository;
+use App\State\CreateBarberProcessor;
+use App\Utils\Constants;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,6 +30,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(normalizationContext: ['groups' => 'barber-read']),
         new GetCollection(normalizationContext: ['groups' => 'barber-read']),
+        new Post(
+            normalizationContext: ['groups' => 'barber-read'],
+            denormalizationContext: ['groups' => 'barber-write'],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PROVIDER')",
+            processor: CreateBarberProcessor::class,
+        ),
         new Patch(
             normalizationContext: ['groups' => 'barber-read'],
             denormalizationContext: ['groups' => 'barber-update'],
@@ -66,12 +75,12 @@ class Barber
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber', 'barber-update'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update'])]
     #[Assert\Length(min: 2)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'user-create-barber', 'user-read-barber', 'barber-update'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update'])]
     #[Assert\Length(min: 2)]
     private ?string $lastName = null;
 
@@ -82,7 +91,7 @@ class Barber
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['barber-read', 'barber-write-read', 'user-create-barber', 'user-read-barber'])]
+    #[Groups(['barber-read'])]
     private ?Provider $provider = null;
 
     #[ORM\OneToMany(mappedBy: 'barber', targetEntity: Appointment::class, orphanRemoval: true)]
@@ -133,11 +142,15 @@ class Barber
         ]
     )]
     #[Planning(groups: ['barber-update-planning'])]
-    private array $planning = [];
+    private array $planning = Constants::DEFAULT_PLANNING;
 
     #[ORM\OneToOne(mappedBy: 'barber', cascade: ['persist', 'remove'])]
-    #[Groups(['barber-write-read', 'barber-write', 'barber-read'])]
+    #[Groups(['barber-read'])]
     private ?User $user = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['barber-read', 'barber-update', 'barber-write'])]
+    private ?string $email = null;
 
     public function __construct()
     {
@@ -301,6 +314,18 @@ class Barber
         }
 
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }
