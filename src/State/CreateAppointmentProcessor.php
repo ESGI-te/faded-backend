@@ -27,7 +27,8 @@ final class CreateAppointmentProcessor implements ProcessorInterface
         \Twig\Environment $twig,
         EntityManagerInterface $entityManager,
         BarberRepository $barberRepository,
-        Security $security
+        Security $security,
+        readonly string $websiteUrl
     )
     {
         $this->twig = $twig;
@@ -78,11 +79,13 @@ final class CreateAppointmentProcessor implements ProcessorInterface
 
     private function sendAppointmentSummaryEmail(Appointment $appointment): void
     {
+        $link = $this->websiteUrl . '/profile/appointments';
         $email = $appointment->getUser()->getEmail();
         $subject = "Votre RDV";
         $from = EmailSenderEnum::NO_REPLY->value;
         $content = $this->twig->render('email/appointment_summary.html.twig', [
-
+            'appointment' => $appointment,
+            'link' => $link
         ]);
 
         try {

@@ -15,6 +15,7 @@ use App\Controller\UploadEstablishmentImageController;
 use App\Enum\EstablishmentStatusEnum;
 use App\Filter\EstablishmentFilter;
 use App\Repository\EstablishmentRepository;
+use App\Utils\Constants;
 use App\Validator\Constraints\Planning;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,44 +24,6 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
-const DEFAULT_PLANNING = [
-    'monday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => true,
-    ],
-    'tuesday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => true,
-    ],
-    'wednesday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => true,
-    ],
-    'thursday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => true,
-    ],
-    'friday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => true,
-    ],
-    'saturday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => true,
-    ],
-    'sunday' => [
-        'open' => '09:00:00',
-        'close' => '18:00:00',
-        'isOpen' => false,
-    ],
-];
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(
@@ -192,7 +155,7 @@ class Establishment
     #[ApiProperty(
         openapiContext: [
             'type' => 'object',
-            'example' => DEFAULT_PLANNING,
+            'example' => Constants::DEFAULT_PLANNING,
         ]
     )]
     #[Planning]
@@ -463,7 +426,7 @@ class Establishment
     #[ORM\PrePersist]
     public function setDefaultPlanning(): static
     {
-        $this->planning = DEFAULT_PLANNING;
+        $this->planning = Constants::DEFAULT_PLANNING;
 
         return $this;
     }

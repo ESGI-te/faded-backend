@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Auth\User;
 use App\Entity\Barber;
 use App\Entity\Establishment;
 use App\Entity\Provider;
@@ -10,6 +11,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
@@ -54,10 +56,12 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
         ],
     ];
     private $faker;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct()
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         $this->faker = Factory::create();
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function load(ObjectManager $manager): void
@@ -82,7 +86,9 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
             $provider = $establishment->getProvider();
 
             for ($i = 0; $i < random_int(1, 12); $i++) {
-                $barber = $this->createBarber();
+                $user = $this->createBarberUser();
+                $barber = $this->createBarber($user);
+                $manager->persist($user);
                 $manager->persist($barber);
                 $establishment->addBarber($barber);
                 $provider->addBarber($barber);
@@ -112,11 +118,27 @@ class EstablishmentFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    private function createBarber(): Barber
+    private function createBarberUser (): User {
+        $user = new User();
+        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+
+        $user->setFirstName($this->faker->firstName);
+        $user->setLastName($this->faker->lastName);
+        $user->setEmail($this->faker->email);
+        $user->setPassword($hashedPassword);
+        $user->setRoles(['ROLE_USER', 'ROLE_BARBER']);
+
+        return $user;
+    }
+
+    private function createBarber(User $user): Barber
     {
         $barber = new Barber();
-        $barber->setFirstName($this->faker->firstName);
-        $barber->setLastName($this->faker->lastName);
+
+        $barber->setUser($user);
+        $barber->setFirstName($user->getFirstname());
+        $barber->setLastName($user->getLastname());
+        $barber->setEmail($user->getEmail());
         $barber->setPlanning(self::PLANNING);
 
         return $barber;

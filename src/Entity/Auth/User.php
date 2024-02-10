@@ -47,12 +47,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: CreateUserProcessor::class,
         ),
         new Post(
-            uriTemplate: '/users/barber',
-            normalizationContext: ['groups' => 'user-read-barber'],
-            denormalizationContext: ['groups' => 'user-create-barber'],
-            validationContext: ['groups' => ['user-create']],
-        ),
-        new Post(
             uriTemplate: '/users/provider',
             normalizationContext: ['groups' => ['user-read-provider','user-read']],
             denormalizationContext: ['groups' => ['user-create-provider','user-create']],
@@ -97,7 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use Auth;
-    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'user-create-barber', 'user-read-barber', 'barber-read'])]
+    #[Groups(['user-read', 'user-create', 'user-update', 'user-read-update', 'user-create-barber', 'barber-read'])]
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\Email(groups: ['user-create', 'user-update'])]
     private ?string $email = null;
@@ -113,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
     private ?string $lastName = null;
 
     #[Groups([
@@ -127,7 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read', 'user-read-barber'])]
+    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
     private ?string $firstName = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class, orphanRemoval: true)]
@@ -136,7 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
-    #[Groups(['user-read', 'user-update', 'user-read-update', 'user-read-barber'])]
+    #[Groups(['user-read', 'user-update', 'user-read-update'])]
     #[ORM\Column(length: 255)]
     #[Assert\Choice(choices: [LocalesEnum::FR->value, LocalesEnum::EN->value], groups: ['user-update'])]
     private ?string $locale = LocalesEnum::FR->value;
@@ -146,7 +140,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Provider $provider = null;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
-    #[Groups(['user-read','user-create-barber', 'user-read-barber'])]
+    #[Groups(['user-read','user-create-barber'])]
     private ?Barber $barber = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordToken::class)]

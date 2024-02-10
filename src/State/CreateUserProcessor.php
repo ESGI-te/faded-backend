@@ -36,17 +36,10 @@ final class CreateUserProcessor implements ProcessorInterface
         $email = $user->getEmail();
         $from = EmailSenderEnum::NO_REPLY->value;
 
-        if(in_array("ROLE_PROVIDER", $user->getRoles())) {
-            $subject = "Bienvenue sur Barbers PRO";
-            $content = $this->twig->render('email/welcome_provider.html.twig', [
-                'name' => $user->getFirstName(),
-            ]);
-        } else {
-            $subject = "Bienvenue sur Barbers";
-            $content = $this->twig->render('email/welcome_user.html.twig', [
-                'name' => $user->getFirstName(),
-            ]);
-        }
+        $subject = "Bienvenue sur Barbers";
+        $content = $this->twig->render('email/welcome_user.html.twig', [
+            'firstName' => $user->getFirstName(),
+        ]);
 
         try {
             $this->emailService->sendEmail($from, [$email], $subject, $content);
