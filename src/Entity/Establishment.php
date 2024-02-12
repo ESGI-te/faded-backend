@@ -11,7 +11,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\UploadEstablishmentImageController;
 use App\Enum\EstablishmentStatusEnum;
 use App\Filter\EstablishmentFilter;
 use App\Repository\EstablishmentRepository;
@@ -38,14 +37,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(
             uriTemplate: '/establishments/suggestions',
             normalizationContext: ['groups' => 'establishment-suggestion']
-        ),
-        new Patch(
-            uriTemplate: '/establishments/{id}/images',
-            controller: UploadEstablishmentImageController::class,
-            normalizationContext: [
-                'groups' => ['establishment-image-write']
-            ],
-            deserialize: false,
         ),
         new Patch(
             normalizationContext: ['groups' => 'establishment-write-read'],
