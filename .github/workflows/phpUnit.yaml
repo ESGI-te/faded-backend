@@ -30,7 +30,9 @@ jobs:
         echo "JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}" >> $GITHUB_ENV
         echo "JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}" >> $GITHUB_ENV
         echo "CLOUDINARY_URL=${{ secrets.CLOUDINARY_URL }}" >> $GITHUB_ENV
-
+        echo "MANAGER_URL=${{ secrets.MANAGER_URLL }}" >> $GITHUB_ENV
+        echo "WEBSITE_URL=${{ secrets.WEBSITE_URL }}" >> $GITHUB_ENV
+        echo "ADMIN_URL=${{ secrets.ADMIN_URL }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
