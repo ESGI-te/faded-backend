@@ -10,7 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: CDNievas/heroku-action@v1.0 # This is the action
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet HEAD^ HEAD; then
+            echo "No changes detected."
+            echo "HAS_CHANGES=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected."
+            echo "HAS_CHANGES=true" >> $GITHUB_ENV
+          fi
+      
+      - name: Deploy to Heroku
+        if: env.HAS_CHANGES == 'true'
+        uses: CDNievas/heroku-action@v1.0
         with:
           heroku_email: "karmimchakib@gmail.com"
           heroku_api_key: "${{secrets.HEROKU_API_KEY}}"
