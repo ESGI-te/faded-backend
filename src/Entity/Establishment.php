@@ -14,6 +14,8 @@ use ApiPlatform\Metadata\Post;
 use App\Enum\EstablishmentStatusEnum;
 use App\Filter\EstablishmentFilter;
 use App\Repository\EstablishmentRepository;
+use App\State\AddProviderProcessor;
+use App\State\EstablishmentCoordinatesProcessor;
 use App\State\EstablishmentStatusProcessor;
 use App\Utils\Constants;
 use App\Validator\Constraints\Planning;
@@ -41,9 +43,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             normalizationContext: ['groups' => 'establishment-read'],
-            denormalizationContext: ['groups' => 'establishment-write'],
+            denormalizationContext: ['groups' => 'establishment-update'],
             security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
             validationContext: ['groups' => 'establishment-update'],
+            processor: EstablishmentCoordinatesProcessor::class
         ),
         new Patch(
             uriTemplate: '/establishments/{id}/status',
@@ -53,11 +56,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: EstablishmentStatusProcessor::class,
         ),
         new Post(
-            normalizationContext: ['groups' => 'establishment-write-read'],
+            normalizationContext: ['groups' => 'establishment-read'],
             denormalizationContext: ['groups' => 'establishment-write'],
             security: "is_granted('ROLE_PROVIDER')",
             validationContext: ['groups' => 'establishment-write'],
-            processor: 'App\State\AddProviderProcessor',
+            processor: AddProviderProcessor::class,
         ),
         new Get(normalizationContext: ['groups' => 'establishment-read']),
         new Get(
@@ -88,7 +91,6 @@ class Establishment
     #[Groups([
         'establishment-suggestion',
         'establishment-read',
-        'establishment-write-read',
         'establishment-write',
         'appointment-read',
         'barber-read',
@@ -162,12 +164,12 @@ class Establishment
     private Collection $appointments;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'establishment-write', 'establishment-update'])]
+    #[Groups(['establishment-read', 'establishment-update'])]
     #[Assert\Choice(callback: [EstablishmentStatusEnum::class, 'getValues'], groups: ['establishment-update'])]
     private ?string $status = EstablishmentStatusEnum::DRAFT->value;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['establishment-read', 'establishment-write'])]
+    #[Groups(['establishment-read', 'establishment-update'])]
     private ?string $cover = null;
 
     public function __construct()
