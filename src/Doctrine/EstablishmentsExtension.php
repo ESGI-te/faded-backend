@@ -9,12 +9,13 @@ use ApiPlatform\Metadata\Operation;
 use App\Entity\Appointment;
 use App\Entity\Barber;
 use App\Entity\Establishment;
+use App\Enum\EstablishmentStatusEnum;
 use App\Enum\RolesEnum;
 use App\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 
-final readonly class CurrentProviderEstablishmentsExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+final readonly class EstablishmentsExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     public function __construct(private Security $security)
     {
@@ -36,13 +37,22 @@ final readonly class CurrentProviderEstablishmentsExtension implements QueryColl
         $isProvider = $this->security->isGranted('ROLE_PROVIDER');
 
         if (
-            Establishment::class !== $resourceClass || !$isProvider) {
+            Establishment::class !== $resourceClass) {
             return;
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->leftJoin(sprintf('%s.provider', $rootAlias), 'p');
-        $queryBuilder->andWhere('p.user = :current_user');
-        $queryBuilder->setParameter('current_user', $user);
+
+        if($isProvider) {
+            $queryBuilder->leftJoin(sprintf('%s.provider', $rootAlias), 'p');
+            $queryBuilder->andWhere('p.user = :current_user');
+            $queryBuilder->setParameter('current_user', $user);
+            return;
+        }
+
+        if(!$user) {
+            $queryBuilder->andWhere(sprintf('%s.status = :active_status',  $rootAlias));
+            $queryBuilder->setParameter('active_status', EstablishmentStatusEnum::ACTIVE->value);
+        }
     }
 }

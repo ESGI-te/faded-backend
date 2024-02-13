@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'establishment-suggestion']
         ),
         new Patch(
-            normalizationContext: ['groups' => 'establishment-write-read'],
+            normalizationContext: ['groups' => 'establishment-read'],
             denormalizationContext: ['groups' => 'establishment-write'],
             security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
             validationContext: ['groups' => 'establishment-update'],
@@ -65,12 +65,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'establishment-images-read']
         ),
         new Delete(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"),
-    ])]
+    ]
+)]
 #[ApiFilter(SearchFilter::class, properties: [
     'name' => 'ipartial',
 ])]
-#[ApiFilter(EstablishmentFilter::class, properties:
-[
+#[ApiFilter(EstablishmentFilter::class, properties: [
     'address' => 'partial',
     'serviceCategories' => 'exact',
 ])]
@@ -80,7 +80,7 @@ class Establishment
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-suggestion', 'establishment-read', 'establishment-write-read', 'appointment-read', 'barber-read', 'establishment-search-read', 'service-read'])]
+    #[Groups(['establishment-suggestion', 'establishment-read', 'appointment-read', 'barber-read', 'establishment-search-read', 'service-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
@@ -99,7 +99,7 @@ class Establishment
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
-    #[Groups(['establishment-read', 'establishment-write-read'])]
+    #[Groups(['establishment-read'])]
     private ?Provider $provider = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -162,11 +162,12 @@ class Establishment
     private Collection $appointments;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'establishment-write-read', 'establishment-update'])]
+    #[Groups(['establishment-read', 'establishment-write', 'establishment-update'])]
     #[Assert\Choice(callback: [EstablishmentStatusEnum::class, 'getValues'], groups: ['establishment-update'])]
     private ?string $status = EstablishmentStatusEnum::DRAFT->value;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['establishment-read', 'establishment-write'])]
     private ?string $cover = null;
 
     public function __construct()
