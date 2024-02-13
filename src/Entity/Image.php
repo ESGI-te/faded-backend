@@ -18,9 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: '/images',
             normalizationContext: ['groups' => ['image-read']],
-            denormalizationContext: ['groups' => ['image-write']]
+            denormalizationContext: ['groups' => ['image-write']],
+            security: "is_granted('ROLE_PROVIDER')",
         ),
-        new Delete()
+        new Delete(
+            security: "is_granted('ROLE_PROVIDER') and object.getEstablishment().getProvider().getUser() == user",
+        )
     ]
 )]
 class Image
