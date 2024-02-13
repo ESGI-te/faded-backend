@@ -28,7 +28,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: BarberRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => 'barber-read']),
+        new Get(
+            normalizationContext: ['groups' => 'barber-read'],
+            security: "is_granted('ROLE_ADMIN') 
+            or is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"
+        ),
         new GetCollection(normalizationContext: ['groups' => 'barber-read']),
         new Post(
             normalizationContext: ['groups' => 'barber-read'],
@@ -39,11 +43,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             normalizationContext: ['groups' => 'barber-read'],
             denormalizationContext: ['groups' => 'barber-update'],
+            security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"
         ),
         new Patch(
             uriTemplate: '/barbers/{id}/planning',
             normalizationContext: ['groups' => 'barber-read'],
             denormalizationContext: ['groups' => 'barber-update-planning'],
+            security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
             validationContext: ['groups' => ['barber-update-planning']],
         ),
         new Delete(
@@ -70,17 +76,18 @@ class Barber
         'appointment-read',
         'barber-read',
         'user-read-barber',
-        'barber-delete'
+        'barber-delete',
+        'feedback-read',
     ])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update','feedback-read'])]
     #[Assert\Length(min: 2)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update'])]
+    #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update','feedback-read'])]
     #[Assert\Length(min: 2)]
     private ?string $lastName = null;
 

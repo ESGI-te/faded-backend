@@ -26,14 +26,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
     new Post(
         denormalizationContext: ['groups' => ['provider-request-write']],
     ),
-    new Get(),
-    new GetCollection(),
-    new Put(),
+    new GetCollection(
+        security: "is_granted('ROLE_ADMIN')"
+    ),
     new Patch(
         denormalizationContext: ['groups' => ['provider-request-update']],
+        security: "is_granted('ROLE_ADMIN')",
         processor: ProviderRequestProcessor::class
     ),
-    new Delete()
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['companyName' => 'ipartial'])]
