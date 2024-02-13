@@ -76,7 +76,7 @@ final class CreateAppointmentProcessor implements ProcessorInterface
             throw new NotFoundHttpException("No barber available", null, 404);
         }
 
-        $randomAvailableBarber = $availableBarbers[rand(0, count($availableBarbers))];
+        $randomAvailableBarber = $availableBarbers[rand(0, count($availableBarbers) - 1)];
         $barberEntity = $this->barberRepository->find($randomAvailableBarber['id']);
         $appointment->setBarber($barberEntity);
     }
