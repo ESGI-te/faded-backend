@@ -3,29 +3,25 @@
 namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
+use App\Entity\Establishment;
 use App\Repository\ProviderRepository;
 use ApiPlatform\State\ProcessorInterface;
+use App\Service\GeocodingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class AddProviderProcessor implements ProcessorInterface
 {
 
-    private ProviderRepository $providerRepository;
-    private Security $security;
-    private EntityManagerInterface $entityManager;
-
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        ProviderRepository $providerRepository,
-        Security $security
+        readonly EntityManagerInterface $entityManager,
+        readonly ProviderRepository $providerRepository,
+        readonly Security $security,
+        readonly GeocodingService $geocodingService
     )
     {
-        $this->entityManager = $entityManager;
-        $this->providerRepository = $providerRepository;
-        $this->security = $security;
     }
 
     /**
