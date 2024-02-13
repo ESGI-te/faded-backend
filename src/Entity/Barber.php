@@ -83,12 +83,12 @@ class Barber
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update','feedback-read'])]
-    #[Assert\Length(min: 2)]
+    #[Assert\Length(min: 2, max: 80)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['establishment-read', 'appointment-read', 'barber-read', 'barber-write', 'barber-update','feedback-read'])]
-    #[Assert\Length(min: 2)]
+    #[Assert\Length(min: 2, max: 80)]
     private ?string $lastName = null;
 
     #[ORM\ManyToOne(inversedBy: 'barbers')]
@@ -157,6 +157,7 @@ class Barber
 
     #[ORM\Column(length: 255)]
     #[Groups(['barber-read', 'barber-update', 'barber-write'])]
+    #[Assert\Email]
     private ?string $email = null;
 
     public function __construct()
