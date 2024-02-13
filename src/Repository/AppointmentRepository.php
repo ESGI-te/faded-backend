@@ -50,6 +50,8 @@ class AppointmentRepository extends ServiceEntityRepository
             ->select('COUNT(a)')
             ->where('a.dateTime BETWEEN :start AND :end')
             ->andWhere('a.provider = :provider')
+            ->andWhere('a.status = :status')
+            ->setParameter('status', 'finished')
             ->setParameter('provider', $provider)
             ->setParameter('start', $startString)
             ->setParameter('end', $endString);
@@ -75,6 +77,8 @@ class AppointmentRepository extends ServiceEntityRepository
             ->where('a.dateTime >= :start')
             ->andWhere('a.dateTime < :end')
             ->andWhere('a.provider = :provider')
+            ->andWhere('a.status = :status')
+            ->setParameter('status', 'finished')
             ->setParameter('provider', $provider)
             ->setParameter('start', $startDate->format('Y-m-d'))
             ->setParameter('end', $endDate->format('Y-m-d'))
@@ -94,6 +98,8 @@ class AppointmentRepository extends ServiceEntityRepository
         $qb =  $this->createQueryBuilder('a')
             ->select('IDENTITY(a.service) as id', 's.name', 'COUNT(a) as number', 's.price * COUNT(a) as turnover')
             ->andWhere('a.provider = :provider')
+            ->andWhere('a.status = :status')
+            ->setParameter('status', 'finished')
             ->setParameter('provider', $provider)
             ->join('a.service', 's')
             ->groupBy('a.service', 's.name', 's.price')
@@ -116,7 +122,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->where('a.provider = :providerId')
             ->andWhere('a.status = :status')
             ->setParameter('providerId', $providerId)
-            ->setParameter('status', 'planned');
+            ->setParameter('status', 'finished');
 
         if($establishmentId) {
             $qb->andWhere('a.establishment = :establishmentId')
@@ -140,7 +146,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->andWhere('a.status = :status')
             ->andWhere('a.dateTime >= :startOfDay AND a.dateTime < :endOfDay')
             ->setParameter('providerId', $providerId)
-            ->setParameter('status', 'planned')
+            ->setParameter('status', 'finished')
             ->setParameter('startOfDay', $startOfDay)
             ->setParameter('endOfDay', $endOfDay)
             ->groupBy('a.provider');
@@ -165,7 +171,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->where('a.provider = :id')
             ->andWhere('a.status = :status')
             ->setParameter('id', $id)
-            ->setParameter('status', 'planned');
+            ->setParameter('status', 'finished');
 
         if($establishmentId) {
             $qb->andWhere('a.establishment = :establishmentId')
@@ -190,9 +196,9 @@ class AppointmentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('a')
             ->select('SUM(s.price) AS cash_flow')
             ->join('a.service', 's')
-            ->andWhere('a.status = :status')
             ->andWhere('a.dateTime >= :today AND a.dateTime < :tomorrow')
-            ->setParameter('status', 'planned')
+            ->andWhere('a.status = :status')
+            ->setParameter('status', 'finished')
             ->setParameter('today', $today)
             ->setParameter('tomorrow', $tomorrow);
 
