@@ -20,12 +20,18 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
+  App\EventListener\AuthenticationSuccessListener:
+    tags:
+      - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
+
   App\Service\GeocodingService:
     arguments:
       $apiKey: "%env(GEOCODE_API_KEY)%"
+
   App\Service\ImageUploaderService:
     arguments:
       $cloudinaryUrl: "%env(CLOUDINARY_URL)%"
+
   App\Service\EmailService:
     arguments:
       $apiKey: "%env(RESEND_API_KEY)%"
