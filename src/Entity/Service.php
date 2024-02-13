@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\ServiceRepository;
+use App\State\AddProviderProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -29,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'service-read'],
             denormalizationContext: ['groups' => 'service-create'],
             security: 'is_granted("ROLE_PROVIDER")',
-            processor: 'App\State\AddProviderProcessor',
+            processor: AddProviderProcessor::class,
         ),
         new Patch(
             normalizationContext: ['groups' => 'service-read'],
@@ -52,11 +53,11 @@ class Service
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read', 'appointment-read', 'service-read'])]
+    #[Groups(['establishment-read', 'appointment-read', 'service-read', 'feedback-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'appointment-read', 'service-read', 'service-create', 'service-update'])]
+    #[Groups(['establishment-read', 'appointment-read', 'service-read', 'service-create', 'service-update', 'feedback-read'])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
 

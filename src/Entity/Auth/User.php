@@ -50,6 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/users/provider',
             normalizationContext: ['groups' => ['user-read-provider','user-read']],
             denormalizationContext: ['groups' => ['user-create-provider','user-create']],
+            security: "is_granted('ROLE_ADMIN')",
             validationContext: ['groups' => ['user-create']],
         ),
         new Get(
@@ -66,9 +67,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             normalizationContext: ['groups' => 'user-read-update'],
             denormalizationContext: ['groups' => 'user-update'],
-            security: "is_granted('ROLE_BARBER') 
-            or is_granted('ROLE_PROVIDER') 
-            or is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_USER')",
             validationContext: ['groups' => 'user-update'],
 //            input: UserDto::class,
 //            processor: UserDtoValidationProcessor::class
@@ -77,6 +76,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/users/{id}/password',
             normalizationContext: ['groups' => 'user-update-password-read'],
             denormalizationContext: ['groups' => 'user-update-password'],
+            security: "is_granted('ROLE_USER')",
             validationContext: ['groups' => 'user-update-password'],
             name: 'user_update_password',
             processor: UpdateUserPasswordProcessor::class,

@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Entity\Auth\User;
 use App\Repository\FeedbackRepository;
 use Doctrine\DBAL\Types\Types;
@@ -15,7 +17,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(
+             security: "is_granted('ROLE_USER')",
+        )
+    ],
+    normalizationContext: ['groups' => 'feedback-read'],
+)
+]
 #[ApiFilter(SearchFilter::class, properties: ['establishment' => 'exact'])]
 class Feedback
 {
@@ -23,27 +34,30 @@ class Feedback
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'feedback-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['feedback-read'])]
     private ?Provider $provider = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['feedback-read'])]
     private ?Establishment $establishment = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'feedback-read'])]
     private ?\DateTimeInterface $date_time = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['feedback-read'])]
     private ?Service $service = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'feedback-read'])]
     #[Assert\Length(min: 10, max: 255)]
     private ?string $comment = null;
 
@@ -54,10 +68,11 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['feedback-read'])]
     private ?Barber $barber = null;
 
     #[ORM\Column]
-    #[Groups(['establishment-read'])]
+    #[Groups(['establishment-read', 'feedback-read'])]
     #[Assert\Type(type: 'integer')]
     #[Assert\Range([
         'min' => 0,
