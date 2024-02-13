@@ -49,6 +49,7 @@ class Feedback
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['establishment-read', 'feedback-read'])]
+    #[Assert\Type(type: \DateTimeInterface::class)]
     private ?\DateTimeInterface $date_time = null;
 
     #[ORM\ManyToOne]

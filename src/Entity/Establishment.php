@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Post;
 use App\Enum\EstablishmentStatusEnum;
 use App\Filter\EstablishmentFilter;
 use App\Repository\EstablishmentRepository;
+use App\State\EstablishmentStatusProcessor;
 use App\Utils\Constants;
 use App\Validator\Constraints\Planning;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -44,6 +45,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
             validationContext: ['groups' => 'establishment-update'],
         ),
+        new Patch(
+            uriTemplate: '/establishments/{id}/status',
+            normalizationContext: ['groups' => 'establishment-read'],
+            denormalizationContext: ['groups' => 'establishment-write-status'],
+            security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
+            processor: EstablishmentStatusProcessor::class,
+        ),
         new Post(
             normalizationContext: ['groups' => 'establishment-write-read'],
             denormalizationContext: ['groups' => 'establishment-write'],
@@ -57,8 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'establishment-images-read']
         ),
         new Delete(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"),
-    ],
-    validationContext: ['groups' => [Establishment::class, 'validationGroups']])]
+    ])]
 #[ApiFilter(SearchFilter::class, properties: [
     'name' => 'ipartial',
 ])]
@@ -88,7 +95,7 @@ class Establishment
         'establishment-search-read',
         'establishment-update'
     ])]
-    #[Assert\Length(min: 2, groups: ['establishment-write'])]
+    #[Assert\Length(min: 2, max: 120, groups: ['establishment-write'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
@@ -155,8 +162,8 @@ class Establishment
     private Collection $appointments;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Choice(callback: [EstablishmentStatusEnum::class, 'getValues'], groups: ['establishment-update'])]
     #[Groups(['establishment-read', 'establishment-write-read', 'establishment-update'])]
+    #[Assert\Choice(callback: [EstablishmentStatusEnum::class, 'getValues'], groups: ['establishment-update'])]
     private ?string $status = EstablishmentStatusEnum::DRAFT->value;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -457,15 +464,6 @@ class Establishment
         $this->status = $status;
 
         return $this;
-    }
-
-    public static function validationGroups(self $establishment): array
-    {
-        if ($establishment->getStatus() === EstablishmentStatusEnum::ACTIVE->value) {
-            return ['establishment-write'];
-        }
-
-        return ['a'];
     }
 
     public function getCover(): ?string

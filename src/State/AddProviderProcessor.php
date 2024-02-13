@@ -12,9 +12,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 final class AddProviderProcessor implements ProcessorInterface
 {
 
-    private EntityManagerInterface $entityManager;
     private ProviderRepository $providerRepository;
     private Security $security;
+    private EntityManagerInterface $entityManager;
 
 
     public function __construct(

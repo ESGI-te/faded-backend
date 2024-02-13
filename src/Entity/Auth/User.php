@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
+    #[Assert\Length(min: 2, max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
     private ?string $lastName = null;
 
     #[Groups([
@@ -121,7 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'appointment-read'
     ])]
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
+    #[Assert\Length(min: 2, max: 80, groups: ['user-create', 'user-update', 'appointment-read'])]
     private ?string $firstName = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class, orphanRemoval: true)]

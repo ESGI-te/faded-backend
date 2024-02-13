@@ -24,16 +24,17 @@ trait Auth
     #[ORM\Column(type: "uuid", unique: true)]
     protected UuidInterface|string $id;
 
-    #[Groups(['user-read', 'user-create-barber', 'user-read-barber', 'user-create-provider'])]
+    #[Groups(['user-read', 'user-read-barber', 'user-create-provider'])]
     #[ORM\Column]
+    #[Assert\Choice(callback: [RolesEnum::class, 'getValues'], groups: ['user-create'])]
     private array $roles = [RolesEnum::USER->value];
 
     #[Groups(['user-hidden'])]
     #[ORM\Column]
     private string $password = '';
 
-    #[Groups(['user-create', 'user-create-barber', 'user-update-password'])]
-    #[Assert\Length(min: 6, groups: ['user-create', 'user-create-barber', 'user-update-password'])]
+    #[Groups(['user-create', 'user-update-password'])]
+    #[Assert\Length(min: 6, groups: ['user-create', 'user-update-password'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string
