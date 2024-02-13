@@ -61,6 +61,10 @@ final class CreateAppointmentProcessor implements ProcessorInterface
         $this->sendAppointmentSummaryEmail($data);
     }
 
+    private function isTimeSlotAvailable() {
+        
+    }
+
     private function addRandomBarber(Appointment $appointment): void
     {
         $availableBarbers = $this->barberRepository->findAvailableBarbers(

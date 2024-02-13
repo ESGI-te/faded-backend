@@ -43,8 +43,8 @@ class ResetPasswordToken
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Email()]
     #[Groups(['password-reset-token-write'])]
+    #[Assert\Email]
     private ?string $email = null;
 
 

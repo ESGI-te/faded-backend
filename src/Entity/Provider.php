@@ -63,16 +63,17 @@ class Provider
 
     #[ORM\Column(length: 255)]
     #[Groups(['user-read-provider','user-create-provider', 'provider-read'])]
+    #[Assert\Regex(pattern: '/^\d{9}$/')]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Email]
     #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/')]
     #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
+    #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/')]
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: Establishment::class, orphanRemoval: true)]
@@ -90,10 +91,12 @@ class Provider
 
     #[ORM\Column(length: 255)]
     #[Groups(['user-read-provider','user-create-provider', 'user-read', 'provider-update', 'provider-read', 'feedback-read'])]
+    #[Assert\Length(min: 2, max: 120)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['user-read-provider','user-create-provider', 'provider-update', 'provider-read'])]
+    #[Assert\Length(min: 5)]
     private ?string $address = null;
 
     #[ORM\OneToMany(mappedBy: 'provider_id', targetEntity: Appointment::class)]

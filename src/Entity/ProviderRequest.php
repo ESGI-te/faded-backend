@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProviderRequestRepository::class)]
 #[ApiResource(
@@ -47,46 +48,50 @@ class ProviderRequest
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Length(min: 2, max: 80)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Length(min: 2, max: 80)]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Email]
     private ?string $personalEmail = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/')]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Email]
     private ?string $professionalEmail = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Length(min: 2, max: 120)]
     private ?string $companyName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['provider-request-write'])]
+    #[Assert\Length(min: 5)]
     private ?string $companyAddress = null;
 
     #[Groups(['provider-request-write'])]
     #[ORM\Column(length: 255)]
+    #[Assert\Regex(pattern: '/^\d{9}$/')]
     private ?string $kbis = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $token = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $tokenExpirationDate = null;
-
     #[ORM\Column(nullable: true)]
+    #[Assert\Type(type: \DateTimeInterface::class)]
     private ?\DateTimeImmutable $createdAt = null;
     #[Groups(['provider-request-update'])]
     #[ORM\Column(length: 50)]
+    #[Assert\Choice(callback: [ProviderRequestStatusEnum::class, 'getValues'])]
     private ?string $status = ProviderRequestStatusEnum::PENDING->value;
 
     public function __construct()
@@ -191,18 +196,6 @@ class ProviderRequest
     public function setKbis(string $kbis): static
     {
         $this->kbis = $kbis;
-
-        return $this;
-    }
-
-    public function getToken(): ?string
-    {
-        return $this->token;
-    }
-
-    public function setToken(?string $token): static
-    {
-        $this->token = $token;
 
         return $this;
     }
