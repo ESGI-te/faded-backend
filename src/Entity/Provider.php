@@ -106,7 +106,7 @@ class Provider
     private Collection $services;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user-read-provider', 'provider-update-image', 'provider-read'])]
+    #[Groups(['user-read-provider', 'provider-update-image', 'provider-read', 'user-read'])]
     private ?string $image = null;
 
     public function __construct()
