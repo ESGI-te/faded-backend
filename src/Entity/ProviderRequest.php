@@ -83,7 +83,7 @@ class ProviderRequest
 
     #[Groups(['provider-request-write'])]
     #[ORM\Column(length: 255)]
-    #[Assert\Regex(pattern: '/^\d{9}$/')]
+    #[Assert\Regex(pattern: '/^\d{10}$/')]
     private ?string $kbis = null;
 
     #[ORM\Column(nullable: true)]
@@ -196,18 +196,6 @@ class ProviderRequest
     public function setKbis(string $kbis): static
     {
         $this->kbis = $kbis;
-
-        return $this;
-    }
-
-    public function getTokenExpirationDate(): ?\DateTimeInterface
-    {
-        return $this->tokenExpirationDate;
-    }
-
-    public function setTokenExpirationDate(?\DateTimeInterface $tokenExpirationDate): static
-    {
-        $this->tokenExpirationDate = $tokenExpirationDate;
 
         return $this;
     }
