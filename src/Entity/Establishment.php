@@ -54,20 +54,19 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(normalizationContext: ['groups' => 'establishment-read']),
         new Get(
             uriTemplate: '/establishments/{id}/images',
-            normalizationContext: ['groups' => 'establishment-image-read']
+            normalizationContext: ['groups' => 'establishment-images-read']
         ),
         new Delete(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"),
     ],
     validationContext: ['groups' => [Establishment::class, 'validationGroups']])]
 #[ApiFilter(SearchFilter::class, properties: [
-    'name' => 'partial',
+    'name' => 'ipartial',
 ])]
 #[ApiFilter(EstablishmentFilter::class, properties:
 [
     'address' => 'partial',
     'serviceCategories' => 'exact',
 ])]
-#[ORM\HasLifecycleCallbacks]
 class Establishment
 {
     #[ORM\Id]
@@ -150,7 +149,7 @@ class Establishment
         ]
     )]
     #[Planning]
-    private array $planning = [];
+    private array $planning = Constants::DEFAULT_PLANNING;
 
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Appointment::class, orphanRemoval: true)]
     private Collection $appointments;
@@ -414,13 +413,6 @@ class Establishment
     public function setPlanning(array $planning): static
     {
         $this->planning = $planning;
-
-        return $this;
-    }
-    #[ORM\PrePersist]
-    public function setDefaultPlanning(): static
-    {
-        $this->planning = Constants::DEFAULT_PLANNING;
 
         return $this;
     }

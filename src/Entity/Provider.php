@@ -23,7 +23,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(
-//            normalizationContext: ['groups' => 'provider-read'],
             security: "is_granted('ROLE_ADMIN')"
         ),
         new Get(
@@ -34,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             denormalizationContext: ['groups' => ['provider-create']],
             security: "is_granted('ROLE_ADMIN')",
-            validationContext: ['groups' => ['provider-create']]
+            validationContext: ['groups' => ['provider-create']],
         ),
         new Patch(
             denormalizationContext: ['groups' => ['provider-update']],
@@ -59,7 +58,7 @@ class Provider
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['user-read-barber', 'user-read', 'provider-read', 'service-read'])]
+    #[Groups(['user-read-barber', 'user-read', 'provider-read', 'service-read', 'feedback-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
@@ -90,7 +89,7 @@ class Provider
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user-read-provider','user-create-provider', 'user-read', 'provider-update', 'provider-read'])]
+    #[Groups(['user-read-provider','user-create-provider', 'user-read', 'provider-update', 'provider-read', 'feedback-read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]

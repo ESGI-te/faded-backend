@@ -195,7 +195,7 @@ use App\State\TurnOverProvider;
                 'summary' => 'Get global indicators',
                 'description' => ' Calculate global indicators for admin new users, total count of providers and daily cash flow. ',
             ],
-            //security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN')",
             provider: AdminIndicatorsProvider::class),
         new Get(
             uriTemplate: '/statistics/admin/userTraffic',
@@ -223,7 +223,7 @@ use App\State\TurnOverProvider;
                     ],
                 ],
             ],
-            //security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN')",
             provider: NewUserByDateRangeProvider::class),
     ]
 
