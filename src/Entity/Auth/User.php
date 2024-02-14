@@ -76,7 +76,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/users/{id}/password',
             normalizationContext: ['groups' => 'user-update-password-read'],
             denormalizationContext: ['groups' => 'user-update-password'],
-            security: "is_granted('ROLE_USER')",
             validationContext: ['groups' => 'user-update-password'],
             name: 'user_update_password',
             processor: UpdateUserPasswordProcessor::class,

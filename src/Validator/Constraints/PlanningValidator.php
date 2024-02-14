@@ -45,14 +45,6 @@ final class PlanningValidator extends ConstraintValidator
                 return;
             }
 
-            $openDateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $hours['open']);
-            $closeDateTime = \DateTime::createFromFormat('Y-m-d H:i:s', $hours['close']);
-
-            if (!$openDateTime || !$closeDateTime) {
-                $this->context->buildViolation($constraint->invalidDateTimeMessage)
-                    ->setParameter('{{ day }}', $day)
-                    ->addViolation();
-            }
         }
     }
 }

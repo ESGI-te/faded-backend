@@ -50,7 +50,9 @@ final readonly class EstablishmentsExtension implements QueryCollectionExtension
             return;
         }
 
-        if(!$user) {
+        if(!$user || !in_array(RolesEnum::ADMIN->value, $user->getRoles()) ||
+            !in_array(RolesEnum::PROVIDER->value, $user->getRoles()) ||
+            !in_array(RolesEnum::BARBER->value, $user->getRoles())) {
             $queryBuilder->andWhere(sprintf('%s.status = :active_status',  $rootAlias));
             $queryBuilder->setParameter('active_status', EstablishmentStatusEnum::ACTIVE->value);
         }

@@ -51,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             uriTemplate: '/establishments/{id}/status',
             normalizationContext: ['groups' => 'establishment-read'],
-            denormalizationContext: ['groups' => 'establishment-write-status'],
+            denormalizationContext: ['groups' => 'establishment-update-status'],
             security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
             processor: EstablishmentStatusProcessor::class,
         ),
@@ -74,7 +74,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'name' => 'ipartial',
 ])]
 #[ApiFilter(EstablishmentFilter::class, properties: [
-    'address' => 'partial',
+    'address' => 'ipartial',
     'serviceCategories' => 'exact',
 ])]
 class Establishment
@@ -95,9 +95,10 @@ class Establishment
         'appointment-read',
         'barber-read',
         'establishment-search-read',
-        'establishment-update'
+        'establishment-update',
+        'service-update'
     ])]
-    #[Assert\Length(min: 2, max: 120, groups: ['establishment-write'])]
+    #[Assert\Length(min: 2, max: 120, groups: ['establishment-write', 'establishment-update'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
@@ -111,7 +112,7 @@ class Establishment
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['establishment-read', 'establishment-update'])]
-    #[Assert\Regex(pattern: '/^\+?[1-9][0-9]{7,14}$/')]
+    #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/',groups: ['establishment-update'])]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -157,19 +158,19 @@ class Establishment
             'example' => Constants::DEFAULT_PLANNING,
         ]
     )]
-    #[Planning]
+    #[Planning(groups: ['establishment-update'])]
     private array $planning = Constants::DEFAULT_PLANNING;
 
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Appointment::class, orphanRemoval: true)]
     private Collection $appointments;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'establishment-update'])]
+    #[Groups(['establishment-read', 'establishment-update-status'])]
     #[Assert\Choice(callback: [EstablishmentStatusEnum::class, 'getValues'], groups: ['establishment-update'])]
     private ?string $status = EstablishmentStatusEnum::DRAFT->value;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['establishment-read', 'establishment-update'])]
+    #[Groups(['establishment-read', 'establishment-update', 'establishment-search-read'])]
     private ?string $cover = null;
 
     public function __construct()
