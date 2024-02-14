@@ -25,10 +25,12 @@ final class UpdateUserPasswordProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
         if ($data instanceof User) {
-            $this->validateToken($data);
+            $token = $this->validateToken($data);
+            $this->entityManager->persist($data);
+            $this->removeToken($token);
         }
     }
-    private function validateToken(User $user): void
+    private function validateToken(User $user): ?ResetPasswordToken
     {
         $token = $this->resetPasswordTokenRepository->findOneBy(['user' => $user]);
 
@@ -40,6 +42,8 @@ final class UpdateUserPasswordProcessor implements ProcessorInterface
             $this->removeToken($token);
             throw new BadRequestHttpException('Token expired.', null, 400);
         }
+
+        return $token;
     }
 
     private function removeToken(ResetPasswordToken $token): void

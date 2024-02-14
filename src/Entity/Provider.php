@@ -63,7 +63,7 @@ class Provider
 
     #[ORM\Column(length: 255)]
     #[Groups(['user-read-provider','user-create-provider', 'provider-read'])]
-    #[Assert\Regex(pattern: '/^\d{9}$/')]
+    #[Assert\Regex(pattern: '/^\d{10}$/')]
     private ?string $kbis = null;
 
     #[ORM\Column(length: 255)]

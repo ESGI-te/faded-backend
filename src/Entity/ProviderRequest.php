@@ -56,7 +56,7 @@ class ProviderRequest
     #[Assert\Length(min: 2, max: 80)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups(['provider-request-write'])]
     #[Assert\Email]
     private ?string $personalEmail = null;
@@ -66,7 +66,7 @@ class ProviderRequest
     #[Assert\Regex(pattern: '/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/')]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups(['provider-request-write'])]
     #[Assert\Email]
     private ?string $professionalEmail = null;
