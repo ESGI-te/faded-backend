@@ -37,6 +37,7 @@ final class EstablishmentFilter extends AbstractFilter
             ' . $rootAlias . '.address,
             ' . $rootAlias . '.longitude,
             ' . $rootAlias . '.latitude,
+            ' . $rootAlias . '.cover,
             (
                 SELECT AVG(feedback1.note)
                 FROM App\Entity\Feedback feedback1
