@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\ServiceRepository;
 use App\State\AddProviderProcessor;
+use App\State\EstablishmentServiceProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -35,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             normalizationContext: ['groups' => 'service-read'],
             denormalizationContext: ['groups' => 'service-update'],
-            security: 'is_granted("ROLE_PROVIDER") and object.getProvider().getUser() == user'
+            security: 'is_granted("ROLE_PROVIDER") and object.getProvider().getUser() == user',
         ),
         new Delete(
             normalizationContext: ['groups' => 'service-delete'],
