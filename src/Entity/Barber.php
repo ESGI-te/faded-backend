@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
 use App\Entity\Auth\User;
 use App\Repository\BarberRepository;
+use App\State\BarberPlanningProcessor;
 use App\State\CreateBarberProcessor;
 use App\Utils\Constants;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,7 +44,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             normalizationContext: ['groups' => 'barber-read'],
             denormalizationContext: ['groups' => 'barber-update'],
-            security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user"
+            security: "is_granted('ROLE_PROVIDER') and object.getProvider().getUser() == user",
+            processor: BarberPlanningProcessor::class,
         ),
         new Patch(
             uriTemplate: '/barbers/{id}/planning',
@@ -112,7 +114,6 @@ class Barber
     private ?Image $image = null;
 
     #[ORM\Column]
-    #[Groups(['barber-read', 'barber-update-planning'])]
     #[ApiProperty(
         openapiContext: [
             'type' => 'object',
@@ -148,8 +149,10 @@ class Barber
             ]
         ]
     )]
-    #[Planning(groups: ['barber-update-planning'])]
-    private array $planning = Constants::DEFAULT_PLANNING;
+    #[Groups(['barber-read', 'barber-update', 'barber-write'])]
+    #[Assert\NotNull(groups: ['barber-update', 'barber-write'])]
+    #[Planning(groups: ['barber-update', 'barber-write'])]
+    private ?array $planning = null;
 
     #[ORM\OneToOne(mappedBy: 'barber', cascade: ['persist', 'remove'])]
     #[Groups(['barber-read'])]
