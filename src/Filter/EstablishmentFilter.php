@@ -58,6 +58,9 @@ final class EstablishmentFilter extends AbstractFilter
                 $this->filterByLocation($queryBuilder, $value);
                 break;
             case 'serviceCategories':
+                if(strlen($property) < 1) {
+                    break;
+                }
                 $this->filterByCategory($queryBuilder, $parameterName, $value);
                 break;
             default:
@@ -75,6 +78,7 @@ final class EstablishmentFilter extends AbstractFilter
 
         $queryBuilder
             ->andWhere('(6371 * ACOS(COS(RADIANS(:lat)) * COS(RADIANS(' . $rootAlias . '.latitude)) * COS(RADIANS(' . $rootAlias . '.longitude) - RADIANS(:lng)) + SIN(RADIANS(:lat)) * SIN(RADIANS(' . $rootAlias . '.latitude)))) <= :radius')
+            ->orderBy('distance')
             ->setParameter('lat', $latitude)
             ->setParameter('lng', $longitude)
             ->setParameter('radius', RADIUS);
@@ -85,7 +89,8 @@ final class EstablishmentFilter extends AbstractFilter
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
         $queryBuilder
-            ->join($rootAlias . '.serviceCategories', 'c')
+            ->join($rootAlias . '.services', 's')
+            ->join('s.category', 'c')
             ->andWhere('c.id = :' . $parameterName)
             ->setParameter($parameterName, $value)
             ->distinct();
