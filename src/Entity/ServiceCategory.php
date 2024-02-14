@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -32,20 +34,26 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Delete(
             security: 'is_granted("ROLE_ADMIN")',
-        )
-    ]
+        ),
+
+    ],
+    normalizationContext: ['groups'=>['service-category-read']],
+    denormalizationContext: ['groups'=>['service-category-write']]
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'name' => 'ipartial',
+])]
 class ServiceCategory
 {
     #[ORM\Id]
     #[ORM\Column(type: "uuid", unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['establishment-read', 'service-read'])]
+    #[Groups(['establishment-read', 'service-read','service-category-read'])]
     protected UuidInterface|string $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment-read', 'service-read'])]
+    #[Groups(['establishment-read', 'service-read','service-category-read','service-category-write'])]
     #[Assert\Length(min: 2)]
     private ?string $name = null;
 
