@@ -202,7 +202,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->setParameter('today', $today)
             ->setParameter('tomorrow', $tomorrow);
 
-        if ($qb->getQuery()->getResult())
+        if ($qb->getQuery()->getSingleScalarResult())
         {
             return $qb->getQuery()->getSingleScalarResult();
         }
