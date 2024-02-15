@@ -24,12 +24,11 @@ class NewUserByDateRangeProvider implements ProviderInterface
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        dump("I m here");
         $isAdmin = $this->security->isGranted('ROLE_ADMIN');
 
-        // if(!$isAdmin) {
-        //   throw new \Exception('You do not have permission for this query');
-        //}
+        if(!$isAdmin) {
+          throw new \Exception('You do not have permission for this query');
+        }
 
         $startString = $context['filters']['start'];
         $endString = $context['filters']['end'];

@@ -23,12 +23,10 @@ class ValidPasswordValidator extends ConstraintValidator
 
         public function validate($value, Constraint $constraint): void
     {
-        dump('chakib google');
         $user = $this->userRepository->find($this->security->getUser());
         $hasher = $this->passwordHasher->getPasswordHasher($user);
         $hashedPassword = $hasher->hash($value);
         $currentPassword = $user->getPassword();
-        dump($hashedPassword, $currentPassword);
         if ($hashedPassword !== $currentPassword) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
