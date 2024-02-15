@@ -26,7 +26,6 @@ trait Auth
 
     #[Groups(['user-read', 'user-read-barber', 'user-create-provider'])]
     #[ORM\Column]
-    #[Assert\Choice(callback: [RolesEnum::class, 'getValues'], groups: ['user-create'])]
     private array $roles = [RolesEnum::USER->value];
 
     #[Groups(['user-hidden'])]
