@@ -56,6 +56,9 @@ final class EstablishmentFilter extends AbstractFilter
 
         switch ($property) {
             case 'address':
+                if(strlen($property) < 1) {
+                    break;
+                }
                 $this->filterByLocation($queryBuilder, $value);
                 break;
             case 'serviceCategories':
