@@ -170,7 +170,7 @@ class Establishment
     private ?string $status = EstablishmentStatusEnum::DRAFT->value;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['establishment-read', 'establishment-update', 'establishment-search-read'])]
+    #[Groups(['establishment-read', 'establishment-update', 'establishment-search-read', 'appointment-read'])]
     private ?string $cover = null;
 
     public function __construct()
