@@ -89,7 +89,8 @@ final class CreateAppointmentProcessor implements ProcessorInterface
         $from = EmailSenderEnum::NO_REPLY->value;
         $content = $this->twig->render('email/appointment_summary.html.twig', [
             'appointment' => $appointment,
-            'link' => $link
+            'link' => $link,
+            'code' => $appointment->getCode()
         ]);
 
         try {
