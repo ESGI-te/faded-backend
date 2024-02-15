@@ -18,7 +18,6 @@ final class UserDtoValidationProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        dump($data);
         if (!$data instanceof UserDto) {
             throw new \InvalidArgumentException('Expected UserDto');
         }
